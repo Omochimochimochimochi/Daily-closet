@@ -1,0 +1,54 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily closet</title>
+    <style>
+        /* 簡単なデザイン設定（CSS） */
+        body {
+            display: flex;
+            justify-content: center; /* 真ん中に寄せる */
+            background-color: #f5f5f5; /* 背景を少しグレーに */
+            margin: 0;
+            font-family: sans-serif;
+        }
+        .iphone-screen {
+            width: 375px; /* 一般的なスマホの横幅 */
+            min-height: 100vh;
+            background-color: white; /* スマホの中身は白 */
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1); /* 影をつけて立体的に */
+        }
+        img, .image-placeholder {
+            width: 100%; /* 横幅いっぱい */
+            height: auto;
+            border-radius: 8px; /* 角を丸く */
+        }
+    </style>
+</head>
+<body>
+
+    <div class="iphone-screen">
+        <h1>Daily closet</h1>
+        
+        <div style="display: flex; gap: 5px; margin-bottom: 20px;">
+            <input type="text" placeholder="キーワードを入力" style="flex: 1; padding: 8px;">
+            <button style="padding: 8px;">🔍</button>
+        </div>
+
+        <div style="margin-bottom: 15px;">
+        <img src="{% static 'closet/images/main_visual.jpg' %}" alt="メイン画像" style="width: 100%; border-radius: 8px;">
+        </div>
+
+        <p style="font-size: 14px; color: #666;">注目のハッシュタグ：<br>#セール #ブラウン #スウェット</p>
+
+        <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
+
+        <a href="#" style="text-decoration: none; color: #0066cc; display: block; margin-bottom: 10px;">＞ログイン</a>
+        <a href="#" style="text-decoration: none; color: #0066cc; display: block;">＞新規会員登録はこちら</a>
+    </div>
+
+</body>
+</html>

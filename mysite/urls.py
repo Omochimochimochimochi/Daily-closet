@@ -16,7 +16,18 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from closet.views import top  # closetのviewsからtopを読み込む
+
+uurlpatterns = [
+    path('admin/', admin.site.urls),
+    path('', top), ]
+
+
+
+ # closetのviewsからtopを読み込む
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-]
+    path('', top),  ]
+
+    # URLが空（トップ）の時にtopを実行
