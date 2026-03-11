@@ -31,7 +31,7 @@
 <body>
 
     <div class="iphone-screen">
-        <h1>Daily closet</h1>
+        <h1 style="text-align: center; margin-top: 20px; font-weight: bold;">Daily closet</h1>
         
         <div style="display: flex; gap: 5px; margin-bottom: 20px;">
             <input type="text" placeholder="キーワードを入力" style="flex: 1; padding: 8px;">
@@ -39,16 +39,16 @@
         </div>
 
         <div style="margin-bottom: 15px;">
-        <img src="{% static 'closet/images/main_visual.jpg' %}" alt="メイン画像" style="width: 100%; border-radius: 8px;">
-        </div>
+        {% load static %} 
+<img src="{% static 'images/main_visual.jpg' %}" alt="メイン画像" style="width: 100%;">
+
 
         <p style="font-size: 14px; color: #666;">注目のハッシュタグ：<br>#セール #ブラウン #スウェット</p>
 
         <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
 
-        <a href="#" style="text-decoration: none; color: #0066cc; display: block; margin-bottom: 10px;">＞ログイン</a>
-        <a href="#" style="text-decoration: none; color: #0066cc; display: block;">＞新規会員登録はこちら</a>
-    </div>
-
-</body>
+        <div style="text-align: center; margin-top: 30px;">
+    <a href="#" style="font-weight: bold; display: block; margin-bottom: 10px; color: #1a73e8; text-decoration: underline;">＞ログイン</a>
+    <a href="#" style="font-weight: bold; display: block; color: #1a73e8; text-decoration: underline;">＞新規会員登録はこちら</a>
+</div>
 </html>
