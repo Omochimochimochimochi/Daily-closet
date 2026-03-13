@@ -16,7 +16,9 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from closet.views import top  # closetのviewsからtopを読み込む
+from closet.views import top  
+from closet import views 
+
 
 uurlpatterns = [
     path('admin/', admin.site.urls),
@@ -28,6 +30,6 @@ uurlpatterns = [
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', top),  ]
-
-    # URLが空（トップ）の時にtopを実行
+    path('', views.top, name='top'),           # トップ画面
+    path('login/', views.login_view, name='login'), # ログイン画面
+]
