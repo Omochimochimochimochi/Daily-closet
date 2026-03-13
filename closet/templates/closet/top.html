@@ -65,7 +65,7 @@
 
         <div style="text-align: center; margin-top: 30px;">
     <a href="{% url 'login' %}" style="font-weight: bold; display: block; margin-bottom: 10px; color: #1a73e8; text-decoration: underline;">＞ログイン</a>
-            <a href="#" style="font-weight: bold; display: block; color: #1a73e8; text-decoration: underline;">＞新規会員登録はこちら</a>
+            <a href="{% url 'signup' %}" style="font-weight: bold; display: block; margin-bottom: 10px; color: #1a73e8; text-decoration: underline;">＞新規会員登録はこちら</a>
         </div>
 {% if user.is_authenticated %}
         <footer>

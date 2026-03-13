@@ -32,4 +32,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.top, name='top'),           # トップ画面
     path('login/', views.login_view, name='login'), # ログイン画面
+    path('signup/', views.signup_view, name='signup'), # 新規会員登録
 ]
+
