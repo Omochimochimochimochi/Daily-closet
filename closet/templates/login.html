@@ -1,101 +1,54 @@
-{% load static %}
 <!DOCTYPE html>
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ログイン - Daily closet</title>
+    <title>ログイン - Daily Closet</title>
     <style>
-        body {
-            display: flex;
-            justify-content: center;
-            background-color: #f5f5f5;
-            margin: 0;
-            font-family: sans-serif;
-        }
-        .iphone-screen {
-            width: 375px;
-            min-height: 100vh;
-            background-color: white;
-            padding: 40px 20px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-            box-sizing: border-box;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        .form-group {
-            width: 100%;
-            margin-bottom: 20px;
-        }
-        label {
-            display: block;
-            text-align: center;
-            margin-bottom: 10px;
-            font-size: 18px;
-            color: #333;
-        }
-        input[type="email"], input[type="password"] {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            box-sizing: border-box;
-            font-size: 16px;
-        }
-        .login-btn {
-            width: 80%;
-            padding: 12px;
-            background-color: #a0c4ff; /* 設計図の薄い青 */
-            border: none;
-            border-radius: 8px;
-            color: #333;
-            font-size: 18px;
-            cursor: pointer;
-            margin-top: 20px;
-        }
-        .links {
-            margin-top: 30px;
-            text-align: center;
-            font-size: 14px;
-        }
-        .links a {
-            display: block;
-            margin-bottom: 15px;
-            color: #1a73e8;
-            text-decoration: underline;
-        }
+        body { font-family: sans-serif; display: flex; justify-content: center; padding: 50px; background-color: #f8f9fa; }
+        .login-box { background: white; padding: 40px; border: 1px solid #333; width: 350px; text-align: center; }
+        .field { margin-bottom: 20px; text-align: left; }
+        label { display: block; margin-bottom: 8px; color: #555; text-align: center; font-size: 18px; }
+        input[type="email"], input[type="password"] { width: 100%; padding: 10px; border: 1px solid #333; box-sizing: border-box; }
+        
+        .checkbox-group { text-align: left; margin-bottom: 25px; font-size: 14px; display: flex; align-items: center; justify-content: center; }
+        
+        .btn-login { background-color: #a0c4ff; border: none; padding: 12px; width: 80%; font-size: 18px; border-radius: 10px; cursor: pointer; margin-bottom: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        
+        .links a { display: block; margin-bottom: 12px; font-size: 14px; color: #1a73e8; text-decoration: underline; }
+        .admin-links { margin-top: 30px; border-top: 1px solid #eee; padding-top: 20px; }
+        .admin-links a { color: #999; text-decoration: none; font-size: 13px; margin-bottom: 8px; }
     </style>
 </head>
 <body>
-    <div class="iphone-screen">
-        <h2 style="margin-bottom: 40px; font-weight: normal;">ログイン</h2>
-
-        <form style="width: 100%; text-align: center;">
-            <div class="form-group">
+    <div class="login-box">
+        <form>
+            <div class="field">
                 <label>メールアドレス</label>
                 <input type="email" placeholder="example@mail.com">
             </div>
 
-            <div class="form-group" style="position: relative;">
+            <div class="field">
                 <label>パスワード</label>
-                <input type="password">
-                <span style="position: absolute; right: 10px; bottom: 10px; cursor: pointer;">👁️</span>
+                <div style="position: relative;">
+                    <input type="password">
+                    <span style="position: absolute; right: 10px; top: 8px; cursor: pointer;">👁️</span>
+                </div>
             </div>
 
-            <div style="font-size: 14px; margin-bottom: 20px;">
+            <div class="checkbox-group">
                 <input type="checkbox" id="auto-login">
-                <label for="auto-login" style="display: inline; font-size: 14px;">次回から自動ログイン</label>
+                <label for="auto-login" style="font-size: 14px; margin: 0 0 0 5px;">次回から自動ログイン</label>
             </div>
 
-            <button type="submit" class="login-btn">ログイン</button>
-        </form>
+            <button type="submit" class="btn-login">ログイン</button>
 
-    <div style="margin-top: 30px; border-top: 1px solid #eee; padding-top: 20px;">
-    <a href="/admin/" style="color: #999; text-decoration: none; font-size: 14px; display: block; margin-bottom: 10px;">★管理者ログイン</a>
-    <a href="/admin/" style="color: #999; text-decoration: none; font-size: 14px; display: block;">★ゲスト管理者ログイン</a>
+            <div class="links">
+                <a href="{% url 'signup' %}">＞新規会員登録はこちら</a>
+                <a href="#">＞パスワードをお忘れの方はこちら</a>
+            </div>
+
+           <div class="admin-links">
+    <a href="/admin/" style="color: #999; text-decoration: none; font-size: 13px; display: block; margin-bottom: 20px;">★管理者ログイン</a>
+    <a href="#" style="color: #999; text-decoration: none; font-size: 13px; display: block;">★ゲスト管理者ログイン</a>
 </div>
-        </div>
-    </div>
-</body>
 </html>
