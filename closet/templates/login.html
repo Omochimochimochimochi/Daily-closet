@@ -42,13 +42,15 @@
 
             <button type="submit" class="btn-login">ログイン</button>
 
-            <div class="links">
-                <a href="{% url 'signup' %}">＞新規会員登録はこちら</a>
-                <a href="#">＞パスワードをお忘れの方はこちら</a>
-            </div>
+           <div class="links">
+    <a href="{% url 'signup' %}">＞新規会員登録はこちら</a>
+    
+    <a href="/password_reset/">＞パスワードをお忘れの方はこちら</a>
+</div>
 
            <div class="admin-links">
     <a href="/admin/" style="color: #999; text-decoration: none; font-size: 13px; display: block; margin-bottom: 20px;">★管理者ログイン</a>
     <a href="#" style="color: #999; text-decoration: none; font-size: 13px; display: block;">★ゲスト管理者ログイン</a>
 </div>
 </html>
+

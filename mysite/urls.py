@@ -16,22 +16,18 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from closet.views import top  
+from django.contrib.auth import views as auth_views # Django標準のビューをインポート
 from closet import views 
-
-
-uurlpatterns = [
-    path('admin/', admin.site.urls),
-    path('', top), ]
-
-
-
- # closetのviewsからtopを読み込む
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', views.top, name='top'),           # トップ画面
-    path('login/', views.login_view, name='login'), # ログイン画面
-    path('signup/', views.signup_view, name='signup'), # 新規会員登録
-]
+    path('', views.top, name='top'),
+    path('login/', views.login_view, name='login'),
+    path('signup/', views.signup_view, name='signup'),
 
+    # --- パスワード再設定（Django標準機能を使用） ---
+    path('password_reset/', auth_views.PasswordResetView.as_view(template_name='password_reset.html'), name='password_reset'),
+    path('password_reset/done/', auth_views.PasswordResetDoneView.as_view(template_name='password_reset_done.html'), name='password_reset_done'),
+    path('reset/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(template_name='password_reset_confirm.html'), name='password_reset_confirm'),
+    path('reset/done/', auth_views.PasswordResetCompleteView.as_view(template_name='password_reset_complete.html'), name='password_reset_complete'),
+]

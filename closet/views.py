@@ -9,3 +9,12 @@ def login_view(request):
 
 def signup_view(request):
     return render(request, 'signup.html')
+
+def password_reset_view(request):
+    return render(request, 'password_reset.html')
+
+def password_reset_done_view(request):
+    return render(request, 'password_reset_done.html')
+
+def password_reset_confirm_view(request):
+    return render(request, 'password_reset_confirm.html')
