@@ -18,3 +18,7 @@ def password_reset_done_view(request):
 
 def password_reset_confirm_view(request):
     return render(request, 'password_reset_confirm.html')
+
+    
+def signup_complete(request):
+    return render(request, 'signup_complete.html')    
