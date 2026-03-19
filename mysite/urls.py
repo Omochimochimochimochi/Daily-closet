@@ -25,6 +25,7 @@ urlpatterns = [
     path('login/', views.login_view, name='login'),
     path('signup/', views.signup_view, name='signup'),
     path('signup/complete/', views.signup_complete, name='signup_complete'),
+    path('mypage/', views.mypage, name='mypage'),
 
     # --- パスワード再設定（Django標準機能を使用） ---
     path('password_reset/', auth_views.PasswordResetView.as_view(template_name='password_reset.html'), name='password_reset'),
