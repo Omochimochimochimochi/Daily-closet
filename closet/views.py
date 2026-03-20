@@ -25,3 +25,6 @@ def signup_complete(request):
 
 def mypage(request):
     return render(request, 'mypage.html')    
+
+def email_change(request):
+    return render(request, 'email_change.html')
