@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>メールアドレス変更 - Daily Closet</title>
+    <style>
+        /* 全体の設定 */
+        body { 
+            font-family: sans-serif; 
+            margin: 0; 
+            background-color: #f8f9fa; /* 薄いグレーの背景 */
+            display: flex; 
+            justify-content: center; 
+            align-items: flex-start; /* 上から順に配置 */
+            min-height: 100vh; 
+            padding-bottom: 70px; /* フッターの高さ分だけ下に余白を作る */
+            box-sizing: border-box;
+        }
+
+        
+        .app-container { 
+            background: white; 
+            width: 375px; /* スマホサイズ */
+            min-height: 100vh;
+            border: 1px solid #333; 
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        /* 1. 見出し */
+        .header {
+            width: 100%;
+            padding: 20px 0;
+            border-bottom: 1px solid #333; /* スリット線 */
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        h1 { font-size: 1.5rem; color: #333; margin: 0; }
+
+        /* 2. 入力フォームエリア */
+        .form-group {
+            width: 100%;
+            padding: 0 40px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            gap: 25px; /* フィールド間の隙間 */
+            align-items: center;
+        }
+
+        /* ラベルと入力フィールドのセット */
+        .input-wrapper {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* ラベルテキスト（メールアドレス / 新しいメールアドレス） */
+        .label-text {
+            font-size: 1rem;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        /* 入力フィールド（スクショの枠） */
+        .input-field {
+            width: 100%;
+            max-width: 300px;
+            padding: 15px;
+            border: 1px solid #333;
+            border-radius: 8px;
+            font-size: 1rem;
+            box-sizing: border-box;
+            text-align: center;
+        }
+
+        / 3. 更新ボタン/
+        .btn-update {
+            display: block;
+            width: 100%;
+            max-width: 200px;
+            padding: 15px;
+            background-color: #a0c4ff; /* 水色（マイページと同じ） */
+            color: white;
+            border: none;
+            border-radius: 25px;
+            font-weight: bold;
+            font-size: 1rem;
+            text-align: center;
+            box-sizing: border-box;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-top: 30px;
+        }
+        .btn-update:hover { background-color: #7ab3ff; } /* マウスオンで少し濃く */
+
+        /* 4. フッターナビゲーション（アイコンバー） */
+        .footer-nav {
+            width: 100%;
+            height: 70px;
+            background-color: #e0e0e0; /* マイページと同じグレー */
+            border-top: 1px solid #333; /* スリット線 */
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            display: flex;
+            justify-content: space-around; /* アイコンを均等に配置 */
+            align-items: center;
+            padding: 0 10px;
+            box-sizing: border-box;
+        }
+        .nav-icon {
+            font-size: 2rem; /* アイコンの大きさ */
+            color: #555;
+            text-decoration: none;
+            transition: 0.2s;
+        }
+        .nav-icon:hover { color: #333; transform: scale(1.1); } /* マウスオンで少し大きく */
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        <div class="header">
+            <h1>メールアドレス変更 💌</h1>
+        </div>
+
+        <div class="form-group">
+            
+            <div class="input-wrapper">
+                <label class="label-text">メールアドレス</label>
+                <input type="email" class="input-field" placeholder="example@mail.com" value="{{ user.email }}">
+            </div>
+
+            <div class="input-wrapper">
+                <label class="label-text">新しいメールアドレス</label>
+                <input type="email" class="input-field" placeholder="新しいメールアドレスを入力">
+            </div>
+
+            <button class="btn-update">更新する 🔄</button>
+        </div>
+
+        <div class="footer-nav">
+            <a href="{% url 'top' %}" class="nav-icon">🏡</a> <a href="#" class="nav-icon">🔍</a> <a href="#" class="nav-icon">🛒</a> <a href="{% url 'mypage' %}" class="nav-icon">👤</a> </div>
+    </div>
+
+</body>
+</html>
