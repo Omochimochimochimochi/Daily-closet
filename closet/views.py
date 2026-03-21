@@ -28,3 +28,6 @@ def mypage(request):
 
 def email_change(request):
     return render(request, 'email_change.html')
+
+def password_change(request):
+    return render(request, 'password_change.html')

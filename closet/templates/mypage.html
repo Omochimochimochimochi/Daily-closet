@@ -116,11 +116,11 @@
             <div class="username">{{ user.username }} 様</div>
         </div>
 
-        <div class="button-group">
+        <div class="button-group">gi
             <a href="#" class="btn">お気に入りアイテム一覧 💗</a>
             <a href="javascript:void(0)" class="btn" onclick="document.getElementById('usernameModal').style.display='flex'">ユーザー名変更 👤</a>
             <a href="{% url 'email_change' %}" class="btn">メールアドレス変更 💌</a>
-            <a href="#" class="btn">パスワード変更 🔑</a>
+            <a href="{% url 'password_change' %}" class="btn">パスワード変更 🔑</a>
         </div>
 
         <div class="footer-nav">
