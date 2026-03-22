@@ -28,6 +28,7 @@ urlpatterns = [
     path('mypage/', views.mypage, name='mypage'),
     path('email/change', views.email_change, name='email_change'),
     path('password/change', views.password_change, name='password_change'),
+    path('search/', views.item_search, name='item_search'),
     
 
     # --- パスワード再設定（Django標準機能を使用） ---
