@@ -1,0 +1,72 @@
+<div class="app-container">
+    <div class="search-box-container">
+        <span class="back-arrow">＜</span>
+        <input type="text" class="search-input" placeholder="キーワード、ハッシュタグで検索">
+    </div>
+
+    <div class="search-section">
+        <p class="section-title">トレンドワード</p>
+        <div class="tag-group">
+            <button class="tag-btn">🔎 セール</button>
+            <button class="tag-btn">🔎 アウター</button>
+            <button class="tag-btn">🔎 シャツ</button>
+        </div>
+    </div>
+
+    <div class="search-section">
+        <p class="section-title">体型・好みで探す</p>
+        <div class="tag-group">
+            <button class="tag-btn">🔎 #洗濯可</button>
+            <button class="tag-btn">🔎 #ブルベ</button>
+            <button class="tag-btn">🔎 #ミニ丈</button>
+        </div>
+    </div>
+</div>
+
+<style>
+    .app-container {
+        max-width: 400px;
+        margin: 0 auto;
+        padding: 20px;
+        font-family: sans-serif;
+    }
+
+    .search-box-container {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 30px;
+    }
+    .back-arrow { font-size: 1.2rem; cursor: pointer; }
+    .search-input {
+        flex: 1;
+        padding: 12px;
+        border: 1px solid #333;
+        border-radius: 10px;
+        background-color: #f9f9f9;
+    }
+
+
+    .search-section { margin-bottom: 25px; }
+    .section-title {
+        font-size: 0.9rem;
+        color: #666;
+        margin-bottom: 10px;
+    }
+
+
+    .tag-group {
+        display: flex;
+        flex-wrap: wrap; 
+        gap: 10px;
+    }
+    .tag-btn {
+        padding: 8px 15px;
+        border: 1px solid #999;
+        border-radius: 20px;
+        background: white;
+        font-size: 0.85rem;
+        cursor: pointer;
+        color: #333;
+    }
+</style>
