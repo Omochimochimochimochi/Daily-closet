@@ -4,13 +4,26 @@
 
     <div class="button-group">
         <a href="#" class="btn-admin">アイテム一覧</a>
-        <a href="{% url 'inventory_manage' %}" class="btn-menu">在庫管理</a>
+        <a href="{% url 'inventory_manage' %}" class="btn-admin">在庫管理</a>
         <a href="#" class="btn-admin-logout">ログアウト</a>
+    </div>
+
+    <div class="footer-nav">
+        <a href="{% url 'top' %}" class="nav-item">🏠</a>
+        <a href="#" class="nav-item">👕</a> <a href="{% url 'admin_menu' %}" class="nav-item">📋</a>
     </div>
 </div>
 
 <style>
-    
+
+    .app-container {
+        min-height: 100vh;
+        position: relative;
+        padding-bottom: 80px; 
+        box-sizing: border-box;
+        text-align: center;
+    }
+
     .btn-admin {
         display: block;
         width: 80%;
@@ -31,5 +44,25 @@
         color: white;
         border-radius: 10px;
         text-decoration: none;
+    }
+
+    /* フッターのスタイル */
+    .footer-nav {
+        position: fixed; /* 画面下に固定 */
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%); 
+        width: 100%;
+        max-width: 400px; 
+        display: flex;
+        justify-content: space-around;
+        padding: 15px 0;
+        border-top: 1px solid #eee;
+        background-color: white;
+    }
+    .nav-item {
+        text-decoration: none;
+        font-size: 24px;
+        cursor: pointer;
     }
 </style>
