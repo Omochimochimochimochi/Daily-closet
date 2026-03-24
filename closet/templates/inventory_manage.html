@@ -103,9 +103,33 @@
             </div>
         </div>
 
-        <div class="footer-nav">
-            <span>🏠</span><span>👗</span><span>📋</span>
-        </div>
+            </div> 
+
+    <div class="footer-nav">
+        <a href="{% url 'top' %}" class="nav-item">🏠</a>
+        <a href="#" class="nav-item">👗</a>
+        <a href="{% url 'admin_menu' %}" class="nav-item">📋</a>
     </div>
+</div> <style>
+    
+    .footer-nav {
+        position: fixed;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 100%;
+        max-width: 375px;
+        display: flex;
+        justify-content: space-around;
+        padding: 15px 0;
+        border-top: 1px solid #eee;
+        background-color: white;
+        z-index: 100; 
+    }
+    .nav-item {
+        text-decoration: none;
+        font-size: 24px;
+    }
+</style>
 </body>
 </html>
