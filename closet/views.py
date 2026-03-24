@@ -32,5 +32,9 @@ def email_change(request):
 def password_change(request):
     return render(request, 'password_change.html')
     
-    def item_search(request):
+def item_search(request):
     return render(request, 'item_search.html')
+    
+def admin_menu(request):
+    return render(request, 'admin_menu.html')
+    
