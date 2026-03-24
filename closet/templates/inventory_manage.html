@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>在庫管理画面 - Daily Closet 管理</title>
+    <style>
+        body { font-family: sans-serif; background-color: #f8f9fa; margin: 0; display: flex; justify-content: center; }
+        .app-container { width: 375px; background: white; min-height: 100vh; padding: 20px; text-align: center; border: 1px solid #ddd; padding-bottom: 80px; position: relative; }
+        h1 { font-size: 20px; margin-bottom: 20px; }
+        
+        
+        .btn-add { 
+            display: inline-block; width: 60%; padding: 10px; 
+            background-color: #eee; color: #333; 
+            text-decoration: none; border-radius: 8px; 
+            font-weight: bold; border: 1px solid #ccc;
+            margin-bottom: 10px; font-size: 14px;
+        }
+        .item-count { font-size: 12px; color: #666; margin-bottom: 20px; }
+
+       
+        .item-list { display: flex; flex-direction: column; gap: 15px; }
+        .item-card {
+            display: flex; border: 1px solid #ddd;
+            padding: 10px; font-size: 12px; align-items: flex-start;
+        }
+        
+        /* 画像枠（画像がない時のダミー） */
+        .item-image-placeholder {
+            width: 80px; height: 100px;
+            background-color: #eee; /* 薄いグレー */
+            display: flex; align-items: center; justify-content: center;
+            border: 1px solid #ccc; color: #999;
+            font-weight: bold; font-size: 10px;
+        }
+
+     
+        .item-info { flex: 1; padding-left: 10px; text-align: left; }
+        .item-info p { margin: 0 0 5px 0; }
+        .info-label { color: #666; }
+
+       
+        .item-actions { display: flex; flex-direction: column; gap: 5px; align-self: center; }
+        .btn-status, .btn-edit { 
+            font-size: 10px; padding: 5px 10px; 
+            cursor: pointer; border-radius: 5px; border: 1px solid #ccc; background: white;
+        }
+        .btn-status { background-color: #eee; }
+        .btn-edit { background-color: #eee; }
+        
+        .footer-nav { 
+            position: absolute; bottom: 0; left: 0; width: 100%; 
+            display: flex; justify-content: space-around; 
+            padding: 15px 0; border-top: 1px solid #eee; background: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <h1>在庫管理画面</h1>
+        
+        <a href="#" class="btn-add">＋ 新規アイテム登録</a>
+        <p class="item-count">登録アイテム：x点</p>
+
+        <div class="item-list">
+            <div class="item-card">
+                <div class="item-image-placeholder">アイテム画像</div>
+                <div class="item-info">
+                    <p><span class="info-label">アイテム名：</span>ワイドパンツ</p>
+                    <p><span class="info-label">タグ：</span>#セール、#きれいめ</p>
+                    <p><span class="info-label">状態：</span>公開中</p>
+                </div>
+                <div class="item-actions">
+                    <button class="btn-status">公開設定を変更</button>
+                    <button class="btn-edit">編集</button>
+                </div>
+            </div>
+
+            <div class="item-card">
+                <div class="item-image-placeholder">アイテム画像</div>
+                <div class="item-info">
+                    <p><span class="info-label">アイテム名：</span>シアーハイネックシャツ</p>
+                    <p><span class="info-label">タグ：</span>#シンプル、#骨格ウェーブ</p>
+                    <p><span class="info-label">状態：</span>公開中</p>
+                </div>
+                <div class="item-actions">
+                    <button class="btn-status">公開設定を変更</button>
+                    <button class="btn-edit">編集</button>
+                </div>
+            </div>
+            
+            <div class="item-card">
+                <div class="item-image-placeholder">アイテム画像</div>
+                <div class="item-info">
+                    <p><span class="info-label">アイテム名：</span>中綿ブルゾン</p>
+                    <p><span class="info-label">タグ：</span>#アウター、#カジュアル</p>
+                    <p><span class="info-label">状態：</span>公開中</p>
+                </div>
+                <div class="item-actions">
+                    <button class="btn-status">公開設定を変更</button>
+                    <button class="btn-edit">編集</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer-nav">
+            <span>🏠</span><span>👗</span><span>📋</span>
+        </div>
+    </div>
+</body>
+</html>
