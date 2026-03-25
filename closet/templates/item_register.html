@@ -1,1 +1,79 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>アイテム登録 - Daily Closet</title>
+    <style>
+        body { font-family: sans-serif; background-color: #f8f9fa; margin: 0; display: flex; justify-content: center; }
+        .app-container { width: 375px; background: white; min-height: 100vh; padding: 20px; border: 1px solid #ddd; box-sizing: border-box; }
+        
+        h2 { font-size: 18px; margin-bottom: 20px; border-bottom: 2px solid #eee; padding-bottom: 10px; text-align: center; }
+        
+        .form-group { margin-bottom: 20px; text-align: left; }
+        label { display: block; font-size: 13px; font-weight: bold; margin-bottom: 8px; color: #444; }
+        
 
+        input[type="text"], select, textarea { 
+            width: 100%; padding: 12px; border: 1px solid #ccc; 
+            border-radius: 8px; font-size: 14px; box-sizing: border-box; 
+            background-color: #fdfdfd;
+        }
+        
+
+        input[type="file"] { font-size: 12px; padding: 5px 0; }
+
+
+        .btn-submit { 
+            width: 100%; padding: 16px; 
+            background-color: #a0c4ff; color: white; 
+            border: none; border-radius: 12px; 
+            font-weight: bold; font-size: 16px;
+            margin-top: 20px; cursor: pointer; 
+            box-shadow: 0 4px 0 #88b0f0;
+        }
+        .btn-submit:active { transform: translateY(2px); box-shadow: 0 2px 0 #88b0f0; }
+
+        .btn-back { 
+            display: block; margin-top: 25px; 
+            color: #888; font-size: 13px; 
+            text-decoration: none; text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <h2>新規アイテム登録</h2>
+        
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            
+            <div class="form-group">
+                <label>アイテム名</label>
+                <input type="text" name="name" placeholder="例：ワイドパンツ" required>
+            </div>
+            
+            <div class="form-group">
+                <label>アイテム画像</label>
+                <input type="file" name="image" accept="image/*">
+            </div>
+
+            <div class="form-group">
+                <label>タグ（カンマ区切り）</label>
+                <input type="text" name="tags" placeholder="#セール, #きれいめ">
+            </div>
+
+            <div class="form-group">
+                <label>公開設定</label>
+                <select name="status">
+                    <option value="public">公開中</option>
+                    <option value="private">非公開</option>
+                </select>
+            </div>
+
+            <button type="submit" class="btn-submit">登録する</button>
+        </form>
+        
+        <a href="{% url 'inventory_manage' %}" class="btn-back">← 在庫管理に戻る</a>
+    </div>
+</body>
+</html>
