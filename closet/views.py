@@ -43,4 +43,3 @@ def admin_menu(request):
 
 def inventory_manage(request):
     return render(request, 'inventory_manage.html')
-    
