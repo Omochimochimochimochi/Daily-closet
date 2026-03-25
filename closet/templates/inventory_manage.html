@@ -2,134 +2,88 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <title>在庫管理画面 - Daily Closet 管理</title>
+    <title>在庫管理 - Daily Closet</title>
     <style>
         body { font-family: sans-serif; background-color: #f8f9fa; margin: 0; display: flex; justify-content: center; }
-        .app-container { width: 375px; background: white; min-height: 100vh; padding: 20px; text-align: center; border: 1px solid #ddd; padding-bottom: 80px; position: relative; }
-        h1 { font-size: 20px; margin-bottom: 20px; }
+        .app-container { width: 375px; background: white; min-height: 100vh; padding-bottom: 80px; position: relative; border: 1px solid #ddd; text-align: center; }
         
-        
-        .btn-add { 
-            display: inline-block; width: 60%; padding: 10px; 
-            background-color: #eee; color: #333; 
-            text-decoration: none; border-radius: 8px; 
-            font-weight: bold; border: 1px solid #ccc;
-            margin-bottom: 10px; font-size: 14px;
-        }
-        .item-count { font-size: 12px; color: #666; margin-bottom: 20px; }
+        .header { padding: 10px; border-bottom: 1px solid #eee; }
+        .btn-add { display: inline-block; width: 90%; padding: 10px; background-color: #ccc; color: #333; text-decoration: none; border-radius: 5px; margin: 10px 0; font-weight: bold; }
 
-       
-        .item-list { display: flex; flex-direction: column; gap: 15px; }
-        .item-card {
-            display: flex; border: 1px solid #ddd;
-            padding: 10px; font-size: 12px; align-items: flex-start;
-        }
+        .item-card { display: flex; padding: 10px; border-bottom: 1px solid #eee; text-align: left; align-items: flex-start; }
+        .item-img { width: 80px; height: 100px; background-color: #f0f0f0; border: 1px solid #ddd; margin-right: 10px; display: flex; align-items: center; justify-content: center; font-size: 10px; color: #999; }
+        .item-info { flex: 1; font-size: 12px; }
+        .item-info p { margin: 2px 0; }
         
-        /* 画像枠（画像がない時のダミー） */
-        .item-image-placeholder {
-            width: 80px; height: 100px;
-            background-color: #eee; /* 薄いグレー */
-            display: flex; align-items: center; justify-content: center;
-            border: 1px solid #ccc; color: #999;
-            font-weight: bold; font-size: 10px;
-        }
+    
+        .btn-group { margin-top: 10px; display: flex; gap: 5px; }
+        .btn-status { background-color: #ddd; border: none; padding: 5px 10px; border-radius: 5px; font-size: 11px; cursor: pointer; }
+        .btn-edit { background-color: #bbb; border: none; padding: 5px 15px; border-radius: 5px; font-size: 11px; cursor: pointer; text-decoration: none; color: black; }
 
-     
-        .item-info { flex: 1; padding-left: 10px; text-align: left; }
-        .item-info p { margin: 0 0 5px 0; }
-        .info-label { color: #666; }
 
-       
-        .item-actions { display: flex; flex-direction: column; gap: 5px; align-self: center; }
-        .btn-status, .btn-edit { 
-            font-size: 10px; padding: 5px 10px; 
-            cursor: pointer; border-radius: 5px; border: 1px solid #ccc; background: white;
+        #modal-overlay {
+            display: none; 
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5); z-index: 1000;
         }
-        .btn-status { background-color: #eee; }
-        .btn-edit { background-color: #eee; }
-        
-        .footer-nav { 
-            position: absolute; bottom: 0; left: 0; width: 100%; 
-            display: flex; justify-content: space-around; 
-            padding: 15px 0; border-top: 1px solid #eee; background: white;
+        .modal-content {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            background: white; padding: 20px; width: 250px; border-radius: 10px; text-align: center;
         }
+        .modal-close { position: absolute; top: 5px; right: 10px; font-size: 20px; cursor: pointer; border: none; background: none; }
+        .btn-save { background-color: #bbb; border: none; padding: 8px 20px; border-radius: 5px; margin-right: 5px; }
+        .btn-cancel { background-color: #ddd; border: none; padding: 8px 20px; border-radius: 5px; }
+
+        .footer-nav { position: fixed; bottom: 0; width: 375px; display: flex; justify-content: space-around; padding: 15px 0; background: #eee; border-top: 1px solid #ddd; }
     </style>
 </head>
 <body>
-    <div class="app-container">
-        <h1>在庫管理画面</h1>
-        
-        <a href="#" class="btn-add">＋ 新規アイテム登録</a>
-        <p class="item-count">登録アイテム：x点</p>
 
-        <div class="item-list">
-            <div class="item-card">
-                <div class="item-image-placeholder">アイテム画像</div>
-                <div class="item-info">
-                    <p><span class="info-label">アイテム名：</span>ワイドパンツ</p>
-                    <p><span class="info-label">タグ：</span>#セール、#きれいめ</p>
-                    <p><span class="info-label">状態：</span>公開中</p>
-                </div>
-                <div class="item-actions">
-                    <button class="btn-status">公開設定を変更</button>
-                    <button class="btn-edit">編集</button>
-                </div>
-            </div>
+<div class="app-container">
+    <div class="header">在庫管理画面</div>
+    
+    <a href="{% url 'item_register' %}" class="btn-add">＋新規アイテム登録</a>
+    <p style="font-size: 12px;">登録アイテム：x点</p>
 
-            <div class="item-card">
-                <div class="item-image-placeholder">アイテム画像</div>
-                <div class="item-info">
-                    <p><span class="info-label">アイテム名：</span>シアーハイネックシャツ</p>
-                    <p><span class="info-label">タグ：</span>#シンプル、#骨格ウェーブ</p>
-                    <p><span class="info-label">状態：</span>公開中</p>
-                </div>
-                <div class="item-actions">
-                    <button class="btn-status">公開設定を変更</button>
-                    <button class="btn-edit">編集</button>
-                </div>
-            </div>
-            
-            <div class="item-card">
-                <div class="item-image-placeholder">アイテム画像</div>
-                <div class="item-info">
-                    <p><span class="info-label">アイテム名：</span>中綿ブルゾン</p>
-                    <p><span class="info-label">タグ：</span>#アウター、#カジュアル</p>
-                    <p><span class="info-label">状態：</span>公開中</p>
-                </div>
-                <div class="item-actions">
-                    <button class="btn-status">公開設定を変更</button>
-                    <button class="btn-edit">編集</button>
-                </div>
+    <div class="item-card">
+        <div class="item-img">アイテム画像</div>
+        <div class="item-info">
+            <p>アイテム名：ワイドパンツ</p>
+            <p>タグ：#セール, #きれいめ</p>
+            <p>状態：公開中</p>
+            <div class="btn-group">
+                <button class="btn-status" onclick="openModal()">公開設定を変更</button>
+                <a href="#" class="btn-edit">編集</a>
             </div>
         </div>
+    </div>
 
-            </div> 
+    <div id="modal-overlay">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal()">×</button>
+            <h3>公開設定</h3>
+            <select style="width: 80%; padding: 10px; margin-bottom: 20px;">
+                <option>公開中</option>
+                <option>非公開</option>
+            </select>
+            <div>
+                <button class="btn-save" onclick="closeModal()">保存</button>
+                <button class="btn-cancel" onclick="closeModal()">キャンセル</button>
+            </div>
+        </div>
+    </div>
 
     <div class="footer-nav">
-        <a href="{% url 'top' %}" class="nav-item">🏠</a>
-        <a href="#" class="nav-item">👗</a>
-        <a href="{% url 'admin_menu' %}" class="nav-item">📋</a>
+        <a href="{% url 'top' %}" style="text-decoration:none">🏡</a>
+        <a href="{% url 'inventory_manage' %}" style="text-decoration:none">👕</a>
+        <a href="{% url 'admin_menu' %}" style="text-decoration:none">📋</a>
     </div>
-</div> <style>
-    
-    .footer-nav {
-        position: fixed;
-        bottom: 0;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 100%;
-        max-width: 375px;
-        display: flex;
-        justify-content: space-around;
-        padding: 15px 0;
-        border-top: 1px solid #eee;
-        background-color: white;
-        z-index: 100; 
-    }
-    .nav-item {
-        text-decoration: none;
-        font-size: 24px;
-    }
-</style>
+</div>
+
+<script>
+    function openModal() { document.getElementById('modal-overlay').style.display = 'block'; }
+    function closeModal() { document.getElementById('modal-overlay').style.display = 'none'; }
+</script>
+
 </body>
 </html>
