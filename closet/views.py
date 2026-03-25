@@ -35,6 +35,12 @@ def password_change(request):
 def item_search(request):
     return render(request, 'item_search.html')
     
+def admin_login(request):
+    return render(request, 'admin_login.html')
+
 def admin_menu(request):
     return render(request, 'admin_menu.html')
+
+def inventory_manage(request):
+    return render(request, 'inventory_manage.html')
     
