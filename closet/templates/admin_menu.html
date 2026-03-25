@@ -1,68 +1,79 @@
-<div class="app-container">
-    <h2>Daily closet</h2>
-    <p>管理メニュー画面</p>
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>管理メニュー - Daily Closet</title>
+</head>
+<body>
+    <div class="app-container">
+        <h2>Daily closet</h2>
+        <p>管理メニュー画面</p>
 
-    <div class="button-group">
-        <a href="#" class="btn-admin">アイテム一覧</a>
-        <a href="{% url 'inventory_manage' %}" class="btn-admin">在庫管理</a>
-        <a href="#" class="btn-admin-logout">ログアウト</a>
-    </div>
+        <div class="button-group">
+            <a href="#" class="btn-admin">アイテム一覧</a>
+            <a href="{% url 'inventory_manage' %}" class="btn-admin">在庫管理</a>
+            <a href="#" class="btn-admin-logout">ログアウト</a>
+        </div>
 
-    <div class="footer-nav">
-        <a href="{% url 'top' %}" class="nav-item">🏠</a>
-        <a href="#" class="nav-item">👕</a> <a href="{% url 'admin_menu' %}" class="nav-item">📋</a>
-    </div>
-</div>
+        <div class="footer-nav">
+            <a href="{% url 'top' %}" class="nav-item">🏠</a>
+            <a href="{% url 'inventory_manage' %}" class="nav-item">👗</a>
+            <a href="{% url 'admin_menu' %}" class="nav-item">📋</a>
+        </div>
+    </div> <style>
+        .app-container {
+            min-height: 100vh;
+            position: relative;
+            padding-bottom: 80px; 
+            box-sizing: border-box;
+            text-align: center;
+            font-family: sans-serif;
+            background-color: #f8f9fa;
+        }
 
-<style>
+        .btn-admin {
+            display: block;
+            width: 80%;
+            margin: 10px auto;
+            padding: 15px;
+            background-color: #f0f0f0; 
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            text-decoration: none;
+            color: #333;
+        }
 
-    .app-container {
-        min-height: 100vh;
-        position: relative;
-        padding-bottom: 80px; 
-        box-sizing: border-box;
-        text-align: center;
-    }
+        .btn-admin-logout {
+            display: block;
+            width: 80%;
+            margin: 30px auto;
+            padding: 15px;
+            background-color: #a0c4ff;
+            color: white;
+            border-radius: 10px;
+            text-decoration: none;
+        }
 
-    .btn-admin {
-        display: block;
-        width: 80%;
-        margin: 10px auto;
-        padding: 15px;
-        background-color: #f0f0f0; 
-        border: 1px solid #ccc;
-        border-radius: 10px;
-        text-decoration: none;
-        color: #333;
-    }
-    .btn-admin-logout {
-        display: block;
-        width: 80%;
-        margin: 30px auto;
-        padding: 15px;
-        background-color: #a0c4ff;
-        color: white;
-        border-radius: 10px;
-        text-decoration: none;
-    }
+        /* 画面下に固定するための魔法のCSS */
+        .footer-nav {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 375px; 
+            display: flex;
+            justify-content: space-around;
+            padding: 15px 0;
+            border-top: 1px solid #eee;
+            background-color: white;
+            z-index: 100;
+        }
 
-    /* フッターのスタイル */
-    .footer-nav {
-        position: fixed; /* 画面下に固定 */
-        bottom: 0;
-        left: 50%;
-        transform: translateX(-50%); 
-        width: 100%;
-        max-width: 400px; 
-        display: flex;
-        justify-content: space-around;
-        padding: 15px 0;
-        border-top: 1px solid #eee;
-        background-color: white;
-    }
-    .nav-item {
-        text-decoration: none;
-        font-size: 24px;
-        cursor: pointer;
-    }
-</style>
+        .nav-item {
+            text-decoration: none;
+            font-size: 24px;
+        }
+ </style>
+</body>
+</html>
