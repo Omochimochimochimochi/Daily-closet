@@ -10,7 +10,7 @@
         <p>管理メニュー画面</p>
 
         <div class="button-group">
-            <a href="#" class="btn-admin">アイテム一覧</a>
+            <a href="{% url 'admin_item_list' %}" class="btn-admin">アイテム一覧</a>
             <a href="{% url 'inventory_manage' %}" class="btn-admin">在庫管理</a>
             <a href="#" class="btn-admin-logout">ログアウト</a>
         </div>
