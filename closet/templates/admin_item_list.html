@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>アイテム一覧(管理) - Daily Closet</title>
+    <style>
+        body { font-family: sans-serif; background-color: #f8f9fa; margin: 0; display: flex; justify-content: center; }
+        .app-container { width: 375px; background: white; min-height: 100vh; padding-bottom: 80px; position: relative; border: 1px solid #ddd; }
+        
+        .header { padding: 15px; border-bottom: 1px solid #eee; text-align: center; font-weight: bold; background: #fff; }
+        .item-count { font-size: 12px; color: #666; text-align: center; margin: 10px 0; }
+        
+        
+        .item-card { display: flex; padding: 12px; border-bottom: 1px solid #eee; align-items: center; }
+        .item-img { width: 70px; height: 85px; background-color: #f0f0f0; border: 1px solid #ddd; margin-right: 12px; display: flex; align-items: center; justify-content: center; font-size: 10px; color: #999; }
+        
+        .item-info { flex: 1; }
+        .item-name { font-size: 14px; font-weight: bold; color: #333; margin: 0 0 4px 0; }
+        .item-spec { font-size: 12px; color: #666; margin: 2px 0; }
+        .item-price { font-size: 13px; font-weight: bold; color: #d9534f; margin: 4px 0 0 0; }
+
+        
+        .footer-nav { position: fixed; bottom: 0; width: 375px; display: flex; justify-content: space-around; padding: 15px 0; background: #f0f0f0; border-top: 1px solid #ddd; }
+        .nav-item { text-decoration: none; font-size: 24px; }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    <div class="header">アイテム一覧画面</div>
+    <p class="item-count">登録アイテム：x点</p>
+
+    <div class="item-card">
+        <div class="item-img">アイテム画像</div>
+        <div class="item-info">
+            <p class="item-name">アイテムのリンク（商品名）</p>
+            <p class="item-spec">カラー、サイズ明記</p>
+            <p class="item-price">¥ x,xxx (税込)</p>
+        </div>
+    </div>
+
+    <div class="item-card">
+        <div class="item-img">アイテム画像</div>
+        <div class="item-info">
+            <p class="item-name">シアーハイネックシャツ</p>
+            <p class="item-spec">White / Mサイズ</p>
+            <p class="item-price">¥ 2,990 (税込)</p>
+        </div>
+    </div>
+
+    <div class="footer-nav">
+        <a href="{% url 'top' %}" class="nav-item">🏡</a>
+        <a href="{% url 'admin_item_list' %}" class="nav-item">👕</a>
+        <a href="{% url 'admin_menu' %}" class="nav-item">📋</a>
+    </div>
+</div>
+
+</body>
+</html>
