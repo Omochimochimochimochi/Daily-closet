@@ -109,6 +109,25 @@
         display: flex; flex-direction: column; align-items: center; justify-content: center;
         background-color: #fff; cursor: pointer;
     }
+
+  
+    .tag-input-container {
+        display: flex; gap: 5px; margin-bottom: 10px;
+    }
+
+
+    .tag-list {
+        display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 15px;
+    }
+    .tag-badge {
+        display: flex; align-items: center; gap: 5px;
+        background: #f0f0f0; border: 1px solid #ccc;
+        border-radius: 15px; padding: 5px 10px; font-size: 12px; color: #333;
+    }
+    .tag-remove-btn {
+        background: none; border: none; color: #999; 
+        font-weight: bold; cursor: pointer; font-size: 14px; padding: 0;
+    }
 </style>
 </head>
 <body>
@@ -183,6 +202,27 @@
             <p class="add-image-link" onclick="openModalDetail();">画像を追加</p>
         </div>
 
+        <div class="form-group-full">
+            <label>アイテム詳細（素材、洗濯表示など）</label>
+            <textarea name="details" rows="4" placeholder="詳細情報を入力"></textarea>
+        </div>
+
+        <div class="form-group-full" style="margin-top: 20px;">
+            <label>自由記入タグ</label>
+            <div class="tag-input-container">
+                <input type="text" id="tag-input" placeholder="#2Way" style="flex: 1;">
+                <button type="button" onclick="addTag();" style="width: 60px; background: #ddd; border: 1px solid #ccc; border-radius: 3px; font-size: 12px;">追加</button>
+            </div>
+            <div id="tag-list" class="tag-list"></div>
+        </div>
+        <div class="image-upload-section" style="margin-top: 20px;">
+            <div class="detail-image-box" onclick="openModalDetail();">
+                <p style="font-size: 10px;">アイテム詳細画像</p>
+                <p class="icon">📷</p>
+            </div>
+            <p class="add-image-link" onclick="openModalDetail();">画像を追加</p>
+        </div>
+        
         <div class="menu-icon">≡</div>
         <a href="{% url 'inventory_manage' %}" style="display:block; text-align:center; margin-top:30px; font-size:12px; color:#666; text-decoration:none;">← 在庫管理に戻る</a>
     </form>
@@ -219,6 +259,19 @@
     function closeModal() { document.getElementById('modal-overlay').style.display = 'none'; }
     function openModalDetail() { document.getElementById('modal-overlay-detail').style.display = 'block'; }
     function closeModalDetail() { document.getElementById('modal-overlay-detail').style.display = 'none'; }
+    function addTag() {
+        const input = document.getElementById('tag-input');
+        const tagText = input.value.trim();
+        if (tagText !== "") {
+            const tagList = document.getElementById('tag-list');
+            const tagBadge = document.createElement('div');
+            tagBadge.className = 'tag-badge';
+            const displayTag = tagText.startsWith('#') ? tagText : '#' + tagText;
+            tagBadge.innerHTML = `${displayTag}<button type="button" class="tag-remove-btn" onclick="this.parentElement.remove();">×</button>`;
+            tagList.appendChild(tagBadge);
+            input.value = ""; 
+        }
+    }
 </script>
 
 </body>
