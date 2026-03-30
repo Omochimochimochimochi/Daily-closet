@@ -7,128 +7,31 @@
     <style>
     body { font-family: sans-serif; background-color: #f8f9fa; margin: 0; display: flex; justify-content: center; }
     .app-container { width: 375px; background: white; min-height: 100vh; padding: 20px; border: 1px solid #ddd; box-sizing: border-box; position: relative; padding-bottom: 60px; }
-    
     h2 { font-size: 16px; margin-bottom: 20px; text-align: center; font-weight: bold; }
-    
     .image-upload-section { text-align: center; margin-bottom: 25px; }
-    .image-preview-box { 
-        width: 150px; height: 180px; 
-        border: 2px solid #333; 
-        margin: 0 auto; 
-        display: flex; flex-direction: column; align-items: center; justify-content: center; 
-        background-color: #fdfdfd; cursor: pointer; 
-    }
+    .image-preview-box { width: 150px; height: 180px; border: 2px solid #333; margin: 0 auto; display: flex; flex-direction: column; align-items: center; justify-content: center; background-color: #fdfdfd; cursor: pointer; }
     .image-preview-box p { margin: 2px 0; font-size: 12px; }
     .image-preview-box .icon { font-size: 24px; }
-    
-    .add-image-link { 
-        display: inline-block; 
-        color: blue; text-decoration: underline; 
-        font-size: 12px; margin-top: 5px; 
-        cursor: pointer; 
-    }
-
-    #modal-overlay, #modal-overlay-detail {
-        display: none; 
-        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-        background: rgba(0,0,0,0.5); z-index: 1000;
-    }
-
-    .modal-content {
-        position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-        background: white; padding: 20px; width: 300px; border-radius: 10px; text-align: center; box-sizing: border-box;
-    }
-    
-    .main-preview-area {
-        width: 100%; height: 200px;
-        border: 1px solid #ccc; background: #eee;
-        display: flex; align-items: center; justify-content: center; font-size: 11px; color: #666; margin-bottom: 15px;
-    }
-
-    .thumbnail-list {
-        display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-bottom: 15px;
-    }
-
-    .thumbnail-item {
-        position: relative;
-        width: 50px; height: 50px;
-        border: 1px solid #ddd; background: #fdfdfd;
-    }
-  
-    .thumbnail-delete-btn {
-        position: absolute; top: -5px; right: -5px;
-        width: 16px; height: 16px;
-        background: rgba(0,0,0,0.5); border-radius: 50%;
-        color: white; font-size: 12px; font-weight: bold; border: none;
-        cursor: pointer; display: flex; align-items: center; justify-content: center;
-    }
-
-    .modal-close-btn {
-        position: absolute; top: -10px; right: -10px;
-        width: 25px; height: 25px;
-        background: #fff; border: 1px solid #ccc; border-radius: 50%;
-        cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 14px;
-    }
-
+    .add-image-link { display: inline-block; color: blue; text-decoration: underline; font-size: 12px; margin-top: 5px; cursor: pointer; }
+    #modal-overlay, #modal-overlay-detail { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; }
+    .modal-content { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 20px; width: 300px; border-radius: 10px; text-align: center; box-sizing: border-box; }
     .form-row { display: flex; gap: 10px; margin-bottom: 15px; }
     .form-group { flex: 1; text-align: left; }
     .form-group-full { width: 100%; text-align: left; margin-bottom: 15px; }
-    
     label { display: block; font-size: 11px; margin-bottom: 5px; color: #333; }
-    input[type="text"], select { 
-        width: 100%; padding: 10px; 
-        border: 1px solid #ccc; border-radius: 3px; 
-        font-size: 14px; box-sizing: border-box; 
-    }
+    input[type="text"], select, textarea { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 3px; font-size: 14px; box-sizing: border-box; }
+    .input-item-name { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 3px; font-size: 16px; text-align: center; box-sizing: border-box; }
+    .tag-input-container { display: flex; gap: 5px; margin-bottom: 10px; }
+    .tag-list { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 15px; }
+    .tag-badge { display: flex; align-items: center; gap: 5px; background: #f0f0f0; border: 1px solid #ccc; border-radius: 15px; padding: 5px 10px; font-size: 12px; color: #333; }
+    .tag-remove-btn { background: none; border: none; color: #999; font-weight: bold; cursor: pointer; font-size: 14px; padding: 0; }
     
-    .input-item-name { 
-        width: 100%; padding: 10px; 
-        border: 1px solid #ccc; border-radius: 3px; 
-        font-size: 16px; text-align: center; 
-        box-sizing: border-box; 
-    }
-
-    .menu-icon { 
-        position: absolute; bottom: 20px; right: 20px; 
-        width: 30px; height: 30px; 
-        background: #eee; border-radius: 50%; 
-        display: flex; align-items: center; justify-content: center; 
-        border: 1px solid #ccc; font-size: 16px;
-    }
-
-    textarea { 
-        width: 100%; padding: 10px; 
-        border: 1px solid #ccc; border-radius: 3px; 
-        font-size: 14px; box-sizing: border-box; 
-        resize: vertical; 
-    }
-
-    .detail-image-box {
-        width: 100px; height: 120px; 
-        border: 1px solid #333; margin: 0 auto; 
-        display: flex; flex-direction: column; align-items: center; justify-content: center;
-        background-color: #fff; cursor: pointer;
-    }
-
-  
-    .tag-input-container {
-        display: flex; gap: 5px; margin-bottom: 10px;
-    }
-
-
-    .tag-list {
-        display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 15px;
-    }
-    .tag-badge {
-        display: flex; align-items: center; gap: 5px;
-        background: #f0f0f0; border: 1px solid #ccc;
-        border-radius: 15px; padding: 5px 10px; font-size: 12px; color: #333;
-    }
-    .tag-remove-btn {
-        background: none; border: none; color: #999; 
-        font-weight: bold; cursor: pointer; font-size: 14px; padding: 0;
-    }
-</style>
+    /* 固定タグ選択用のスタイル */
+    .tag-list input[type="checkbox"] { display: none; }
+    .tag-label-span { display: inline-block; border: 1px solid #ccc; padding: 5px 12px; border-radius: 20px; cursor: pointer; background-color: #f0f0f0; font-size: 12px; transition: 0.2s; }
+    
+    .save-btn { width: 100%; background-color: #a0c4ff; color: white; border: none; padding: 15px; border-radius: 5px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 30px; }
+    </style>
 </head>
 <body>
 
@@ -142,7 +45,6 @@
             <div class="image-preview-box" onclick="openModal();">
                 <p>アイテム画像</p>
                 <p class="icon">📷</p>
-                <p>金額</p>
             </div>
             <p class="add-image-link" onclick="openModal();">画像を追加</p>
         </div>
@@ -155,12 +57,7 @@
         <div class="form-row">
             <div class="form-group">
                 <label>金額</label>
-                <select name="price">
-                    <option value="">¥ ▼ (選択)</option>
-                    <option value="1990">¥ 1,990</option>
-                    <option value="2990">¥ 2,990</option>
-                    <option value="3990">¥ 3,990</option>
-                </select>
+                <input type="text" name="price" placeholder="¥">
             </div>
             <div class="form-group">
                 <label>カラー</label>
@@ -173,39 +70,21 @@
             <input type="text" name="name" class="input-item-name" placeholder="例：デニムシャツ" required>
         </div>
 
-        <div class="form-row">
-            <div class="form-group">
-                <label>カテゴリー</label>
-                <input type="text" name="category" placeholder="例：ブラウス">
+        <hr style="border: 0.5px solid #eee; margin: 20px 0;">
+        <h3>タグ選択</h3>
+        {% for category in categories %}
+            <div class="tag-group" style="margin-bottom: 15px;">
+                <label>■ {{ category.name }}</label>
+                <div class="tag-list">
+                    {% for tag in category.tags.all %}
+                        <label>
+                            <input type="checkbox" name="tags" value="{{ tag.id }}">
+                            <span class="tag-label-span">#{{ tag.name }}</span>
+                        </label>
+                    {% endfor %}
+                </div>
             </div>
-            <div class="form-group">
-                <label>サイズ</label>
-                <input type="text" name="size" placeholder="例：Free (自由記入)">
-            </div>
-        </div>
-
-        <div class="form-group-full" style="margin-top: 25px;">
-            <label>アイテム説明</label>
-            <textarea name="description" rows="4" placeholder="アイテム説明を入力"></textarea>
-        </div>
-
-        <div class="form-group-full">
-            <label>アイテム詳細（素材、洗濯表示など）</label>
-            <textarea name="details" rows="4" placeholder="詳細情報を入力"></textarea>
-        </div>
-
-        <div class="image-upload-section" style="margin-top: 20px;">
-            <div class="detail-image-box" onclick="openModalDetail();">
-                <p style="font-size: 10px;">アイテム詳細画像</p>
-                <p class="icon">📷</p>
-            </div>
-            <p class="add-image-link" onclick="openModalDetail();">画像を追加</p>
-        </div>
-
-        <div class="form-group-full">
-            <label>アイテム詳細（素材、洗濯表示など）</label>
-            <textarea name="details" rows="4" placeholder="詳細情報を入力"></textarea>
-        </div>
+        {% endfor %}
 
         <div class="form-group-full" style="margin-top: 20px;">
             <label>自由記入タグ</label>
@@ -215,15 +94,14 @@
             </div>
             <div id="tag-list" class="tag-list"></div>
         </div>
-        <div class="image-upload-section" style="margin-top: 20px;">
-            <div class="detail-image-box" onclick="openModalDetail();">
-                <p style="font-size: 10px;">アイテム詳細画像</p>
-                <p class="icon">📷</p>
-            </div>
-            <p class="add-image-link" onclick="openModalDetail();">画像を追加</p>
+
+        <div class="form-group-full">
+            <label>アイテム説明</label>
+            <textarea name="description" rows="4" placeholder="アイテム説明を入力"></textarea>
         </div>
+
+        <button type="submit" class="save-btn">保存</button>
         
-        <div class="menu-icon">≡</div>
         <a href="{% url 'inventory_manage' %}" style="display:block; text-align:center; margin-top:30px; font-size:12px; color:#666; text-decoration:none;">← 在庫管理に戻る</a>
     </form>
 </div>
@@ -257,8 +135,20 @@
 <script>
     function openModal() { document.getElementById('modal-overlay').style.display = 'block'; }
     function closeModal() { document.getElementById('modal-overlay').style.display = 'none'; }
-    function openModalDetail() { document.getElementById('modal-overlay-detail').style.display = 'block'; }
-    function closeModalDetail() { document.getElementById('modal-overlay-detail').style.display = 'none'; }
+  
+    document.addEventListener('change', function(e) {
+        if (e.target.name === 'tags') {
+            const span = e.target.nextElementSibling;
+            if (e.target.checked) {
+                span.style.backgroundColor = '#1a73e8';
+                span.style.color = 'white';
+            } else {
+                span.style.backgroundColor = '#f0f0f0';
+                span.style.color = '#333';
+            }
+        }
+    });
+
     function addTag() {
         const input = document.getElementById('tag-input');
         const tagText = input.value.trim();
@@ -273,6 +163,5 @@
         }
     }
 </script>
-
 </body>
 </html>
