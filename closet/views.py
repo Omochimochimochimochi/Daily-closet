@@ -48,5 +48,5 @@ def item_register(request):
     return render(request, 'item_register.html')
     
 def admin_item_list(request):
-    return render(request, 'admin_item_list')
+    return render(request, 'admin_item_list.html')
     
