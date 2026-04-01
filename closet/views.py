@@ -1,5 +1,8 @@
 from django.shortcuts import render
 
+from django.shortcuts import render, redirect
+from .models import Item
+
 def top(request):
     # closet/templates/closet/top.html を探しに行って表示する
     return render(request, 'closet/top.html')
@@ -50,3 +53,33 @@ def item_register(request):
 def admin_item_list(request):
     return render(request, 'admin_item_list.html')
     
+def item_register(request):
+    if request.method == 'POST':
+        
+        name_value = request.POST.get('name')
+        brand_value = request.POST.get('brand')
+        price_value = request.POST.get('price')
+        color_value = request.POST.get('color')
+        image_file = request.FILES.get('image')
+
+        styles = request.POST.getlist('style')
+        kokkakus = request.POST.getlist('kokkaku')
+        pc_colors = request.POST.getlist('personal_color')
+        free_tags_value = request.POST.get('free_tags', "")
+
+   
+        item = Item.objects.create(
+            item_name=name_value,       
+            brand_name=brand_value,     
+            price=price_value,
+            color=color_value,
+            image=image_file,
+            style=",".join(styles),
+            kokkaku=",".join(kokkakus),
+            personal_color=",".join(pc_colors),
+            free_tags=free_tags_value
+        )
+        
+        return redirect('inventory_manage')
+
+    return render(request, 'item_register.html')

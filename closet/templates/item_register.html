@@ -8,19 +8,15 @@
         body { font-family: sans-serif; background-color: #f8f9fa; margin: 0; display: flex; justify-content: center; }
         .app-container { width: 375px; background: white; min-height: 100vh; padding: 20px; border: 1px solid #ddd; box-sizing: border-box; position: relative; padding-bottom: 60px; }
         h2 { font-size: 16px; margin-bottom: 20px; text-align: center; font-weight: bold; }
-        
         .image-upload-section { text-align: center; margin-bottom: 25px; }
         .image-preview-box { width: 150px; height: 180px; border: 1px solid #333; margin: 0 auto; display: flex; flex-direction: column; align-items: center; justify-content: center; background-color: #fdfdfd; cursor: pointer; }
         .image-preview-box .icon { font-size: 24px; }
-
         .form-row { display: flex; gap: 10px; margin-bottom: 15px; }
         .form-group { flex: 1; text-align: left; }
         .form-group-full { width: 100%; text-align: left; margin-bottom: 15px; }
         label { display: block; font-size: 11px; margin-bottom: 5px; color: #333; font-weight: bold; }
         input[type="text"] { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 3px; font-size: 14px; box-sizing: border-box; }
         .input-item-name { text-align: center; font-size: 16px; }
-
-      
         h3 { font-size: 14px; text-align: center; color: #555; margin: 30px 0 10px; }
         .tag-group { margin-bottom: 20px; }
         .tag-category-title { font-size: 13px; margin-bottom: 10px; color: #333; }
@@ -28,40 +24,11 @@
         .tag-list input[type="checkbox"] { display: none; }
         .tag-label-span { display: inline-block; border: 1px solid #ccc; padding: 6px 14px; border-radius: 10px; cursor: pointer; background-color: white; font-size: 12px; color: #666; transition: 0.2s; }
         .tag-list input[type="checkbox"]:checked + .tag-label-span { background-color: #cbdcf7; border-color: #a0c4ff; color: #333; }
-
-        
         .free-tag-section { margin-top: 20px; padding-top: 20px; border-top: 1px solid #eee; }
-        
-        .free-tag-input-area { 
-            display: flex; 
-            gap: 8px; 
-            margin-bottom: 10px; 
-            align-items: stretch; 
-        }
-
-    
-        .add-tag-btn { 
-            background: #eee; 
-            border: 1px solid #ccc; 
-            padding: 0 15px; 
-            border-radius: 3px; 
-            cursor: pointer; 
-            font-size: 14px;      
-            min-width: 70px;      
-            white-space: nowrap;  
-        }
-
-        #free-tag-input {
-            flex: 1; 
-        }
-
-        .added-tag-badge { 
-            display: flex; align-items: center; gap: 5px; 
-            background: white; border: 1px solid #ccc; 
-            padding: 5px 10px; border-radius: 10px; font-size: 12px; 
-        }
+        .free-tag-input-area { display: flex; gap: 8px; margin-bottom: 10px; align-items: stretch; }
+        .add-tag-btn { background: #eee; border: 1px solid #ccc; padding: 0 15px; border-radius: 3px; cursor: pointer; font-size: 14px; min-width: 70px; white-space: nowrap; }
+        .added-tag-badge { display: flex; align-items: center; gap: 5px; background: white; border: 1px solid #ccc; padding: 5px 10px; border-radius: 10px; font-size: 12px; }
         .tag-remove-x { color: #999; cursor: pointer; font-weight: bold; margin-left: 5px; }
-
         .save-btn { width: 100%; background-color: #a0c4ff; color: white; border: none; padding: 15px; border-radius: 5px; font-size: 16px; font-weight: bold; cursor: not-allowed; margin-top: 30px; opacity: 0.5; }
     </style>
 </head>
@@ -73,10 +40,16 @@
         {% csrf_token %}
         
         <div class="image-upload-section">
-            <div class="image-preview-box"><p>アイテム画像</p><p class="icon">📷</p></div>
+    <label for="image-input">
+        <div class="image-preview-box">
+            <p>アイテム画像</p>
+            <p class="icon">📷</p>
         </div>
+    </label>
+    <input type="file" name="image" id="image-input" style="display:none;" onchange="previewImage(this)">
+</div>
 
-        <div class="form-group-full">
+                <div class="form-group-full">
             <label>ブランド名</label>
             <input type="text" name="brand" placeholder="例：ユニクロ" required>
         </div>
@@ -91,36 +64,56 @@
             <input type="text" name="name" class="input-item-name" placeholder="例：デニムシャツ" required>
         </div>
 
-        <h3>タグ（複数選択）</h3>
-
-        {% for category in categories %}
-            <div class="tag-group">
-                <div class="tag-category-title">■ {{ category.name }}</div>
-                <div class="tag-list">
-                    {% for tag in category.tags.all %}
-                        <label>
-                            <input type="checkbox" name="tags" value="{{ tag.id }}" onchange="checkForm()">
-                            <span class="tag-label-span">#{{ tag.name }}</span>
-                        </label>
-                    {% endfor %}
-                </div>
-            </div>
-        {% endfor %}
-
-        <div class="free-tag-section">
+       <div class="free-tag-section">
             <label>自由記入タグ</label>
             <div class="free-tag-input-area">
                 <input type="text" id="free-tag-input" placeholder="#2Way">
                 <button type="button" class="add-tag-btn" onclick="addFreeTag()">追加</button>
             </div>
-            <div id="added-tags-container" class="tag-list">
-                </div>
+            <div id="added-tags-container" class="tag-list"></div>
             <input type="hidden" name="free_tags" id="free-tags-hidden">
         </div>
+
+        <hr style="border: 0; border-top: 1px solid #eee; margin: 30px 0;">
+
+
+        <h3>タグ（複数選択）</h3>
+
+        <div class="tag-group">
+            <div class="tag-category-title">■ スタイル</div>
+            <div class="tag-list">
+                <label><input type="checkbox" name="style" value="シンプル" onchange="checkForm()"><span class="tag-label-span">#シンプル</span></label>
+                <label><input type="checkbox" name="style" value="きれいめ" onchange="checkForm()"><span class="tag-label-span">#きれいめ</span></label>
+                <label><input type="checkbox" name="style" value="Aライン" onchange="checkForm()"><span class="tag-label-span">#Aライン</span></label>
+                <label><input type="checkbox" name="style" value="Iライン" onchange="checkForm()"><span class="tag-label-span">#Iライン</span></label>
+                <label><input type="checkbox" name="style" value="セール" onchange="checkForm()"><span class="tag-label-span">#セール</span></label>
+            </div>
+        </div>
+
+        <div class="tag-group">
+            <div class="tag-category-title">■ 骨格タイプ</div>
+            <div class="tag-list">
+                <label><input type="checkbox" name="kokkaku" value="ストレート" onchange="checkForm()"><span class="tag-label-span">#ストレート</span></label>
+                <label><input type="checkbox" name="kokkaku" value="ウェーブ" onchange="checkForm()"><span class="tag-label-span">#ウェーブ</span></label>
+                <label><input type="checkbox" name="kokkaku" value="ナチュラル" onchange="checkForm()"><span class="tag-label-span">#ナチュラル</span></label>
+            </div>
+        </div>
+
+        <div class="tag-group">
+            <div class="tag-category-title">■ パーソナルカラー</div>
+            <div class="tag-list">
+                <label><input type="checkbox" name="personal_color" value="イエベ" onchange="checkForm()"><span class="tag-label-span">#イエベ</span></label>
+                <label><input type="checkbox" name="personal_color" value="ブルベ" onchange="checkForm()"><span class="tag-label-span">#ブルベ</span></label>
+                <label><input type="checkbox" name="personal_color" value="ニュートラル" onchange="checkForm()"><span class="tag-label-span">#ニュートラル</span></label>
+            </div>
+        </div>
+
+ 
 
         <button type="submit" class="save-btn" id="save-btn" disabled>保存</button>
         <a href="{% url 'inventory_manage' %}" style="display:block; text-align:center; margin-top:30px; font-size:12px; color:#666; text-decoration:none;">← 在庫管理に戻る</a>
     </form>
+
 </div>
 
 <script>
@@ -131,7 +124,6 @@
         let text = input.value.trim();
         if (text === "") return;
         if (!text.startsWith('#')) text = '#' + text;
-
         if (!freeTagsList.includes(text)) {
             freeTagsList.push(text);
             renderFreeTags();
@@ -159,15 +151,27 @@
     }
 
     function checkForm() {
-        const name = document.querySelector('input[name="name"]').value.trim();
-        const brand = document.querySelector('input[name="brand"]').value.trim();
-        const price = document.querySelector('input[name="price"]').value.trim();
-        const tagsChecked = document.querySelectorAll('input[name="tags"]:checked').length > 0;
-        const hasFreeTags = freeTagsList.length > 0;
-        const saveBtn = document.getElementById('save-btn');
+        const nameInput = document.querySelector('input[name="name"]');
+        const brandInput = document.querySelector('input[name="brand"]');
+        const priceInput = document.querySelector('input[name="price"]');
+        
+        if (!nameInput || !brandInput || !priceInput) return;
 
-        if (name !== "" && brand !== "" && price !== "" && (tagsChecked || hasFreeTags)) {
-            saveBtn.disabled = false;
+        const name = nameInput.value.trim();
+        const brand = brandInput.value.trim();
+        const price = priceInput.value.trim();
+        
+        const styleChecked = document.querySelectorAll('input[name="style"]:checked').length > 0;
+        const kokkakuChecked = document.querySelectorAll('input[name="kokkaku"]:checked').length > 0;
+        const colorChecked = document.querySelectorAll('input[name="personal_color"]:checked').length > 0;
+        const hasFreeTags = freeTagsList.length > 0;
+
+        const saveBtn = document.getElementById('save-btn');
+        const isReady = (name !== "" && brand !== "" && price !== "") && 
+                        (styleChecked || kokkakuChecked || colorChecked || hasFreeTags);
+
+        if (isReady) {
+            saveBtn.disabled = false; 
             saveBtn.style.opacity = "1";
             saveBtn.style.cursor = "pointer";
         } else {
@@ -176,10 +180,18 @@
             saveBtn.style.cursor = "not-allowed";
         }
     }
+    document.addEventListener('input', checkForm);
 
-    document.querySelectorAll('input').forEach(input => {
-        input.addEventListener('input', checkForm);
-    });
+    function previewImage(input) {
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const box = document.querySelector('.image-preview-box');
+            box.innerHTML = `<img src="${e.target.result}" style="width:100%; height:100%; object-fit:cover;">`;
+        };
+        reader.readAsDataURL(input.files[0]);
+    }
+}
 </script>
 </body>
 </html>
