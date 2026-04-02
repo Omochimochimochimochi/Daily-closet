@@ -63,7 +63,25 @@
             <label style="text-align: center;">アイテム名</label>
             <input type="text" name="name" class="input-item-name" placeholder="例：デニムシャツ" required>
         </div>
+<div class="input-group">
+    <label>アイテム説明</label>
+    <textarea name="description" placeholder="アイテム詳細画面の説明に記載する内容を入力"></textarea>
+</div>
 
+<div class="input-group">
+    <label>アイテム詳細（素材、洗濯表示など）</label>
+    <textarea name="details_text" placeholder="アイテム詳細のモーダル画面に表示させる内容を編集可能"></textarea>
+</div>
+
+<div class="detail-image-section">
+    <p>詳細部分（ポケット、裏地など）の画像登録</p>
+    <label for="detail-image-input" class="detail-image-preview">
+        <span>+ 画像を追加</span>
+    </label>
+    <input type="file" name="detail_image" id="detail-image-input" style="display:none;" onchange="previewDetailImage(this)">
+</div>
+
+        
        <div class="free-tag-section">
             <label>自由記入タグ</label>
             <div class="free-tag-input-area">
