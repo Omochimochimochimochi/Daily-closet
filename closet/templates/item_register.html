@@ -30,6 +30,27 @@
         .added-tag-badge { display: flex; align-items: center; gap: 5px; background: white; border: 1px solid #ccc; padding: 5px 10px; border-radius: 10px; font-size: 12px; }
         .tag-remove-x { color: #999; cursor: pointer; font-weight: bold; margin-left: 5px; }
         .save-btn { width: 100%; background-color: #a0c4ff; color: white; border: none; padding: 15px; border-radius: 5px; font-size: 16px; font-weight: bold; cursor: not-allowed; margin-top: 30px; opacity: 0.5; }
+ textarea {
+    width: 80%;
+    display: block;
+    margin: 0 auto;
+    
+    /* ここをさらに低く！ */
+    height: 40px;        /* 「高さ」を直接指定 */
+    min-height: 40px;    /* 最小の高さも揃える */
+    
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    
+    resize: none;        /* 右下の「//」を消して、勝手に大きくならないようにする */
+    overflow-y: auto;    /* 文字が増えたら枠内でスクロールするようにする */
+    
+    font-size: 14px;
+    line-height: 1.4;
+    box-sizing: border-box;
+}
+    
     </style>
 </head>
 <body>
@@ -63,23 +84,30 @@
             <label style="text-align: center;">アイテム名</label>
             <input type="text" name="name" class="input-item-name" placeholder="例：デニムシャツ" required>
         </div>
-<div class="input-group">
-    <label>アイテム説明</label>
-    <textarea name="description" placeholder="アイテム詳細画面の説明に記載する内容を入力"></textarea>
+
+        <div class="form-group-full">
+    <label style="text-align: center;">アイテム名</label>
+    <input type="text" name="name" class="input-item-name" placeholder="例：デニムシャツ" required>
 </div>
 
-<div class="input-group">
-    <label>アイテム詳細（素材、洗濯表示など）</label>
-    <textarea name="details_text" placeholder="アイテム詳細のモーダル画面に表示させる内容を編集可能"></textarea>
+<div class="form-group-full">
+    <label style="text-align: center;">アイテム説明</label>
+    <textarea name="description"></textarea>
 </div>
 
-<div class="detail-image-section">
-    <p>詳細部分（ポケット、裏地など）の画像登録</p>
-    <label for="detail-image-input" class="detail-image-preview">
-        <span>+ 画像を追加</span>
+    <div class="form-group-full">
+    <label style="text-align: center;">アイテム詳細（素材、洗濯表示など）</label>
+    <textarea name="details_text"></textarea>
+</div>
+
+    <div class="form-group-full" style="text-align: center; margin-top: 20px;">
+    <p style="font-size: 11px; font-weight: bold; margin-bottom: 10px;">詳細部分（ポケット、裏地など）の画像登録</p>
+    <label for="detail-image-input" style="cursor: pointer; border: 1px dashed #999; padding: 10px; display: inline-block; width: 80%;">
+        <span style="font-size: 12px; color: #666;">+ 画像を追加</span>
     </label>
     <input type="file" name="detail_image" id="detail-image-input" style="display:none;" onchange="previewDetailImage(this)">
 </div>
+
 
         
        <div class="free-tag-section">
@@ -125,8 +153,7 @@
                 <label><input type="checkbox" name="personal_color" value="ニュートラル" onchange="checkForm()"><span class="tag-label-span">#ニュートラル</span></label>
             </div>
         </div>
-
- 
+        
 
         <button type="submit" class="save-btn" id="save-btn" disabled>保存</button>
         <a href="{% url 'inventory_manage' %}" style="display:block; text-align:center; margin-top:30px; font-size:12px; color:#666; text-decoration:none;">← 在庫管理に戻る</a>

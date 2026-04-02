@@ -1,30 +1,20 @@
-# views.py の中身を以下のように修正
-def item_register(request):
-    if request.method == 'POST':
+from django.db import models
 
-        name_val = request.POST.get('name')   
-        brand_val = request.POST.get('brand')
-        price_val = request.POST.get('price')
-        color_val = request.POST.get('color')
-        image_file = request.FILES.get('image')
+class Item(models.Model):
+    brand_name = models.CharField("ブランド名", max_length=100, blank=True)
+    item_name = models.CharField("アイテム名", max_length=100)
+    price = models.IntegerField("金額", default=0)
+    color = models.CharField("カラー", max_length=50, blank=True)
+    image = models.ImageField("アイテム画像", upload_to='items/', blank=True, null=True)
 
-        styles = request.POST.getlist('style')
-        kokkakus = request.POST.getlist('kokkaku')
-        colors = request.POST.getlist('personal_color')
-        free_tags_val = request.POST.get('free_tags', "")
+    style = models.CharField("スタイル", max_length=100, blank=True)
+    kokkaku = models.CharField("骨格タイプ", max_length=100, blank=True)
+    personal_color = models.CharField("パーソナルカラー", max_length=100, blank=True)
+    free_tags = models.TextField("自由記入タグ", blank=True)
 
-        item = Item.objects.create(
-            item_name=name_val,        
-            brand_name=brand_val,      
-            price=price_val,           
-            color=color_val,          
-            image=image_file,        
-            style=",".join(styles),
-            kokkaku=",".join(kokkakus),
-            personal_color=",".join(colors),
-            free_tags=free_tags_val
-        )
-        
-        return redirect('inventory_manage')
+    description = models.TextField("アイテム説明", blank=True)
+    details_text = models.TextField("アイテム詳細", blank=True)
+    detail_image = models.ImageField("詳細画像", upload_to='details/', blank=True, null=True)
 
-    return render(request, 'item_register.html')
+    def __str__(self):
+        return self.item_name

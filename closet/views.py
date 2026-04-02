@@ -47,15 +47,19 @@ def admin_menu(request):
 def inventory_manage(request):
     return render(request, 'inventory_manage.html')
 
-def item_register(request):
-    return render(request, 'item_register.html')
-    
+
 def admin_item_list(request):
     return render(request, 'admin_item_list.html')
     
+def inventory_manage(request):
+    return render(request, 'inventory_manage.html')
+
+def admin_item_list(request):
+    return render(request, 'admin_item_list.html')
+
+# 保存処理付きのこれ1つだけにします
 def item_register(request):
     if request.method == 'POST':
-        
         name_value = request.POST.get('name')
         brand_value = request.POST.get('brand')
         price_value = request.POST.get('price')
@@ -67,10 +71,9 @@ def item_register(request):
         pc_colors = request.POST.getlist('personal_color')
         free_tags_value = request.POST.get('free_tags', "")
 
-   
         item = Item.objects.create(
-            item_name=name_value,       
-            brand_name=brand_value,     
+            item_name=name_value,
+            brand_name=brand_value,
             price=price_value,
             color=color_value,
             image=image_file,
@@ -79,7 +82,6 @@ def item_register(request):
             personal_color=",".join(pc_colors),
             free_tags=free_tags_value
         )
-        
         return redirect('inventory_manage')
 
     return render(request, 'item_register.html')
