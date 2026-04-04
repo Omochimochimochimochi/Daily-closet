@@ -57,7 +57,7 @@ def inventory_manage(request):
 def admin_item_list(request):
     return render(request, 'admin_item_list.html')
 
-# 保存処理付きのこれ1つだけにします
+
 def item_register(request):
     if request.method == 'POST':
         name_value = request.POST.get('name')
@@ -85,3 +85,30 @@ def item_register(request):
         return redirect('inventory_manage')
 
     return render(request, 'item_register.html')
+
+from django.shortcuts import render, get_object_or_404
+from .models import Item
+
+
+def item_search(request):
+    return render(request, 'item_search.html')
+
+def search_results(request):
+
+    query = request.GET.get('q', '')
+    
+    if query:
+        items = Item.objects.filter(tags__contains=query)
+    else:
+        
+        items = Item.objects.all()
+        
+    return render(request, 'search_results.html', {
+        'items': items,
+        'query': query
+    })
+
+def search_results(request):
+    items = Item.objects.all() 
+   
+    return render(request, 'search_results.html', {'items': items})

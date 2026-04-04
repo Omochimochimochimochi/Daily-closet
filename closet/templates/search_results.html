@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>検索結果 - Daily Closet</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        /* 基本レイアウト */
+        body { font-family: sans-serif; background-color: #f8f9fa; margin: 0; display: flex; justify-content: center; }
+        .app-container { width: 375px; background: white; min-height: 100vh; position: relative; border: 1px solid #ddd; padding-bottom: 80px; box-sizing: border-box; }
+
+        /* ヘッダー・検索ワード */
+        .header { padding: 15px; text-align: center; border-bottom: 1px solid #eee; position: relative; }
+        .back-btn { position: absolute; left: 15px; top: 18px; font-size: 18px; cursor: pointer; text-decoration: none; color: #333; }
+        .search-tag-display { 
+            display: inline-flex; align-items: center; gap: 10px; 
+            padding: 8px 20px; border: 1px solid #333; border-radius: 4px; font-size: 14px; 
+        }
+        .close-tag { cursor: pointer; font-weight: bold; }
+
+        /* グリッドレイアウト（2画像並べる） */
+        .item-grid { 
+            display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding: 15px; 
+        }
+        .item-card { width: 100%; }
+        /* 画像ボックスのサイズを固定する */
+       .item-image-box { 
+          aspect-ratio: 3/4; /* 縦横比を3:4に固定 */
+        width: 100%;       /* 横幅いっぱいに広げる */
+        border: 1px solid #333; 
+        background: #fff; 
+        display: flex; 
+        align-items: center; 
+        justify-content: center; 
+        overflow: hidden;  /* はみ出た画像を切る */
+        position: relative;
+    }
+
+        .item-image-box img {
+         width: 100%;
+        height: 100%;
+        object-fit: cover; /* 枠に合わせてきれいに切り抜く */
+    }
+        .swipe-hint { position: absolute; bottom: 5px; font-size: 10px; color: #999; }
+
+        /* アイテム情報 */
+        .item-info { margin-top: 8px; font-size: 11px; line-height: 1.4; color: #333; }
+        .price { font-weight: bold; }
+
+        /* ページネーション */
+        .pagination { text-align: center; margin: 20px 0; font-size: 14px; }
+        .pagination a { color: #0044cc; text-decoration: underline; cursor: pointer; }
+
+        /* 絞り込みボタン（右下の丸ボタン） */
+        .filter-fab { 
+            position: absolute; right: 20px; bottom: 80px; 
+            width: 45px; height: 45px; border-radius: 50%; border: 1px solid #333;
+            background: white; display: flex; align-items: center; justify-content: center; 
+            cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        /* 下部ナビゲーション */
+        .bottom-nav { 
+            position: fixed; bottom: 0; width: 375px; height: 60px; 
+            background: #eee; border-top: 1px solid #ddd; 
+            display: flex; justify-content: space-around; align-items: center; 
+        }
+        .nav-item { font-size: 24px; cursor: pointer; }
+    </style>
+</head>
+<body>
+<div class="app-container">
+    <div class="header">
+        <a href="/" class="back-btn">〈</a>
+        <div class="search-tag-display">
+            <span>#セール</span>
+            <span class="close-tag">×</span>
+        </div>
+        <div style="font-size: 14px; margin-top: 10px;">検索結果</div>
+    </div>
+
+    <div class="item-grid">
+        {% for item in items %}
+            <div class="item-card">
+                <div class="item-image-box">
+                    {% if item.image %}
+                        <img src="{{ item.image.url }}">
+                    {% else %}
+                        <div style="text-align:center; font-size:11px; color:#666;">
+                            アイテム写真<br>(No Image)
+                        </div>
+                    {% endif %}
+                    <div class="swipe-hint">● ○ ○</div>
+                </div>
+                <div class="item-info">
+                    <div>ブランド名：{{ item.brand_name }}</div>
+                    <div>{{ item.item_name }}</div>
+                    <div class="price">¥{{ item.price }}</div>
+                </div>
+            </div>
+        {% empty %}
+            <p style="grid-column: 1 / span 2; text-align: center; padding: 40px 20px; color: #999;">
+                該当するアイテムが見つかりませんでした。
+            </p>
+        {% endfor %}
+    </div>
+
+    <div class="pagination">
+        <a href="#">1ページ ＞</a>
+    </div>
+
+    <div class="filter-fab">
+        <span style="font-size: 20px;">≡</span>
+    </div>
+
+    <div class="bottom-nav">
+        <div class="nav-item">🏠</div>
+        <div class="nav-item">🔍</div>
+        <div class="nav-item">🛒</div>
+        <div class="nav-item">👤</div>
+    </div>
+</div>
+
+</body>
+</html>

@@ -18,3 +18,11 @@ class Item(models.Model):
 
     def __str__(self):
         return self.item_name
+    
+   
+class ItemAdditionalImage(models.Model):
+    item = models.ForeignKey(Item, on_delete=models.CASCADE, related_name='additional_images')
+    image = models.ImageField("追加詳細画像", upload_to='items/extra/')
+
+    def __str__(self):
+        return f"{self.item.item_name} の追加画像"

@@ -1,6 +1,6 @@
 from django.urls import path
 from . import views  
-# closet/urls.py
+from . import views
 
 urlpatterns = [
     path('', views.top, name='top'),
@@ -13,5 +13,6 @@ urlpatterns = [
     path('admin-inventory/', views.inventory_manage, name='inventory_manage'),
     path('admin-inventory/add/', views.item_register, name='item_register'),
     path('admin-items/', views.admin_item_list, name='admin_item_list'),
+    path('search_results/', views.search_results, name='search_results'),
 ]
 
