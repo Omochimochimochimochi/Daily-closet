@@ -13,13 +13,13 @@
             margin: 0;
             font-family: sans-serif;
         }
-        /* スマホの枠 */
+        
         .iphone-screen {
             width: 375px;
             min-height: 100vh;
             background-color: white;
             padding: 20px;
-            padding-bottom: 90px; /* フッターに被らないための余白 */
+            padding-bottom: 90px; 
             box-shadow: 0 0 10px rgba(0,0,0,0.1);
             position: relative; /* フッターの基準点 */
             box-sizing: border-box; 
@@ -29,7 +29,7 @@
             height: auto;
             border-radius: 8px; 
         }
-        /* フッター：iphone-screenの底に固定 */
+      
         footer {
             position: absolute; 
             bottom: 0;
@@ -50,10 +50,11 @@
     <div class="iphone-screen">
         <h1 style="text-align: center; margin-top: 20px; font-weight: bold;">Daily closet</h1>
         
-        <div style="display: flex; gap: 5px; margin-bottom: 20px;">
-            <input type="text" placeholder="キーワードを入力" style="flex: 1; padding: 8px;">
-            <button style="padding: 8px;">🔍</button>
-        </div>
+        <form action="{% url 'search_results' %}" method="GET" style="display: flex; gap: 5px; margin-bottom: 20px;">
+       <input type="text" name="q" placeholder="キーワードを入力" style="flex: 1; padding: 8px;">
+    
+     <button type="submit" style="padding: 8px;">🔍</button>
+    </form> 
 
         <div style="margin-bottom: 15px;">
             <img src="{% static 'images/main_visual.jpg' %}" alt="メイン画像">

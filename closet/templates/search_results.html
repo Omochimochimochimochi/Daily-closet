@@ -5,11 +5,11 @@
     <title>検索結果 - Daily Closet</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
-        /* 基本レイアウト */
+        /* --- 基本レイアウト --- */
         body { font-family: sans-serif; background-color: #f8f9fa; margin: 0; display: flex; justify-content: center; }
         .app-container { width: 375px; background: white; min-height: 100vh; position: relative; border: 1px solid #ddd; padding-bottom: 80px; box-sizing: border-box; }
 
-        /* ヘッダー・検索ワード */
+        /* --- ヘッダー --- */
         .header { padding: 15px; text-align: center; border-bottom: 1px solid #eee; position: relative; }
         .back-btn { position: absolute; left: 15px; top: 18px; font-size: 18px; cursor: pointer; text-decoration: none; color: #333; }
         .search-tag-display { 
@@ -18,57 +18,69 @@
         }
         .close-tag { cursor: pointer; font-weight: bold; }
 
-        /* グリッドレイアウト（2画像並べる） */
-        .item-grid { 
-            display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding: 15px; 
-        }
+        /* --- グリッドレイアウト（画像サイズ固定） --- */
+        .item-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding: 15px; }
         .item-card { width: 100%; }
-        /* 画像ボックスのサイズを固定する */
-       .item-image-box { 
-          aspect-ratio: 3/4; /* 縦横比を3:4に固定 */
-        width: 100%;       /* 横幅いっぱいに広げる */
-        border: 1px solid #333; 
-        background: #fff; 
-        display: flex; 
-        align-items: center; 
-        justify-content: center; 
-        overflow: hidden;  /* はみ出た画像を切る */
-        position: relative;
-    }
-
-        .item-image-box img {
-         width: 100%;
-        height: 100%;
-        object-fit: cover; /* 枠に合わせてきれいに切り抜く */
-    }
+        .item-image-box { 
+            aspect-ratio: 3/4; width: 100%; border: 1px solid #333; 
+            background: #fff; display: flex; align-items: center; justify-content: center; 
+            overflow: hidden; position: relative;
+        }
+        .item-image-box img { width: 100%; height: 100%; object-fit: cover; }
         .swipe-hint { position: absolute; bottom: 5px; font-size: 10px; color: #999; }
-
-        /* アイテム情報 */
         .item-info { margin-top: 8px; font-size: 11px; line-height: 1.4; color: #333; }
         .price { font-weight: bold; }
 
-        /* ページネーション */
-        .pagination { text-align: center; margin: 20px 0; font-size: 14px; }
-        .pagination a { color: #0044cc; text-decoration: underline; cursor: pointer; }
-
-        /* 絞り込みボタン（右下の丸ボタン） */
+        /* --- 絞り込みボタン（FAB） --- */
         .filter-fab { 
-            position: absolute; right: 20px; bottom: 80px; 
+            position: fixed; bottom: 80px; margin-left: 310px; 
             width: 45px; height: 45px; border-radius: 50%; border: 1px solid #333;
             background: white; display: flex; align-items: center; justify-content: center; 
-            cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.1); z-index: 99;
         }
 
-        /* 下部ナビゲーション */
-        .bottom-nav { 
-            position: fixed; bottom: 0; width: 375px; height: 60px; 
-            background: #eee; border-top: 1px solid #ddd; 
-            display: flex; justify-content: space-around; align-items: center; 
+        
+        .modal {
+            display: none; position: fixed; z-index: 1000;
+            left: 0; top: 0; width: 100%; height: 100%;
+            background-color: rgba(0,0,0,0.5); 
         }
+        .modal-content {
+            background-color: white; margin: 15% auto; padding: 25px;
+            width: 80%; max-width: 300px; border: 1px solid #333; position: relative;
+        }
+        .modal-header h3 { margin: 0; font-size: 18px; text-align: center; font-weight: normal; }
+        .close-modal { position: absolute; right: 15px; top: 15px; font-size: 24px; cursor: pointer; }
+
+        .filter-group { margin: 25px 0; }
+        .filter-group label { display: block; font-size: 16px; margin-bottom: 10px; }
+        
+        /* 入力エリア */
+        .input-with-icon { position: relative; display: flex; align-items: center; }
+        .input-with-icon input { width: 100%; padding: 10px; border: 1px solid #333; padding-right: 40px; }
+        .search-icon-inline { position: absolute; right: 10px; }
+
+        /* カテゴリー行 */
+        .category-row { 
+            display: flex; justify-content: space-between; align-items: center; 
+            border-top: 1px solid #eee; border-bottom: 1px solid #eee; padding: 15px 0;
+        }
+
+        /* 検索ボタン */
+        .search-submit-btn { 
+            width: 80%; display: block; margin: 30px auto 0; padding: 15px; 
+            background-color: #999; color: white; border: 1px solid #333; 
+            border-radius: 12px; font-size: 18px; cursor: pointer; 
+        }
+
+        /* --- 共通パーツ --- */
+        .pagination { text-align: center; margin: 20px 0; font-size: 14px; }
+        .bottom-nav { position: fixed; bottom: 0; width: 375px; height: 60px; background: #eee; border-top: 1px solid #ddd; display: flex; justify-content: space-around; align-items: center; z-index: 100; }
         .nav-item { font-size: 24px; cursor: pointer; }
     </style>
 </head>
 <body>
+
 <div class="app-container">
     <div class="header">
         <a href="/" class="back-btn">〈</a>
@@ -100,7 +112,7 @@
             </div>
         {% empty %}
             <p style="grid-column: 1 / span 2; text-align: center; padding: 40px 20px; color: #999;">
-                該当するアイテムが見つかりませんでした。
+                アイテムが見つかりませんでした。
             </p>
         {% endfor %}
     </div>
@@ -109,8 +121,36 @@
         <a href="#">1ページ ＞</a>
     </div>
 
-    <div class="filter-fab">
+    <div class="filter-fab" onclick="toggleModal()">
         <span style="font-size: 20px;">≡</span>
+    </div>
+
+    <div id="filterModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="toggleModal()">&times;</span>
+            <div class="modal-header">
+                <h3>絞り込み</h3>
+            </div>
+            
+            <div class="modal-body">
+                <div class="filter-group">
+                    <label>ハッシュタグ</label>
+                    <div class="input-with-icon">
+                        <input type="text" placeholder="#セール">
+                        <span class="search-icon-inline">🔍</span>
+                    </div>
+                </div>
+
+                <div class="filter-group category-row">
+                    <label style="margin:0;">カテゴリー</label>
+                    <div style="color: #666; cursor:pointer;">すべて ＞</div>
+                </div>
+
+                <button class="search-submit-btn" onclick="toggleModal()">
+                    検索 🔍
+                </button>
+            </div>
+        </div>
     </div>
 
     <div class="bottom-nav">
@@ -120,6 +160,20 @@
         <div class="nav-item">👤</div>
     </div>
 </div>
+
+<script>
+    function toggleModal() {
+        const modal = document.getElementById("filterModal");
+        modal.style.display = (modal.style.display === "block") ? "none" : "block";
+    }
+
+    window.onclick = function(event) {
+        const modal = document.getElementById("filterModal");
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    }
+</script>
 
 </body>
 </html>

@@ -2,6 +2,7 @@ from django.shortcuts import render
 
 from django.shortcuts import render, redirect
 from .models import Item
+from django.db.models import Q
 
 def top(request):
     # closet/templates/closet/top.html を探しに行って表示する
@@ -109,6 +110,14 @@ def search_results(request):
     })
 
 def search_results(request):
-    items = Item.objects.all() 
-   
-    return render(request, 'search_results.html', {'items': items})
+    query = request.GET.get('q') 
+    
+    if query:
+        items = Item.objects.filter(
+            Q(item_name__icontains=query) | Q(brand_name__icontains=query)
+        )
+    else:
+        
+        items = Item.objects.all() 
+    
+    return render(request, 'search_results.html', {'items': items, 'query': query})
