@@ -1,133 +1,120 @@
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>アイテム詳細</title>
-    
-    <style>
-        body { font-family: sans-serif; margin: 0; background-color: #f8f9fa; display: flex; justify-content: center; }
-        .app-container { width: 375px; background: white; min-height: 100vh; border: 1px solid #ddd; padding-bottom: 80px; }
-        
-        .header { padding: 15px; text-align: center; border-bottom: 1px solid #eee; position: relative; }
-        .back-btn { position: absolute; left: 15px; text-decoration: none; color: #333; }
+{% extends 'closet/base.html' %}
 
-        /* 画像スライダー */
-        .detail-image-slider { width: 100%; aspect-ratio: 1/1; background: #eee; position: relative; }
-        .slider-img { width: 100%; height: 100%; object-fit: cover; }
-        .slider-dots { position: absolute; bottom: 10px; width: 100%; text-align: center; color: #999; }
+{% block title %}アイテム詳細 - {{ item.item_name }}{% endblock %}
 
-        .detail-info-section { padding: 20px; }
-        .brand-label, .item-name-label { font-size: 14px; margin-bottom: 5px; }
-        .price-label { font-size: 18px; font-weight: bold; margin-top: 10px; }
+{% block extra_css %}
+<style>
+    /* このページ固有のスタイル */
+    .header { padding: 15px; text-align: center; border-bottom: 1px solid #eee; position: relative; }
+    .back-btn { position: absolute; left: 15px; text-decoration: none; color: #333; }
 
-        /* お気に入りハート */
-        .heart-icon { font-size: 30px; cursor: pointer; color: #ccc; }
-        .heart-icon.active { color: #ff69b4; } /* ピンクになる設定 */
+    .detail-image-slider { width: 100%; aspect-ratio: 1/1; background: #eee; position: relative; }
+    .slider-img { width: 100%; height: 100%; object-fit: cover; }
+    .slider-dots { position: absolute; bottom: 10px; width: 100%; text-align: center; color: #999; }
 
-        /* セレクトボックス */
-        .select-row { display: flex; gap: 10px; margin-top: 20px; }
-        .select-group { flex: 1; }
-        .select-group label { display: block; font-size: 12px; margin-bottom: 5px; }
-        .select-group select { width: 100%; padding: 8px; border: 1px solid #333; }
+    .detail-info-section { padding: 20px; }
+    .brand-label, .item-name-label { font-size: 14px; margin-bottom: 5px; }
+    .price-label { font-size: 18px; font-weight: bold; margin-top: 10px; }
 
-        /* 検討リストボタン */
-        #add-list-btn { width: 100%; padding: 15px; margin-top: 30px; border: 1px solid #333; border-radius: 10px; font-size: 16px; font-weight: bold; }
-        .submit-btn-disabled { background-color: #999; color: white; cursor: not-allowed; }
-        .submit-btn-active { background-color: #333; color: white; cursor: pointer; }
+    .heart-icon { font-size: 30px; cursor: pointer; color: #ccc; }
+    .heart-icon.active { color: #ff69b4; } 
 
-        .expand-menu { border-top: 1px solid #eee; padding: 15px 0; font-size: 14px; text-decoration: underline; cursor: pointer; }
-    </style>
-</head>
+    .select-row { display: flex; gap: 10px; margin-top: 20px; }
+    .select-group { flex: 1; }
+    .select-group label { display: block; font-size: 12px; margin-bottom: 5px; }
+    .select-group select { width: 100%; padding: 8px; border: 1px solid #333; }
 
-<body>
-    <div class="app-container">
-        <div class="header">
-            <a href="javascript:history.back()" class="back-btn">〈</a>
-            <div style="font-size: 16px;">アイテム詳細</div>
-        </div>
+    #add-list-btn { width: 100%; padding: 15px; margin-top: 30px; border: 1px solid #333; border-radius: 10px; font-size: 16px; font-weight: bold; }
+    .submit-btn-disabled { background-color: #999; color: white; cursor: not-allowed; }
+    .submit-btn-active { background-color: #333; color: white; cursor: pointer; }
 
-        <div class="detail-image-slider">
-            <div class="slider-wrapper">
-                {% if item.image %}
-                    <img src="{{ item.image.url }}" class="slider-img">
-                {% endif %}
-            </div>
-            <div class="slider-dots">● ○ ○</div>
-        </div>
+    .expand-menu { border-top: 1px solid #eee; padding: 15px 0; font-size: 14px; text-decoration: underline; cursor: pointer; }
+</style>
+{% endblock %}
 
-        <div class="detail-info-section">
-            <div style="display: flex; justify-content: space-between; align-items: flex-start;">
-                <div>
-                    <div class="brand-label">ブランド名：{{ item.brand_name }}</div>
-                    <div class="item-name-label">アイテム名：{{ item.item_name }}</div>
-                    <div class="price-label">¥{{ item.price }}（税込み）</div>
-                </div>
-                <div class="heart-icon" onclick="toggleHeart(this)">♡</div>
-            </div>
-
-            <div class="select-row">
-                <div class="select-group">
-                    <label>サイズ</label>
-                    <select id="size-select" onchange="checkSelection()">
-                        <option value="">選択 ▼</option>
-                        <option value="S">S</option>
-                        <option value="M">M</option>
-                        <option value="L">L</option>
-                    </select>
-                </div>
-                <div class="select-group">
-                    <label>カラー</label>
-                    <select id="color-select" onchange="checkSelection()">
-                        <option value="">選択 ▼</option>
-                        <option value="black">ブラック</option>
-                        <option value="white">ホワイト</option>
-                    </select>
-                </div>
-                <div class="select-group">
-                    <label>個数</label>
-                    <select id="count-select">
-                        {% for i in "123456789"|make_list %}
-                            <option value="{{ forloop.counter }}">{{ forloop.counter }}</option>
-                        {% endfor %}
-                        <option value="10">10</option>
-                    </select>
-                </div>
-            </div>
-
-            <button id="add-list-btn" class="submit-btn-disabled" disabled>
-                検討リストへ 🛒
-            </button>
-
-            <div class="expand-menu">素材、サイズ詳細 ＞</div>
-            <div class="expand-menu">アイテム説明（メニュー開閉） ＞</div>
-            <div class="expand-menu">配送について ＞</div>
-        </div>
+{% block content %}
+    <div class="header">
+        <a href="javascript:history.back()" class="back-btn">〈</a>
+        <div style="font-size: 16px;">アイテム詳細</div>
     </div>
 
-    <script>
-        function toggleHeart(element) {
-            element.classList.toggle('active');
-            if (element.classList.contains('active')) {
-                element.innerHTML = '♥';
-            } else {
-                element.innerHTML = '♡';
-            }
-        }
+    <div class="detail-image-slider">
+        <div class="slider-wrapper">
+            {% if item.image %}
+                <img src="{{ item.image.url }}" class="slider-img">
+            {% endif %}
+        </div>
+        <div class="slider-dots">● ○ ○</div>
+    </div>
 
-        function checkSelection() {
-            const size = document.getElementById('size-select').value;
-            const color = document.getElementById('color-select').value;
-            const btn = document.getElementById('add-list-btn');
+    <div class="detail-info-section">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+            <div>
+                <div class="brand-label">ブランド名：{{ item.brand_name }}</div>
+                <div class="item-name-label">アイテム名：{{ item.item_name }}</div>
+                <div class="price-label">¥{{ item.price }}（税込み）</div>
+            </div>
+            <div class="heart-icon" onclick="toggleHeart(this)">♡</div>
+        </div>
 
-            if (size && color) {
-                btn.disabled = false;
-                btn.className = 'submit-btn-active';
-            } else {
-                btn.disabled = true;
-                btn.className = 'submit-btn-disabled';
-            }
+        <div class="select-row">
+            <div class="select-group">
+                <label>サイズ</label>
+                <select id="size-select" onchange="checkSelection()">
+                    <option value="">選択 ▼</option>
+                    <option value="S">S</option>
+                    <option value="M">M</option>
+                    <option value="L">L</option>
+                </select>
+            </div>
+            <div class="select-group">
+                <label>カラー</label>
+                <select id="color-select" onchange="checkSelection()">
+                    <option value="">選択 ▼</option>
+                    <option value="black">ブラック</option>
+                    <option value="white">ホワイト</option>
+                </select>
+            </div>
+            <div class="select-group">
+                <label>個数</label>
+                <select id="count-select">
+                    {% for i in "123456789"|make_list %}
+                        <option value="{{ forloop.counter }}">{{ forloop.counter }}</option>
+                    {% endfor %}
+                    <option value="10">10</option>
+                </select>
+            </div>
+        </div>
+
+        <button id="add-list-btn" class="submit-btn-disabled" disabled>
+            検討リストへ 🛒
+        </button>
+
+        <div class="expand-menu">素材、サイズ詳細 ＞</div>
+        <div class="expand-menu">アイテム説明（メニュー開閉） ＞</div>
+        <div class="expand-menu">配送について ＞</div>
+    </div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    function toggleHeart(element) {
+        element.classList.toggle('active');
+        element.innerHTML = element.classList.contains('active') ? '♥' : '♡';
+    }
+
+    function checkSelection() {
+        const size = document.getElementById('size-select').value;
+        const color = document.getElementById('color-select').value;
+        const btn = document.getElementById('add-list-btn');
+
+        if (size && color) {
+            btn.disabled = false;
+            btn.className = 'submit-btn-active';
+        } else {
+            btn.disabled = true;
+            btn.className = 'submit-btn-disabled';
         }
-    </script>
-</body>
-</html>
+    }
+</script>
+{% endblock %}

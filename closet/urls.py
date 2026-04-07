@@ -14,5 +14,6 @@ urlpatterns = [
     path('admin-inventory/add/', views.item_register, name='item_register'),
     path('admin-items/', views.admin_item_list, name='admin_item_list'),
     path('search_results/', views.search_results, name='search_results'),
+    path('item/<int:pk>/', views.item_detail, name='item_detail'),
 ]
 

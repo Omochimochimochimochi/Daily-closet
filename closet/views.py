@@ -3,6 +3,9 @@ from django.shortcuts import render
 from django.shortcuts import render, redirect
 from .models import Item
 from django.db.models import Q
+from django.shortcuts import render, get_object_or_404
+from .models import Item
+
 
 def top(request):
     # closet/templates/closet/top.html を探しに行って表示する
@@ -121,3 +124,9 @@ def search_results(request):
         items = Item.objects.all() 
     
     return render(request, 'search_results.html', {'items': items, 'query': query})
+
+
+
+def item_detail(request, pk):
+    item = get_object_or_404(Item, pk=pk)
+    return render(request, 'item_detail.html', {'item': item})

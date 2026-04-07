@@ -5,7 +5,7 @@
     <title>検索結果 - Daily Closet</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
-        /* --- 基本レイアウト --- */
+        
         body { font-family: sans-serif; background-color: #f8f9fa; margin: 0; display: flex; justify-content: center; }
         .app-container { width: 375px; background: white; min-height: 100vh; position: relative; border: 1px solid #ddd; padding-bottom: 80px; box-sizing: border-box; }
 
@@ -80,7 +80,6 @@
     </style>
 </head>
 <body>
-
 <div class="app-container">
     <div class="header">
         <a href="/" class="back-btn">〈</a>
@@ -93,23 +92,25 @@
 
     <div class="item-grid">
         {% for item in items %}
-            <div class="item-card">
-                <div class="item-image-box">
-                    {% if item.image %}
-                        <img src="{{ item.image.url }}">
-                    {% else %}
-                        <div style="text-align:center; font-size:11px; color:#666;">
-                            アイテム写真<br>(No Image)
-                        </div>
-                    {% endif %}
-                    <div class="swipe-hint">● ○ ○</div>
+            <a href="{% url 'item_detail' item.pk %}" style="text-decoration: none; color: inherit;">
+                <div class="item-card">
+                    <div class="item-image-box">
+                        {% if item.image %}
+                            <img src="{{ item.image.url }}">
+                        {% else %}
+                            <div style="text-align:center; font-size:11px; color:#666;">
+                                アイテム写真<br>(No Image)
+                            </div>
+                        {% endif %}
+                        <div class="swipe-hint">● ○ ○</div>
+                    </div>
+                    <div class="item-info">
+                        <div>ブランド名：{{ item.brand_name }}</div>
+                        <div>{{ item.item_name }}</div>
+                        <div class="price">¥{{ item.price }}</div>
+                    </div>
                 </div>
-                <div class="item-info">
-                    <div>ブランド名：{{ item.brand_name }}</div>
-                    <div>{{ item.item_name }}</div>
-                    <div class="price">¥{{ item.price }}</div>
-                </div>
-            </div>
+            </a>
         {% empty %}
             <p style="grid-column: 1 / span 2; text-align: center; padding: 40px 20px; color: #999;">
                 アイテムが見つかりませんでした。
@@ -131,7 +132,6 @@
             <div class="modal-header">
                 <h3>絞り込み</h3>
             </div>
-            
             <div class="modal-body">
                 <div class="filter-group">
                     <label>ハッシュタグ</label>
@@ -140,12 +140,10 @@
                         <span class="search-icon-inline">🔍</span>
                     </div>
                 </div>
-
                 <div class="filter-group category-row">
                     <label style="margin:0;">カテゴリー</label>
                     <div style="color: #666; cursor:pointer;">すべて ＞</div>
                 </div>
-
                 <button class="search-submit-btn" onclick="toggleModal()">
                     検索 🔍
                 </button>
@@ -166,7 +164,6 @@
         const modal = document.getElementById("filterModal");
         modal.style.display = (modal.style.display === "block") ? "none" : "block";
     }
-
     window.onclick = function(event) {
         const modal = document.getElementById("filterModal");
         if (event.target == modal) {
@@ -174,6 +171,5 @@
         }
     }
 </script>
-
 </body>
 </html>

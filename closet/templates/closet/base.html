@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Daily Closet{% endblock %}</title>
+    
+    <style>
+        /* 全ページ共通の基本スタイル */
+        body { font-family: sans-serif; margin: 0; background-color: #f8f9fa; display: flex; justify-content: center; }
+        
+        /* 1. 全てを包むコンテナ */
+        .app-container { 
+            width: 375px; 
+            background: white; 
+            min-height: 100vh; 
+            border: 1px solid #ddd; 
+            padding-bottom: 80px; 
+            position: relative; 
+            box-sizing: border-box; 
+        }
+
+        /* 共通フッターのスタイル */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            width: 375px;
+            height: 65px;
+            background-color: #d3d3d3;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            border-top: 1px solid #bbb;
+            z-index: 1000;
+        }
+        .nav-item { text-decoration: none; color: #333; display: flex; align-items: center; }
+        .nav-icon { font-size: 28px; }
+
+        {% block extra_css %}{% endblock %}
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        {% block content %}{% endblock %}
+
+        <div class="bottom-nav">
+            <a href="/" class="nav-item"><span class="nav-icon">🏠</span></a>
+            <a href="{% url 'search_results' %}" class="nav-item"><span class="nav-icon">🔍</span></a>
+            <a href="#" class="nav-item"><span class="nav-icon">🛒</span></a>
+            <a href="#" class="nav-item"><span class="nav-icon">👤</span></a>
+        </div>
+    </div> {% block extra_js %}{% endblock %}
+</body>
+</html>
