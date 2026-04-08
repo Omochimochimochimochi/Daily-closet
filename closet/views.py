@@ -129,4 +129,4 @@ def search_results(request):
 
 def item_detail(request, pk):
     item = get_object_or_404(Item, pk=pk)
-    return render(request, 'item_detail.html', {'item': item})
+    return render(request, 'closet/item_detail.html', {'item': item})
