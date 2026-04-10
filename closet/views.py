@@ -1,14 +1,11 @@
-from django.shortcuts import render
-
-from django.shortcuts import render, redirect
-from .models import Item
+from django.shortcuts import render, redirect, get_object_or_404
 from django.db.models import Q
-from django.shortcuts import render, get_object_or_404
-from .models import Item
+from django.contrib.auth.decorators import login_required
+from django.conf import settings
+from .models import Item, ConsiderationItem
 
 
 def top(request):
-    # closet/templates/closet/top.html を探しに行って表示する
     return render(request, 'closet/top.html')
 
 def login_view(request):
@@ -130,3 +127,35 @@ def search_results(request):
 def item_detail(request, pk):
     item = get_object_or_404(Item, pk=pk)
     return render(request, 'closet/item_detail.html', {'item': item})
+
+@login_required
+def add_to_consideration(request, item_id):
+    if request.method == 'POST':
+        item = get_object_or_404(Item, id=item_id)
+        size = request.POST.get('size')
+        color = request.POST.get('color')
+        count = request.POST.get('count', 1)
+        
+        ConsiderationItem.objects.create(
+            user=request.user,
+            item=item,
+            size=size,
+            color=color,
+            quantity=count
+        )
+        return redirect('consideration_list')
+
+@login_required
+def consideration_list(request):
+    # ログイン中のユーザーの検討リストを取得
+    items = ConsiderationItem.objects.filter(user=request.user).order_by('-added_at')
+    return render(request, 'closet/consideration_list.html', {'items': items})
+
+
+# リストから削除する処理
+@login_required
+def remove_from_consideration(request, item_id):
+    # item_idはConsiderationItemのID
+    c_item = get_object_or_404(ConsiderationItem, id=item_id, user=request.user)
+    c_item.delete()
+    return redirect('closet:consideration_list')

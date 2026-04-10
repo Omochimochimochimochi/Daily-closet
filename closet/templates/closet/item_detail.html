@@ -4,7 +4,7 @@
 
 {% block extra_css %}
 <style>
-    /* --- 既存のスタイル --- */
+    /* CSSの中身はそのまま */
     .header { display: flex; align-items: center; justify-content: space-between; padding: 0 15px; border-bottom: 1px solid #eee; background-color: white; height: 55px; width: 100%; box-sizing: border-box; }
     .back-btn { text-decoration: none; color: #666; font-size: 20px; width: 20px; display: flex; align-items: center; }
     .header-title { font-size: 20px; font-weight: bold; margin: 0; flex-grow: 1; text-align: center; }
@@ -24,25 +24,9 @@
     .submit-btn-disabled { background-color: #f5f5f5; color: #999; cursor: not-allowed; border-color: #ccc !important; }
     .submit-btn-active { background-color: #333; color: white; cursor: pointer; }
     .expand-menu { border-top: 1px solid #eee; padding: 15px 0; font-size: 14px; text-decoration: underline; cursor: pointer; }
-
-    /* --- モーダル用追加スタイル --- */
     .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); }
     .info-modal-content { background-color: white; margin: 20% auto; padding: 25px; width: 80%; max-width: 320px; border: 1px solid #333; position: relative; border-radius: 10px; }
-    
-    /* 丸いバツボタン */
-    .close-modal-circle { 
-        position: absolute; right: -15px; top: -15px; width: 34px; height: 34px; 
-        background: #f8f9fa; color: #333; border-radius: 50%; border: 1px solid #333; 
-        display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 24px; z-index: 1001;
-    }
-
-    /* モーダル内コンテンツ */
-    .info-section { margin-bottom: 20px; }
-    .info-label { font-size: 14px; font-weight: bold; color: #666; margin-bottom: 8px; border-left: 3px solid #ddd; padding-left: 8px; }
-    .size-table { width: 100%; border-collapse: collapse; font-size: 13px; text-align: left; }
-    .size-table th { color: #999; font-weight: normal; padding-bottom: 8px; }
-    .size-table tr { border-bottom: 1px solid #eee; }
-    .size-table td { padding: 8px 0; }
+    .close-modal-circle { position: absolute; right: -15px; top: -15px; width: 34px; height: 34px; background: #f8f9fa; color: #333; border-radius: 50%; border: 1px solid #333; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 24px; z-index: 1001; }
 </style>
 {% endblock %}
 
@@ -72,85 +56,49 @@
         <div class="heart-icon" onclick="toggleHeart(this)">♡</div>
     </div>
 
-    <div class="select-row">
-        <div class="select-group">
-            <label>サイズ</label>
-            <select id="size-select" onchange="checkSelection()">
-                <option value="">選択 ▼</option>
-                <option value="S">S</option>
-                <option value="M">M</option>
-                <option value="L">L</option>
-            </select>
+    <form action="{% url 'closet:add_to_consideration' item.id %}" method="POST">
+        {% csrf_token %}
+        <div class="select-row">
+            <div class="select-group">
+                <label>サイズ</label>
+                <select id="size-select" name="size" onchange="checkSelection()" required>
+                    <option value="">選択 ▼</option>
+                    <option value="S">S</option><option value="M">M</option><option value="L">L</option>
+                </select>
+            </div>
+            <div class="select-group">
+                <label>カラー</label>
+                <select id="color-select" name="color" onchange="checkSelection()" required>
+                    <option value="">選択 ▼</option>
+                    <option value="black">ブラック</option><option value="white">ホワイト</option>
+                </select>
+            </div>
+            <div class="select-group">
+                <label>個数</label>
+                <select id="count-select" name="count">
+                    {% for i in "123456789"|make_list %}<option value="{{ forloop.counter }}">{{ forloop.counter }}</option>{% endfor %}
+                </select>
+            </div>
         </div>
-        <div class="select-group">
-            <label>カラー</label>
-            <select id="color-select" onchange="checkSelection()">
-                <option value="">選択 ▼</option>
-                <option value="black">ブラック</option>
-                <option value="white">ホワイト</option>
-            </select>
-        </div>
-        <div class="select-group">
-            <label>個数</label>
-            <select id="count-select">
-                {% for i in "123456789"|make_list %}
-                    <option value="{{ forloop.counter }}">{{ forloop.counter }}</option>
-                {% endfor %}
-                <option value="10">10</option>
-            </select>
-        </div>
-    </div>
 
-    <button id="add-list-btn" class="submit-btn-disabled" disabled>
-        検討リストへ 🛒
-    </button>
+        <button type="submit" id="add-list-btn" class="submit-btn-disabled" disabled>
+            検討リストへ 🛒
+        </button>
+    </form>
 
     <div class="expand-menu" onclick="toggleInfoModal()">素材、サイズ詳細 ＞</div>
-    <div class="expand-menu">アイテム説明（メニュー開閉） ＞</div>
-    <div class="expand-menu">配送について ＞</div>
-</div>
-
-<div id="infoModal" class="modal">
-    <div class="modal-content info-modal-content">
-        <div class="close-modal-circle" onclick="toggleInfoModal()">&times;</div>
-        <h3 style="text-align:center; font-weight:normal; margin-top:0; font-size: 18px;">素材・サイズ詳細</h3>
-        
-        <div class="info-section">
-            <p class="info-label">素材</p>
-            <p style="padding-left:11px; margin: 0;">綿 100%</p>
-        </div>
-
-        <div class="info-section">
-            <p class="info-label">サイズ詳細</p>
-            <table class="size-table">
-                <thead>
-                    <tr><th></th><th>ウエスト</th><th>股下</th><th>ヒップ</th></tr>
-                </thead>
-                <tbody>
-                    <tr><td>S</td><td>64</td><td>70</td><td>90</td></tr>
-                    <tr><td>M</td><td>68</td><td>71</td><td>94</td></tr>
-                    <tr><td>L</td><td>72</td><td>72</td><td>98</td></tr>
-                </tbody>
-            </table>
-        </div>
-        
-        <div class="info-section">
-            <p class="info-label">お手入れ方法</p>
-            <p style="padding-left:11px; margin: 0;">手洗い推奨</p>
-        </div>
     </div>
-</div>
+
+<div id="infoModal" class="modal"><div class="info-modal-content"><div class="close-modal-circle" onclick="toggleInfoModal()">&times;</div><h3>素材・サイズ詳細</h3><p>綿 100%</p></div></div>
 {% endblock %}
 
 {% block extra_js %}
 <script>
-    // ハートの切り替え
     function toggleHeart(element) {
         element.classList.toggle('active');
         element.innerHTML = element.classList.contains('active') ? '♥' : '♡';
     }
 
-    // 選択チェック
     function checkSelection() {
         const size = document.getElementById('size-select').value;
         const color = document.getElementById('color-select').value;
@@ -164,18 +112,9 @@
         }
     }
 
-    // モーダルの開閉
     function toggleInfoModal() {
         const modal = document.getElementById("infoModal");
         modal.style.display = (modal.style.display === "block") ? "none" : "block";
-    }
-
-    // モーダルの外側をクリックしたら閉じる
-    window.onclick = function(event) {
-        const modal = document.getElementById("infoModal");
-        if (event.target == modal) {
-            modal.style.display = "none";
-        }
     }
 </script>
 {% endblock %}
