@@ -90,7 +90,7 @@
 
     <div class="item-grid">
         {% for item in items %}
-            <a href="{% url 'item_detail' item.pk %}" style="text-decoration: none; color: inherit;">
+            <a href={% url 'closet:item_detail' item.pk %} style="text-decoration: none; color: inherit;">
                 <div class="item-card">
                     <div class="item-image-box">
                         {% if item.image %}
