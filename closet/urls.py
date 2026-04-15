@@ -27,4 +27,8 @@ urlpatterns = [
     
     # 3. 検討リストから削除する処理
     path('consideration/remove/<int:item_id>/', views.remove_from_consideration, name='remove_from_consideration'),
+
+
+    path('purchase/', views.purchase_list, name='purchase_list'),
+    path('move-to-purchase/<int:item_id>/', views.move_to_purchase, name='move_to_purchase'),
 ]

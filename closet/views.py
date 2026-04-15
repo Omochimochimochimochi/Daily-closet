@@ -3,6 +3,7 @@ from django.db.models import Q
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from .models import Item, ConsiderationItem
+from .models import PurchaseItem
 
 # --- 1. トップページ・基本 ---
 def top(request):
@@ -101,3 +102,59 @@ def password_change(request):
 
 def signup_complete(request):
     return render(request, 'signup_complete.html')
+
+
+
+
+# 移動ボタンを押した時の処理
+def move_to_purchase(request, item_id):
+    # お気に入りアイテムを特定
+    c_item = get_object_or_404(ConsiderationItem, id=item_id)
+    
+    # 疑似購入リストにコピーを作成
+    PurchaseItem.objects.create(
+        user=c_item.user,
+        item=c_item.item,
+        size=c_item.size,
+        color=c_item.color,
+        quantity=c_item.quantity
+    )
+    
+    # 元のお気に入りからは削除（これで「移動」になる）
+    c_item.delete()
+    
+    # 疑似購入リスト画面へリダイレクト
+    return redirect('closet:purchase_list')
+
+# 疑似購入リスト画面の表示
+def purchase_list(request):
+    items = PurchaseItem.objects.all().order_by('-added_at')
+    return render(request, 'closet/purchase_list.html', {'items': items})
+
+# closet/views.py の一番下などに追記
+
+from .models import Item, ConsiderationItem, PurchaseItem # PurchaseItemを追加
+
+def move_to_purchase(request, item_id):
+    # 1. お気に入りからアイテムを取得 (idはConsiderationItemのID)
+    c_item = get_object_or_404(ConsiderationItem, id=item_id)
+    
+    # 2. 疑似購入（PurchaseItem）の方に新しく作成
+    PurchaseItem.objects.create(
+        user=c_item.user,
+        item=c_item.item,
+        size=c_item.size,
+        color=c_item.color,
+        quantity=c_item.quantity
+    )
+    
+    # 3. お気に入りからは削除する（移動を表現）
+    c_item.delete()
+    
+    # 4. 疑似購入画面へ飛ばす
+    return redirect('closet:purchase_list')
+
+# 疑似購入リスト画面の表示
+def purchase_list(request):
+    items = PurchaseItem.objects.all().order_by('-added_at')
+    return render(request, 'closet/purchase_list.html', {'items': items})
