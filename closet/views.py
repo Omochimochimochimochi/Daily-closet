@@ -158,3 +158,20 @@ def move_to_purchase(request, item_id):
 def purchase_list(request):
     items = PurchaseItem.objects.all().order_by('-added_at')
     return render(request, 'closet/purchase_list.html', {'items': items})
+
+
+
+def purchase_list(request):
+    # 購入予定のアイテムを取得
+    items = PurchaseItem.objects.all().order_by('-added_at')
+    return render(request, 'closet/purchase_list.html', {'items': items})
+
+def purchase_complete(request):
+
+    items_to_buy = PurchaseItem.objects.all()
+    bought_items = list(items_to_buy) 
+    
+    # カートを空にする
+    items_to_buy.delete()
+    
+    return render(request, 'closet/purchase_complete.html', {'items': bought_items})
