@@ -1,81 +1,32 @@
+{% extends 'closet/base.html' %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Daily closet</title>
-    <style>
-        body {
-            display: flex;
-            justify-content: center; 
-            background-color: #f5f5f5; 
-            margin: 0;
-            font-family: sans-serif;
-        }
-        
-        .iphone-screen {
-            width: 375px;
-            min-height: 100vh;
-            background-color: white;
-            padding: 20px;
-            padding-bottom: 90px; 
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-            position: relative; /* フッターの基準点 */
-            box-sizing: border-box; 
-        }
-        img {
-            width: 100%; 
-            height: auto;
-            border-radius: 8px; 
-        }
-      
-        footer {
-            position: absolute; 
-            bottom: 0;
-            left: 0;
-            width: 100%; 
-            height: 70px;
-            background-color: #ffffff;
-            border-top: 1px solid #eeeeee;
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            z-index: 1000;
-        }
-    </style>
-</head>
-<body>
 
-    <div class="iphone-screen">
-        <h1 style="text-align: center; margin-top: 20px; font-weight: bold;">Daily closet</h1>
-        
-        <form action="{% url 'search_results' %}" method="GET" style="display: flex; gap: 5px; margin-bottom: 20px;">
-       <input type="text" name="q" placeholder="キーワードを入力" style="flex: 1; padding: 8px;">
+{% block title %}Daily closet{% endblock %}
+
+{% block content %}
+    <h1 style="text-align: center; margin-top: 20px; font-weight: bold;">Daily closet</h1>
     
-     <button type="submit" style="padding: 8px;">🔍</button>
+    <form action="{% url 'closet:search_results' %}" method="get" style="display: flex; gap: 5px; margin-bottom: 20px; padding: 0 10px;">
+        <input type="text" name="q" placeholder="キーワードを入力" style="flex: 1; padding: 8px;">
+        <button type="submit" style="padding: 8px;">🔍</button>
     </form> 
 
-        <div style="margin-bottom: 15px;">
-            <img src="{% static 'images/main_visual.jpg' %}" alt="メイン画像">
-        </div>
+    <div style="margin-bottom: 15px;">
+        <img src="{% static 'images/main_visual.jpg' %}" alt="メイン画像">
+    </div>
 
-        <p style="font-size: 14px; color: #666;">注目のハッシュタグ：<br>#セール #ブラウン #スウェット</p>
+    <p style="font-size: 14px; color: #666; padding: 0 10px;">
+        注目のハッシュタグ：<br>#セール #ブラウン #スウェット
+    </p>
 
-        <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
+    <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
 
-        <div style="text-align: center; margin-top: 30px;">
-    <a href="#" style="font-weight: bold; display: block; margin-bottom: 10px; color: #1a73e8; text-decoration: underline;">＞ログイン</a>
-            <href="#" style="font-weight: bold; display: block; margin-bottom: 10px; color: #1a73e8; text-decoration: underline;">＞新規会員登録はこちら</a>
-        </div>
-{% if user.is_authenticated %}
-        <footer>
-            <div style="font-size: 24px;">🏠</div>
-            <div style="font-size: 24px;">🔍</div>
-            <div style="font-size: 24px;">🛒</div>
-            <div style="font-size: 24px;">👤</div>
-        </footer>
-{% endif %}
-    </div> </body>
-</html>
-
+    <div style="text-align: center; margin-top: 30px;">
+        <a href="{% url 'closet:login' %}" style="font-weight: bold; display: block; margin-bottom: 10px; color: #1a73e8; text-decoration: underline;">
+            ＞ログイン
+        </a>
+        <a href="{% url 'closet:signup' %}" style="font-weight: bold; display: block; margin-bottom: 10px; color: #1a73e8; text-decoration: underline;">
+            ＞新規会員登録はこちら
+        </a>
+    </div>
+{% endblock %}

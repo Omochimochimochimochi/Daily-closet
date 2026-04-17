@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -20,6 +21,14 @@
             box-sizing: border-box; 
         }
 
+        /* 🖼️ 画像を画面幅に収めるための設定（ここが重要！） */
+        img {
+            max-width: 100%; 
+            height: auto;
+            display: block;
+            margin: 0 auto;
+        }
+
         /* 共通フッターのスタイル */
         .bottom-nav {
             position: fixed;
@@ -37,30 +46,19 @@
         .nav-icon { font-size: 28px; }
 
         {% block extra_css %}{% endblock %}
-
     </style>
 </head>
 <body>
     <div class="app-container">
         {% block content %}{% endblock %}
 
-<div class="bottom-nav">
-    <a href="{% url 'closet:top' %}" class="nav-item">
-        <span class="nav-icon">🏠</span>
-        </a>
-
-    <a href="{% url 'closet:search_results' %}" class="nav-item">
-        <span class="nav-icon">🔍</span>
-    </a>
-
-    <a href="{% url 'closet:purchase_list' %}" class="nav-item">
-        <span class="nav-icon">🛒</span>
-    </a>
-
-    <a href="{% url 'closet:consideration_list' %}" class="nav-item">
-        <span class="nav-icon">👤</span>
-    </a>
-</div>
-    </div> {% block extra_js %}{% endblock %}
+        <div class="bottom-nav">
+            <a href="{% url 'closet:top' %}" class="nav-item"><span class="nav-icon">🏠</span></a>
+            <a href="{% url 'closet:search_results' %}" class="nav-item"><span class="nav-icon">🔍</span></a>
+            <a href="{% url 'closet:purchase_list' %}" class="nav-item"><span class="nav-icon">🛒</span></a>
+            <a href="{% url 'closet:consideration_list' %}" class="nav-item"><span class="nav-icon">👤</span></a>
+        </div>
+    </div>
+    {% block extra_js %}{% endblock %}
 </body>
 </html>

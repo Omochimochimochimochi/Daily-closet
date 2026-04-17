@@ -4,69 +4,53 @@
 
 {% block extra_css %}
 <style>
-    /* ヘッダー */
-    .header { display: flex; align-items: center; justify-content: center; padding: 0 15px; border-bottom: 1px solid #eee; background-color: white; height: 55px; position: relative; }
-    .header-title { font-size: 18px; font-weight: bold; margin: 0; }
-    
-    /* 統計数表示 */
-    .list-summary { padding: 15px; font-size: 14px; color: #333; text-align: center; border-bottom: 1px solid #f9f9f9; }
+    /* 文字を中央に寄せるためのヘッダー設定 */
+    .header { 
+        width: 100%;       
+        text-align: center; 
+        padding: 15px 0;   
+        border-bottom: 1px solid #eee; 
+        font-size: 18px;
+        font-weight: bold; /* 少し太くすると見出しっぽくなります */
+    }
 
-    /* アイテムカード */
-    .item-card { display: flex; padding: 15px; border-bottom: 1px solid #eee; position: relative; gap: 15px; align-items: center; }
-    .item-image { width: 90px; height: 90px; background: #eee; object-fit: cover; border-radius: 4px; }
-    .item-info { flex-grow: 1; }
-    .item-link { text-decoration: none; color: #333; font-size: 14px; display: block; margin-bottom: 4px; }
-    .item-spec { font-size: 12px; color: #666; margin-bottom: 4px; }
-    .item-price { font-size: 14px; font-weight: bold; }
+    /* 点数表示の部分 */
+    .summary-text {
+        text-align: center;
+        padding: 10px 0;
+        font-size: 14px;
+        color: #666;
+    }
 
-    /* 削除ボタン（ゴミ箱アイコン） */
-    .delete-btn { background: none; border: none; font-size: 18px; cursor: pointer; color: #999; padding: 10px; }
-
-    /* 疑似購入ボタン */
-    .action-btn-container { text-align: right; padding: 10px 15px 20px; }
-    .purchase-btn { 
-        background-color: #a0a0a0; color: white; border: none; padding: 10px 25px; 
-        border-radius: 25px; font-size: 13px; font-weight: bold; cursor: pointer;
+    /* 「アイテムはありません」のメッセージ */
+    .empty-message {
+        text-align: center;
+        margin-top: 100px;
+        color: #aaa;
+        font-size: 16px;
     }
 </style>
 {% endblock %}
 
 {% block content %}
-<div class="header">
-    <div class="header-title">検討リスト</div>
-</div>
+<div style="width: 100%; display: flex; flex-direction: column; align-items: center;">
 
-<div class="list-summary">
-    お気に入り登録アイテム：{{ items|length }}点
-</div>
+    <div class="header">検討リスト</div>
 
-{% for item in items %}
-<div class="item-group">
-    <div class="item-card">
-        {% if item.item.image %}
-            <img src="{{ item.item.image.url }}" class="item-image">
+    <div class="summary-text">
+        お気に入り登録アイテム：{{ items|length }}点
+    </div>
+
+    <div style="width: 100%; max-width: 500px;">
+        {% if items %}
+            {% for item in items %}
+                {% endfor %}
         {% else %}
-            <div class="item-image" style="display:flex; align-items:center; justify-content:center; background:#eee; font-size:10px;">No Image</div>
+            <div class="empty-message">
+                検討中のアイテムはありません。
+            </div>
         {% endif %}
-        
-        <div class="item-info">
-            <a href="{% url 'closet:item_detail' item.item.id %}" class="item-link">{{ item.item.item_name }}</a>
-            <div class="item-spec">{{ item.color }}、{{ item.size }}</div>
-            <div class="item-price">¥{{ item.item.price }}（税込）</div>
-        </div>
-        
-        <a href="{% url 'closet:remove_from_consideration' item.id %}" class="delete-btn" style="text-decoration: none;">🗑️</a>
     </div>
-    
-    <div class="action-btn-container">
-        <a href="{% url 'closet:move_to_purchase' item.id %}" class="purchase-btn" style="text-decoration: none; display: inline-block;">
-            疑似購入へ進む
-        </a>
-    </div>
+
 </div>
-{% empty %}
-<div style="text-align:center; padding: 100px 20px; color: #999;">
-    検討中のアイテムはありません。
-</div>
-{% endfor %}
 {% endblock %}
