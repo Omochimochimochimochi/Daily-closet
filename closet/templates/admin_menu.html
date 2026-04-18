@@ -10,15 +10,15 @@
         <p>管理メニュー画面</p>
 
         <div class="button-group">
-            <a href="{% url 'admin_item_list' %}" class="btn-admin">アイテム一覧</a>
-            <a href="{% url 'inventory_manage' %}" class="btn-admin">在庫管理</a>
+            <a href="{% url 'closet:admin_item_list' %}" class="btn-admin">アイテム一覧</a>
+            <a href="{% url 'closet:inventory_manage' %}" class="btn-admin">在庫管理</a>
             <a href="#" class="btn-admin-logout">ログアウト</a>
         </div>
 
         <div class="footer-nav">
-            <a href="{% url 'top' %}" class="nav-item">🏠</a>
-            <a href="{% url 'inventory_manage' %}" class="nav-item">👗</a>
-            <a href="{% url 'admin_menu' %}" class="nav-item">📋</a>
+            <a href="{% url 'closet:top' %}" class="nav-item">🏠</a>
+            <a href="{% url 'closet:inventory_manage' %}" class="nav-item">👗</a>
+            <a href="{% url 'closet:admin_menu' %}" class="nav-item">📋</a>
         </div>
     </div> <style>
         .app-container {

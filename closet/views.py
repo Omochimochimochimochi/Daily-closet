@@ -2,19 +2,31 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.db.models import Q
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from .models import Item, ConsiderationItem
-from .models import PurchaseItem
+from .models import Item, ConsiderationItem, PurchaseItem
+from django.contrib.auth.models import User
+from django.contrib import messages
 
 # --- 1. トップページ・基本 ---
 def top(request):
     return render(request, 'closet/top.html')
 
 def login_view(request):
-    return render(request, 'admin_login.html') # フォルダ外にあるため
+    return render(request, 'admin_login.html')
 
-def signup_view(request):
+def signup(request):
+    if request.method == 'POST':
+        # 送られてきたデータを受け取る
+        username = request.POST.get('username')
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+        
+        # 簡易的なユーザー作成処理（本来はフォームを使うのがベスト）
+        if username and password:
+            user = User.objects.create_user(username=username, email=email, password=password)
+            user.save()
+            return redirect('closet:top') # 登録後にトップへ移動
+            
     return render(request, 'signup.html')
-
 def mypage(request):
     return render(request, 'mypage.html')
 
@@ -36,36 +48,52 @@ def item_detail(request, pk):
     item = get_object_or_404(Item, pk=pk)
     return render(request, 'closet/item_detail.html', {'item': item})
 
-# --- 3. 検討リスト機能 (エラー修正済み) ---
+# --- 3. 検討リスト・購入フロー ---
+def consideration_list(request):
+    items = ConsiderationItem.objects.all().order_by('-added_at')
+    return render(request, 'closet/consideration_list.html', {'items': items})
+
 def add_to_consideration(request, item_id):
     if request.method == 'POST':
-        # ログインしてなければテストユーザーを割り当て
         user = request.user if request.user.is_authenticated else User.objects.first()
         if not user:
             user = User.objects.create_user(username='testuser', password='password123')
-            
         item = get_object_or_404(Item, id=item_id)
-        
         ConsiderationItem.objects.create(
-            user=user,
-            item=item,
-            size=request.POST.get('size'),
-            color=request.POST.get('color'),
-            quantity=request.POST.get('count', 1) # モデル名に合わせてquantity
+            user=user, item=item, size=request.POST.get('size'),
+            color=request.POST.get('color'), quantity=request.POST.get('count', 1)
         )
         return redirect('closet:consideration_list')
-
-def consideration_list(request):
-    # closetフォルダの中に移動したので 'closet/' を付ける
-    items = ConsiderationItem.objects.all().order_by('-added_at')
-    return render(request, 'closet/consideration_list.html', {'items': items})
 
 def remove_from_consideration(request, item_id):
     c_item = get_object_or_404(ConsiderationItem, id=item_id)
     c_item.delete()
     return redirect('closet:consideration_list')
 
-# --- 4. 管理者画面・設定系 ---
+def move_to_purchase(request, item_id):
+    c_item = get_object_or_404(ConsiderationItem, id=item_id)
+    PurchaseItem.objects.create(
+        user=c_item.user, item=c_item.item, size=c_item.size,
+        color=c_item.color, quantity=c_item.quantity
+    )
+    c_item.delete()
+    return redirect('closet:purchase_list')
+
+def purchase_list(request):
+    items = PurchaseItem.objects.all().order_by('-added_at')
+    return render(request, 'closet/purchase_list.html', {'items': items})
+
+def purchase_complete(request):
+    items_to_buy = PurchaseItem.objects.all()
+    bought_items = list(items_to_buy) 
+    items_to_buy.delete()
+    return render(request, 'closet/purchase_complete.html', {'items': bought_items})
+
+def email_change(request):
+    # とりあえずマイページに戻すか、空のページを表示する
+    return render(request, 'mypage.html') # もしくは適切なテンプレートへ
+
+# --- 4. 管理者画面 ---
 def admin_login(request):
     return render(request, 'admin_login.html')
 
@@ -94,84 +122,10 @@ def item_register(request):
         return redirect('closet:inventory_manage')
     return render(request, 'item_register.html')
 
-def email_change(request):
-    return render(request, 'email_change.html')
-
 def password_change(request):
+    # パスワード変更画面を表示するだけの仮の関数
     return render(request, 'password_change.html')
 
-def signup_complete(request):
-    return render(request, 'signup_complete.html')
-
-
-
-
-# 移動ボタンを押した時の処理
-def move_to_purchase(request, item_id):
-    # お気に入りアイテムを特定
-    c_item = get_object_or_404(ConsiderationItem, id=item_id)
-    
-    # 疑似購入リストにコピーを作成
-    PurchaseItem.objects.create(
-        user=c_item.user,
-        item=c_item.item,
-        size=c_item.size,
-        color=c_item.color,
-        quantity=c_item.quantity
-    )
-    
-    # 元のお気に入りからは削除（これで「移動」になる）
-    c_item.delete()
-    
-    # 疑似購入リスト画面へリダイレクト
-    return redirect('closet:purchase_list')
-
-# 疑似購入リスト画面の表示
-def purchase_list(request):
-    items = PurchaseItem.objects.all().order_by('-added_at')
-    return render(request, 'closet/purchase_list.html', {'items': items})
-
-# closet/views.py の一番下などに追記
-
-from .models import Item, ConsiderationItem, PurchaseItem # PurchaseItemを追加
-
-def move_to_purchase(request, item_id):
-    # 1. お気に入りからアイテムを取得 (idはConsiderationItemのID)
-    c_item = get_object_or_404(ConsiderationItem, id=item_id)
-    
-    # 2. 疑似購入（PurchaseItem）の方に新しく作成
-    PurchaseItem.objects.create(
-        user=c_item.user,
-        item=c_item.item,
-        size=c_item.size,
-        color=c_item.color,
-        quantity=c_item.quantity
-    )
-    
-    # 3. お気に入りからは削除する（移動を表現）
-    c_item.delete()
-    
-    # 4. 疑似購入画面へ飛ばす
-    return redirect('closet:purchase_list')
-
-# 疑似購入リスト画面の表示
-def purchase_list(request):
-    items = PurchaseItem.objects.all().order_by('-added_at')
-    return render(request, 'closet/purchase_list.html', {'items': items})
-
-
-
-def purchase_list(request):
-    # 購入予定のアイテムを取得
-    items = PurchaseItem.objects.all().order_by('-added_at')
-    return render(request, 'closet/purchase_list.html', {'items': items})
-
-def purchase_complete(request):
-
-    items_to_buy = PurchaseItem.objects.all()
-    bought_items = list(items_to_buy) 
-    
-    # カートを空にする
-    items_to_buy.delete()
-    
-    return render(request, 'closet/purchase_complete.html', {'items': bought_items})
+def email_change(request):
+    # メール変更画面を表示するだけの仮の関数
+    return render(request, 'email_change.html')

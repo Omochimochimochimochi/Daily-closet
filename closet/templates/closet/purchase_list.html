@@ -1,79 +1,50 @@
 {% extends 'closet/base.html' %}
+{% load static %}
 
 {% block title %}検討（カート）画面{% endblock %}
 
-{% block extra_css %}
+{% block content %}
+<div style="padding: 20px; max-width: 400px; margin: 0 auto;">
+    <h2>検討（カート）画面</h2>
+    <p>カートに入っているアイテム：{{ items|length }}点</p>
+
+    <ul style="list-style: none; padding: 0;">
+        {% for item in items %}
+            <li style="border-bottom: 1px solid #eee; padding: 10px 0; display: flex; justify-content: space-between;">
+                <span>{{ item.item.item_name }} ({{ item.color }} / {{ item.size }})</span>
+                
+                <form method="post" action="{% url 'closet:remove_item' item.id %}">
+                    {% csrf_token %}
+                    <button type="submit" style="color: red; border: none; background: none; cursor: pointer;">削除</button>
+                </form>
+            </li>
+        {% endfor %}
+    </ul>
+
+    <form method="post" action="{% url 'closet:purchase_complete' %}" style="margin-top: 30px;">
+        {% csrf_token %}
+        <button type="submit" 
+                class="purchase-btn" 
+                {% if items|length == 0 %}disabled{% endif %}>
+            購入確定
+        </button>
+    </form>
+</div>
+
 <style>
-    .header { 
-    width: 100%;       
-    text-align: center; 
-    padding: 15px 0;   
-    border-bottom: 1px solid #eee; 
-    font-size: 18px;
-    box-sizing: border-box; 
-}
-    .cart-summary { padding: 10px 20px; font-size: 14px; color: #666; }
-    
-    .item-card { display: flex; padding: 20px; margin: 10px 20px; position: relative; }
-    .item-image { width: 100px; height: 100px; object-fit: cover; border: 1px solid #eee; margin-right: 15px; }
-    .item-details { flex: 1; font-size: 14px; }
-    .item-name { color: #333; text-decoration: none; display: block; margin-bottom: 5px; }
-    .item-price-row { text-align: right; margin-top: 10px; }
-    .total-row { text-align: center; font-weight: bold; font-size: 18px; margin-top: 10px; }
-    
-    .dummy-info { padding: 10px 20px; font-size: 12px; color: #666; line-height: 1.6; }
-    
-    .btn-container { text-align: center; padding: 20px; }
-    .confirm-btn { 
-        background-color: #777; color: white; padding: 15px 60px; border-radius: 10px; 
-        text-decoration: none; font-size: 18px; display: inline-block; border: none;
+    .purchase-btn {
+        background-color: #a0c4ff;
+        padding: 15px;
+        width: 100%;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        font-size: 16px;
+        cursor: pointer;
+    }
+    .purchase-btn:disabled {
+        background-color: #ccc;
+        cursor: not-allowed;
     }
 </style>
 {% endblock %}
-
-{% block content %}
-<div style="width: 100%; display: flex; flex-direction: column; align-items: center;">
-
-    <div class="header">検討（カート）画面</div>
-
-    <div class="cart-summary">
-        カートに入っているアイテム：{{ items|length }}点
-    </div>
-
-    <div style="width: 100%; max-width: 500px;">
-        {% for item in items %}
-        <div class="item-card">
-            {% if item.item.image %}
-                <img src="{{ item.item.image.url }}" class="item-image">
-            {% else %}
-                <div class="item-image" style="background:#eee;"></div>
-            {% endif %}
-            
-            <div class="item-details">
-                <div style="float: right;">個数 1</div>
-                <a href="{% url 'closet:item_detail' item.item.id %}" class="item-name">{{ item.item.item_name }}</a>
-                <div>{{ item.color }}、{{ item.size }}</div>
-                
-                <div class="item-price-row">
-                    ¥{{ item.item.price }}
-                </div>
-                <div class="total-row">
-                    合計 ¥{{ item.item.price }}
-                </div>
-            </div>
-        </div>
-        {% endfor %}
-
-        <div class="dummy-info">
-            お届け先：〒123-4567 東京都〇〇区...（様方）<br>
-            支払方法：クレジットカード（****-1234）
-        </div>
-
-        <div class="btn-container">
-            <a href="{% url 'closet:purchase_complete' %}" class="confirm-btn">
-                購入確定
-            </a>
-        </div>
-    </div> </div> 
-    
-    {% endblock %}

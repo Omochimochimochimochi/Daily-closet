@@ -1,44 +1,70 @@
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-    <meta charset="UTF-8">
-    <title>新規会員登録 - Daily Closet</title>
-    <style>
-        body { font-family: sans-serif; display: flex; justify-content: center; padding: 20px; background-color: #f5f5f5; }
-        .container { background: white; padding: 40px; border: 1px solid #ccc; width: 100%; max-width: 400px; text-align: center; }
-        .form-group { margin-bottom: 20px; text-align: left; }
-        label { display: block; margin-bottom: 5px; font-weight: bold; text-align: center; }
-        input { width: 100%; padding: 10px; box-sizing: border-box; border: 1px solid #ccc; }
-        .hint { font-size: 12px; color: #666; margin-top: 5px; text-align: center; list-style: none; padding: 0; }
-        button { background-color: #a0c4ff; border: none; padding: 15px; width: 100%; font-size: 16px; cursor: pointer; border-radius: 5px; margin-top: 10px; }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <h2>新規会員登録</h2>
-        <form>
-            <div class="form-group">
-                <label>メールアドレス</label>
-                <input type="email" placeholder="example@mail.com">
+{% extends 'closet/base.html' %}
+{% load static %}
+
+{% block title %}新規会員登録 - Daily Closet{% endblock %}
+
+{% block content %}
+<div style="padding: 20px; text-align: center;">
+    <h2>新規会員登録</h2>
+    
+    <form method="post" action="{% url 'closet:signup' %}">
+        {% csrf_token %}
+        
+        <div style="margin-bottom: 20px; text-align: left;">
+            <label style="display: block; margin-bottom: 5px; font-weight: bold;">メールアドレス</label>
+            <input type="email" name="email" placeholder="example@mail.com" style="width: 100%; padding: 10px; box-sizing: border-box; border: 1px solid #ccc;" required>
+        </div>
+        
+        <div style="margin-bottom: 20px; text-align: left;">
+            <label style="display: block; margin-bottom: 5px; font-weight: bold;">ユーザー名</label>
+            <input type="text" name="username" style="width: 100%; padding: 10px; box-sizing: border-box; border: 1px solid #ccc;" required>
+        </div>
+        
+        <div class="form-group password-group">
+            <label style="display: block; margin-bottom: 5px; font-weight: bold;">パスワード</label>
+            <div class="input-container">
+                <input type="password" id="password" name="password" placeholder="8文字以上" required>
+                <span onclick="togglePassword('password')" class="toggle-icon">👁️</span>
             </div>
-            <div class="form-group">
-                <label>ユーザー名</label>
-                <input type="text">
+        </div>
+
+        <div class="form-group password-group" style="margin-bottom: 20px;">
+            <label style="display: block; margin-bottom: 5px; font-weight: bold;">パスワード再入力</label>
+            <div class="input-container">
+                <input type="password" id="password_confirm" name="password_confirm" required>
+                <span onclick="togglePassword('password_confirm')" class="toggle-icon">👁️</span>
             </div>
-            <div class="form-group">
-                <label>パスワード</label>
-                <input type="password">
-                <ul class="hint">
-                    <li>・英数字含む</li>
-                    <li>・8文字以上</li>
-                </ul>
-            </div>
-            <div class="form-group">
-                <label>パスワード再入力</label>
-                <input type="password">
-            </div>
-            <button type="submit">登録</button>
-        </form>
-    </div>
-</body>
-</html>
+        </div>
+
+        <button type="submit" style="background-color: #a0c4ff; border: none; padding: 15px; width: 100%; font-size: 16px; cursor: pointer; border-radius: 5px; color: white; margin-top: 20px;">登録</button>
+    </form>
+</div>
+
+<style>
+    .password-group { margin-bottom: 20px; text-align: left; }
+    .input-container { position: relative; width: 100%; }
+    .input-container input {
+        width: 100%;
+        padding: 10px;
+        padding-right: 40px;
+        box-sizing: border-box;
+        border: 1px solid #ccc;
+    }
+    .toggle-icon {
+        position: absolute;
+        right: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        cursor: pointer;
+        font-size: 18px;
+        user-select: none;
+    }
+</style>
+
+<script>
+    function togglePassword(inputId) {
+        const input = document.getElementById(inputId);
+        input.type = (input.type === "password") ? "text" : "password";
+    }
+</script>
+{% endblock %}
