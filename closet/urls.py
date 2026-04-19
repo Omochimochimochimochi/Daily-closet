@@ -8,6 +8,7 @@ urlpatterns = [
     path('', views.top, name='top'),
     path('search_results/', views.search_results, name='search_results'),
     path('item/<int:pk>/', views.item_detail, name='item_detail'),
+    path('search/', views.search_by_tag, name='search_by_tag'),
 
     # ユーザー用：検討リスト
     path('consideration/', views.consideration_list, name='consideration_list'),

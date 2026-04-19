@@ -129,3 +129,11 @@ def password_change(request):
 def email_change(request):
     # メール変更画面を表示するだけの仮の関数
     return render(request, 'email_change.html')
+
+def search_by_tag(request):
+    tag = request.GET.get('tag')
+    if tag:
+        items = Item.objects.filter(free_tags__icontains=tag)
+    else:
+        items = Item.objects.none()
+    return render(request, 'search_results.html', {'items': items, 'tag': tag})

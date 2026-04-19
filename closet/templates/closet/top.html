@@ -15,9 +15,12 @@
         <img src="{% static 'images/main_visual.jpg' %}" alt="メイン画像">
     </div>
 
-    <p style="font-size: 14px; color: #666; padding: 0 10px;">
-        注目のハッシュタグ：<br>#セール #ブラウン #スウェット
-    </p>
+<p style="font-size: 14px; color: #666; padding: 0 10px;">
+    注目のハッシュタグ：<br>
+    <a href="{% url 'closet:search_by_tag' %}?tag=セール" style="text-decoration: none; color: #333;">#セール</a>
+    <a href="{% url 'closet:search_by_tag' %}?tag=ブラウン" style="text-decoration: none; color: #333;">#ブラウン</a>
+    <a href="{% url 'closet:search_by_tag' %}?tag=スウェット" style="text-decoration: none; color: #333;">#スウェット</a>
+</p>
 
     <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
 
