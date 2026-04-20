@@ -1,56 +1,45 @@
 {% extends 'closet/base.html' %}
-
-{% block title %}検討リスト{% endblock %}
+{% load static %}
 
 {% block extra_css %}
 <style>
-    /* 文字を中央に寄せるためのヘッダー設定 */
-    .header { 
-        width: 100%;       
-        text-align: center; 
-        padding: 15px 0;   
-        border-bottom: 1px solid #eee; 
-        font-size: 18px;
-        font-weight: bold; /* 少し太くすると見出しっぽくなります */
+    /* CSSはここを1箇所だけにまとめる */
+    .fav-title { 
+        width: 100%; text-align: center; font-size: 1.2em; font-weight: bold; padding: 20px 0; 
     }
-
-    /* 点数表示の部分 */
-    .summary-text {
-        text-align: center;
-        padding: 10px 0;
-        font-size: 14px;
-        color: #666;
-    }
-
-    /* 「アイテムはありません」のメッセージ */
-    .empty-message {
-        text-align: center;
-        margin-top: 100px;
-        color: #aaa;
-        font-size: 16px;
-    }
+    .fav-count { text-align: center; color: #666; margin-bottom: 20px; }
+    .item-card { display: flex; align-items: center; padding: 15px; border-bottom: 1px solid #eee; }
+    .item-img { width: 100px; height: 100px; object-fit: cover; border: 1px solid #ddd; }
+    .item-details { margin-left: 15px; flex-grow: 1; }
+    .buy-button { display: block; width: 80%; margin: 10px auto; padding: 12px; background: #666; color: white; text-align: center; border-radius: 5px; text-decoration: none; }
 </style>
 {% endblock %}
 
 {% block content %}
-<div style="width: 100%; display: flex; flex-direction: column; align-items: center;">
+<div class="fav-title">お気に入り</div>
+<div class="fav-count">お気に入り登録アイテム：{{ items.count }}点</div>
 
-    <div class="header">検討リスト</div>
-
-    <div class="summary-text">
-        お気に入り登録アイテム：{{ items|length }}点
-    </div>
-
-    <div style="width: 100%; max-width: 500px;">
-        {% if items %}
-            {% for item in items %}
-                {% endfor %}
+{% for c_item in items %}
+    <div class="item-card">
+        {% if c_item.item.image %}
+            <img src="{{ c_item.item.image.url }}" class="item-img">
         {% else %}
-            <div class="empty-message">
-                検討中のアイテムはありません。
-            </div>
+            <div class="item-img" style="background:#eee; display:flex; align-items:center; justify-content:center;">No Image</div>
         {% endif %}
-    </div>
 
-</div>
+        <div class="item-details">
+            <div><strong>{{ c_item.item.item_name }}</strong></div>
+            <div>カラー: {{ c_item.color }} / サイズ: {{ c_item.size }}</div>
+            <div>¥{{ c_item.item.price|default:"0" }} (税込)</div>
+        </div>
+
+        <form action="{% url 'closet:remove_from_consideration' c_item.id %}" method="POST">
+            {% csrf_token %}
+            <button type="submit" style="background:none; border:none; cursor:pointer;">🗑️</button>
+        </form>
+    </div>
+    <a href="#" class="buy-button">擬似購入へ進む</a>
+{% empty %}
+    <p style="text-align:center; color:#999; margin-top:50px;">お気に入りアイテムはありません。</p>
+{% endfor %}
 {% endblock %}

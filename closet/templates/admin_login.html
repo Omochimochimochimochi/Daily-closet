@@ -25,13 +25,13 @@
                 <input type="email" name="email" placeholder="example@mail.com">
             </div>
 
-            <div class="field">
-                <label>パスワード</label>
-                <div style="position: relative;">
-                    <input type="password" name="password">
-                    <span style="position: absolute; right: 10px; top: 8px; cursor: pointer;">👁️</span>
-                </div>
-            </div>
+    <div class="field">
+        <label>パスワード</label>
+        <div style="position: relative;">
+        <input type="password" name="password" id="passwordInput">
+        <span id="togglePassword" style="position: absolute; right: 10px; top: 8px; cursor: pointer;">👁️</span>
+    </div>
+</div>
 
             <div class="checkbox-group">
                 <input type="checkbox" id="auto-login">
@@ -46,3 +46,14 @@
             <a href="#">★ゲスト管理者ログイン</a>
         </div>
     </div> </body> </html>
+
+    <script>
+    const togglePassword = document.querySelector('#togglePassword');
+    const passwordInput = document.querySelector('#passwordInput');
+
+    togglePassword.addEventListener('click', function () {
+        // 現在のtypeが password なら text に、それ以外なら password にする
+        const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+        passwordInput.setAttribute('type', type);
+    });
+</script>
