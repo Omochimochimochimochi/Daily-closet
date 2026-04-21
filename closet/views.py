@@ -137,3 +137,9 @@ def search_by_tag(request):
     else:
         items = Item.objects.none()
     return render(request, 'search_results.html', {'items': items, 'tag': tag})
+
+def my_page(request):
+    context = {
+        'user': request.user,  
+    }
+    return render(request, 'closet/my_page.html', context)
