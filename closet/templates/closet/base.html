@@ -30,21 +30,35 @@
         }
 
         /* 共通フッターのスタイル */
-        .bottom-nav {
-            position: fixed;
-            bottom: 0;
-            width: 375px;
-            height: 65px;
-            background-color: #d3d3d3;
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            border-top: 1px solid #bbb;
-            z-index: 1000;
-        }
-        .nav-item { text-decoration: none; color: #333; display: flex; align-items: center; }
-        .nav-icon { font-size: 28px; }
+/* ナビゲーションのCSSを以下のように書き換えてください */
+.bottom-nav {
+    position: fixed;
+    bottom: 0;
+    width: 375px;
+    height: 65px;
+    background-color: #d3d3d3;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    border-top: 1px solid #bbb;
+    z-index: 1000;
+}
 
+/* アイコンを囲む箱のサイズを固定し、中身を中央寄せにする */
+.nav-item {
+    text-decoration: none;
+    width: 50px;      /* 枠の幅を固定 */
+    height: 50px;     /* 枠の高さを固定 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* アイコンのサイズを統一 */
+.nav-icon {
+    font-size: 24px;  /* ここで大きさをピクセル指定で完全に統一します */
+    display: block;
+}
         {% block extra_css %}{% endblock %}
     </style>
 </head>
@@ -52,12 +66,11 @@
     <div class="app-container">
         {% block content %}{% endblock %}
 
-        <div class="bottom-nav">
-            <a href="{% url 'closet:top' %}" class="nav-item"><span class="nav-icon">🏠</span></a>
-            <a href="{% url 'closet:search_results' %}" class="nav-item"><span class="nav-icon">🔍</span></a>
-            <a href="{% url 'closet:consideration_list' %}" class="nav-item"><span class="nav-icon">🛒</span></a>
-            <a href="{% url 'closet:mypage' %}" class="nav-item"><span class="nav-icon">👤</span></a>
-        </div>
+    <div class="bottom-nav">
+       <a href="{% url 'closet:top' %}" class="nav-item"><span class="nav-icon">🏠</span></a>
+       <a href="{% url 'closet:item_search' %}" class="nav-item"><span class="nav-icon">🔍</span></a> <a href="{% url 'closet:consideration_list' %}" class="nav-item"><span class="nav-icon">🛒</span></a>
+        <a href="{% url 'closet:mypage' %}" class="nav-item"><span class="nav-icon">👤</span></a>
+</div>
     </div>
     {% block extra_js %}{% endblock %}
 </body>

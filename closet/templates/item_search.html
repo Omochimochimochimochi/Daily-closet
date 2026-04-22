@@ -19,6 +19,15 @@
             <button class="tag-btn">🔎 #洗濯可</button>
             <button class="tag-btn">🔎 #ブルベ</button>
             <button class="tag-btn">🔎 #ミニ丈</button>
+            
+    <div class="bottom-nav">
+        <a href="{% url 'closet:top' %}" class="nav-item"><span class="nav-icon">🏠</span></a>
+        <a href="{% url 'closet:item_search' %}" class="nav-item"><span class="nav-icon">🔍</span></a>
+        <a href="{% url 'closet:consideration_list' %}" class="nav-item"><span class="nav-icon">🛒</span></a>
+        <a href="{% url 'closet:mypage' %}" class="nav-item"><span class="nav-icon">👤</span></a>
+</div> 
+            
+
         </div>
     </div>
 </div>

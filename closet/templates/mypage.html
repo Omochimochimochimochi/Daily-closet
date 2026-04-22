@@ -25,9 +25,9 @@
             text-align: center; text-decoration: none; font-weight: bold; box-sizing: border-box;
         }
 
-        /* フッター：ご希望のグレー背景デザイン */
+
         .bottom-nav {
-            position: fixed;
+             position: fixed;
             bottom: 0;
             width: 375px;
             height: 65px;
@@ -35,11 +35,25 @@
             display: flex;
             justify-content: space-around;
             align-items: center;
-            border-top: 1px solid #bbb;
-            z-index: 1000;
+           border-top: 1px solid #bbb;
+        z-index: 1000;
+}      
+
+/* アイコンを囲む箱のサイズを固定し、中身を中央寄せにする */
+         .nav-item {
+             text-decoration: none;
+             width: 50px;      /* 枠の幅を固定 */
+               height: 50px;     /* 枠の高さを固定 */
+             display: flex;
+             justify-content: center;
+             align-items: center;
         }
-        .nav-item { text-decoration: none; display: flex; flex-direction: column; align-items: center; }
-        .nav-icon { font-size: 1.5rem; }
+
+/* アイコンのサイズを統一 */
+         .nav-icon {
+            font-size: 24px;  
+        display: block;
+        }   
 
         /* モーダル */
         .modal-overlay {

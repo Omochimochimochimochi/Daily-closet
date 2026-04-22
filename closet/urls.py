@@ -6,9 +6,13 @@ app_name = 'closet'
 urlpatterns = [
     # ユーザー用：メイン画面
     path('', views.top, name='top'),
-    path('search_results/', views.search_results, name='search_results'),
+    
+    # 検索関連：整理しました
+    path('search/', views.item_search, name='item_search'),              # 検索画面（フォーム）
+    path('search_results/', views.search_results, name='search_results'), # 検索結果一覧
+    path('search/tag/<str:tag_name>/', views.search_by_tag, name='search_by_tag'), # タグ用
+
     path('item/<int:pk>/', views.item_detail, name='item_detail'),
-    path('search/', views.search_by_tag, name='search_by_tag'),
 
     # ユーザー用：検討リスト
     path('consideration/', views.consideration_list, name='consideration_list'),
@@ -20,7 +24,7 @@ urlpatterns = [
     path('move-to-purchase/<int:item_id>/', views.move_to_purchase, name='move_to_purchase'),
     path('purchase/complete/', views.purchase_complete, name='purchase_complete'),
 
-    # 管理用画面（重複を削除してスッキリさせました）
+    # 管理用・ユーザーアカウント関連
     path('admin-login/', views.admin_login, name='admin_login'),
     path('signup/', views.signup, name='signup'),
     path('admin-menu/', views.admin_menu, name='admin_menu'),
