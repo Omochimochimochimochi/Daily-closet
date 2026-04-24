@@ -1,3 +1,8 @@
 from django.contrib import admin
+from .models import Item, ItemAdditionalImage, ConsiderationItem, PurchaseItem, Tag
 
-# Register your models here.
+admin.site.register(Item)
+admin.site.register(ItemAdditionalImage)
+admin.site.register(ConsiderationItem)
+admin.site.register(PurchaseItem)
+admin.site.register(Tag)

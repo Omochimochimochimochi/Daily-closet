@@ -1,14 +1,23 @@
 from django.conf import settings
 from django.db import models
-
 from django.contrib.auth.models import User
 
+# ★1. Tagモデルをここに記述する（Itemより上に！）
+class Tag(models.Model):
+    name = models.CharField("タグ名", max_length=50, unique=True)
+    def __str__(self):
+        return self.name
+
+# ★2. Itemモデルをここに記述する
 class Item(models.Model):
     brand_name = models.CharField("ブランド名", max_length=100, blank=True)
     item_name = models.CharField("アイテム名", max_length=100)
     price = models.IntegerField("金額", default=0)
     color = models.CharField("カラー", max_length=50, blank=True)
     image = models.ImageField("アイテム画像", upload_to='items/', blank=True, null=True)
+
+    # ★3. ここに tags を追加する！
+    tags = models.ManyToManyField(Tag, verbose_name="タグ", blank=True)
 
     style = models.CharField("スタイル", max_length=100, blank=True)
     kokkaku = models.CharField("骨格タイプ", max_length=100, blank=True)
@@ -19,9 +28,10 @@ class Item(models.Model):
     details_text = models.TextField("アイテム詳細", blank=True)
     detail_image = models.ImageField("詳細画像", upload_to='details/', blank=True, null=True)
 
+    tags = models.ManyToManyField(Tag, verbose_name="タグ", blank=True)
+
     def __str__(self):
         return self.item_name
-    
    
 class ItemAdditionalImage(models.Model):
     item = models.ForeignKey(Item, on_delete=models.CASCADE, related_name='additional_images')
