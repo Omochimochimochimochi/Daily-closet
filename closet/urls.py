@@ -1,3 +1,5 @@
+from django.conf import settings  
+from django.conf.urls.static import static  
 from django.urls import path
 from . import views
 
@@ -35,3 +37,4 @@ urlpatterns = [
     path('email-change/', views.email_change, name='email_change'),
     path('password-change/', views.password_change, name='password_change'),
 ]
+

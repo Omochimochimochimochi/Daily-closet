@@ -70,11 +70,15 @@
 {% endblock %}
 
 {% block content %}
-<div class="search-box-container" style="display: flex; align-items: center; gap: 10px; margin-bottom: 30px;">
-    <span class="back-arrow" onclick="history.back()">〈</span>
-    <input type="text" class="search-input" placeholder="キーワード、ハッシュタグで検索" 
+
+<form action="{% url 'closet:search_results' %}" method="GET" class="search-box-container" style="display: flex; align-items: center; gap: 10px; margin-bottom: 30px;">
+    <span class="back-arrow" onclick="history.back()" style="cursor: pointer;">〈</span>
+    
+    <input type="text" name="tag" class="search-input" placeholder="キーワード、ハッシュタグで検索" 
            style="flex: 1; padding: 12px; border: 1px solid #333; border-radius: 10px; background-color: #f9f9f9;">
-</div>
+    
+    <button type="submit" style="display:none;"></button>
+</form>
 
 <div class="search-section">
     <p class="section-title">トレンドワード</p>
