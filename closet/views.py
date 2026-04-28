@@ -5,10 +5,17 @@ from django.contrib.auth.models import User
 from .models import Item, ConsiderationItem, PurchaseItem
 from django.contrib.auth.models import User
 from django.contrib import messages
+from django.shortcuts import render
 
 # --- 1. トップページ・基本 ---
+
 def top(request):
-    return render(request, 'closet/top.html')
+    if request.user.is_authenticated:
+        # ログインしているならログイン後のページへ
+        return render(request, 'closet/top_logged_in.html')
+    else:
+        # 未ログインなら通常のトップページへ
+        return render(request, 'closet/top.html')
 
 def login_view(request):
     return render(request, 'admin_login.html')
@@ -29,6 +36,7 @@ def signup(request):
     return render(request, 'signup.html')
 def mypage(request):
     return render(request, 'mypage.html')
+
 
 # --- 2. 検索・詳細機能 ---
 def item_search(request):

@@ -1,56 +1,53 @@
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-    <meta charset="UTF-8">
-    <title>ログイン - Daily Closet</title>
-    <style>
-        body { font-family: sans-serif; display: flex; justify-content: center; padding: 50px; background-color: #f8f9fa; }
-        .login-box { background: white; padding: 40px; border: 1px solid #333; width: 350px; text-align: center; }
-        .field { margin-bottom: 20px; text-align: left; }
-        label { display: block; margin-bottom: 8px; color: #555; text-align: center; font-size: 18px; }
-        input[type="email"], input[type="password"] { width: 100%; padding: 10px; border: 1px solid #333; box-sizing: border-box; }
-        
-        .checkbox-group { text-align: left; margin-bottom: 25px; font-size: 14px; display: flex; align-items: center; justify-content: center; }
-        
-        .btn-login { background-color: #a0c4ff; border: none; padding: 12px; width: 80%; font-size: 18px; border-radius: 10px; cursor: pointer; margin-bottom: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-        
-        .links a { display: block; margin-bottom: 12px; font-size: 14px; color: #1a73e8; text-decoration: underline; }
-        .admin-links { margin-top: 30px; border-top: 1px solid #eee; padding-top: 20px; }
-        .admin-links a { color: #999; text-decoration: none; font-size: 13px; margin-bottom: 8px; }
-    </style>
-</head>
-<body>
-    <div class="login-box">
-        <form>
-            <div class="field">
-                <label>メールアドレス</label>
-                <input type="email" placeholder="example@mail.com">
+{% extends 'closet/base.html' %}
+{% load static %}
+
+{% block extra_css %}
+<style>
+    .login-box { background: white; padding: 40px; border: 1px solid #333; width: 350px; text-align: center; margin: 50px auto; }
+    .field { margin-bottom: 20px; text-align: left; }
+    label { display: block; margin-bottom: 8px; color: #555; text-align: center; font-size: 18px; }
+    input[type="email"], input[type="password"] { width: 100%; padding: 10px; border: 1px solid #333; box-sizing: border-box; }
+    .checkbox-group { text-align: left; margin-bottom: 25px; font-size: 14px; display: flex; align-items: center; justify-content: center; }
+    .btn-login { background-color: #a0c4ff; border: none; padding: 12px; width: 80%; font-size: 18px; border-radius: 10px; cursor: pointer; margin-bottom: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+    .links a { display: block; margin-bottom: 12px; font-size: 14px; color: #1a73e8; text-decoration: underline; }
+    .admin-links { margin-top: 30px; border-top: 1px solid #eee; padding-top: 20px; }
+    .admin-links a { color: #999; text-decoration: none; font-size: 13px; display: block; margin-bottom: 8px; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="login-box">
+    <form method="post">
+        {% csrf_token %}
+        <div class="field">
+            <label>メールアドレス</label>
+            <input type="email" name="email" placeholder="example@mail.com">
+        </div>
+
+        <div class="field">
+            <label>パスワード</label>
+            <div style="position: relative;">
+                <input type="password" name="password">
+                <span style="position: absolute; right: 10px; top: 8px; cursor: pointer;">👁️</span>
             </div>
+        </div>
 
-            <div class="field">
-                <label>パスワード</label>
-                <div style="position: relative;">
-                    <input type="password">
-                    <span style="position: absolute; right: 10px; top: 8px; cursor: pointer;">👁️</span>
-                </div>
-            </div>
+        <div class="checkbox-group">
+            <input type="checkbox" id="auto-login">
+            <label for="auto-login" style="font-size: 14px; margin: 0 0 0 5px;">次回から自動ログイン</label>
+        </div>
 
-            <div class="checkbox-group">
-                <input type="checkbox" id="auto-login">
-                <label for="auto-login" style="font-size: 14px; margin: 0 0 0 5px;">次回から自動ログイン</label>
-            </div>
+        <button type="submit" class="btn-login">ログイン</button>
 
-            <button type="submit" class="btn-login">ログイン</button>
+        <div class="links">
+            <a href="{% url 'closet:signup' %}">＞新規会員登録はこちら</a>
+            <a href="#">＞パスワードをお忘れの方はこちら</a>
+        </div>
 
-           <div class="links">
-    <a href="{% url 'signup' %}">＞新規会員登録はこちら</a>
-    
-    <a href="/password_reset/">＞パスワードをお忘れの方はこちら</a>
+        <div class="admin-links">
+            <a href="{% url 'admin:index' %}">★管理者ログイン</a>
+            <a href="#">★ゲスト管理者ログイン</a>
+        </div>
+    </form>
 </div>
-
-           <div class="admin-links">
-    <a href="/admin/" style="color: #999; text-decoration: none; font-size: 13px; display: block; margin-bottom: 20px;">★管理者ログイン</a>
-    <a href="#" style="color: #999; text-decoration: none; font-size: 13px; display: block;">★ゲスト管理者ログイン</a>
-</div>
-</html>
-
+{% endblock %}

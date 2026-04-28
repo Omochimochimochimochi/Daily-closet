@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <title>管理者ログイン - Daily Closet</title>
+    <title> Daily Closet</title>
     <style>
         body { font-family: sans-serif; display: flex; justify-content: center; padding: 50px; background-color: #f8f9fa; }
         .login-box { background: white; padding: 40px; border: 1px solid #333; width: 350px; text-align: center; }
@@ -17,8 +17,7 @@
 </head>
 <body>
     <div class="login-box">
-        <h1 style="font-size: 20px; margin-bottom: 30px;">Daily closet<br><span style="font-size: 14px; color: #666;">管理者ログイン</span></h1>
-        
+        <h1 style="font-size: 20px; margin-bottom: 30px;">Daily closet<br>
         <form method="POST">
             {% csrf_token %} <div class="field">
                 <label>メールアドレス</label>

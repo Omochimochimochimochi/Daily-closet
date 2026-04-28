@@ -28,6 +28,7 @@ urlpatterns = [
 
     # 管理用・ユーザーアカウント関連
     path('admin-login/', views.admin_login, name='admin_login'),
+    path('login/', views.login_view, name='login'),
     path('signup/', views.signup, name='signup'),
     path('admin-menu/', views.admin_menu, name='admin_menu'),
     path('admin-inventory/', views.inventory_manage, name='inventory_manage'),

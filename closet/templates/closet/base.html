@@ -1,32 +1,45 @@
-{% load static %}
+
 <!DOCTYPE html>
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Daily Closet</title>
+    <title>{% block title %}Daily Closet{% endblock %}</title>
     
     <style>
         /* 共通スタイル */
         body { font-family: sans-serif; margin: 0; background-color: #f8f9fa; display: flex; justify-content: center; }
         .app-container { width: 375px; background: white; min-height: 100vh; border: 1px solid #ddd; padding-bottom: 80px; position: relative; box-sizing: border-box; }
-        img { max-width: 100%; height: auto; display: block; margin: 0 auto; }
+        
+        /* フッターのスタイル */
+        .site-footer { text-align: center; padding: 20px; font-size: 12px; color: #888; background: #f8f9fa; }
+        
+        /* ナビのスタイル */
         .bottom-nav { position: fixed; bottom: 0; width: 375px; height: 65px; background-color: #d3d3d3; display: flex; justify-content: space-around; align-items: center; border-top: 1px solid #bbb; z-index: 1000; }
         .nav-item { text-decoration: none; width: 50px; height: 50px; display: flex; justify-content: center; align-items: center; }
         .nav-icon { font-size: 24px; display: block; }
     </style>
-
     {% block extra_css %}{% endblock %}
 </head>
 <body>
     <div class="app-container">
+        
         {% block content %}{% endblock %}
-        <div class="bottom-nav">
-           <a href="{% url 'closet:top' %}" class="nav-item"><span class="nav-icon">🏠</span></a>
-           <a href="{% url 'closet:item_search' %}" class="nav-item"><span class="nav-icon">🔍</span></a>
-           <a href="{% url 'closet:consideration_list' %}" class="nav-item"><span class="nav-icon">🛒</span></a>
-           <a href="{% url 'closet:mypage' %}" class="nav-item"><span class="nav-icon">👤</span></a>
-        </div>
+{% block footer %}
+
+    </footer>
+{% endblock %}
+
+{% block bottom_nav %}
+    <div class="bottom-nav">
+            <div class="bottom-nav">
+                <a href="{% url 'closet:top' %}" class="nav-item"><span class="nav-icon">🏠</span></a>
+                <a href="{% url 'closet:item_search' %}" class="nav-item"><span class="nav-icon">🔍</span></a>
+                <a href="{% url 'closet:consideration_list' %}" class="nav-item"><span class="nav-icon">🛒</span></a>
+                <a href="{% url 'closet:mypage' %}" class="nav-item"><span class="nav-icon">👤</span></a>
+            </div>
+        {% endblock %}
+        
     </div>
 </body>
 </html>
