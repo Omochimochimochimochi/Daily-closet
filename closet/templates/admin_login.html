@@ -18,28 +18,31 @@
 <body>
     <div class="login-box">
         <h1 style="font-size: 20px; margin-bottom: 30px;">Daily closet<br>
-        <form method="POST">
-            {% csrf_token %} <div class="field">
-                <label>メールアドレス</label>
-                <input type="email" name="email" placeholder="example@mail.com">
-            </div>
+ <form method="post" action="{% url 'closet:login' %}">
+    {% csrf_token %}
+
+    {% if messages %}
+        <div style="color: red; border: 1px solid red; padding: 10px; margin-bottom: 20px; background: #fff0f0;">
+            {% for message in messages %}
+                {{ message }}
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <div class="field">
+        <label>ユーザー名 </label>
+        <input type="text" name="username" required placeholder="ユーザー名を入力">
+    </div>
 
     <div class="field">
         <label>パスワード</label>
         <div style="position: relative;">
-        <input type="password" name="password" id="passwordInput">
-        <span id="togglePassword" style="position: absolute; right: 10px; top: 8px; cursor: pointer;">👁️</span>
+            <input type="password" name="password" required>
+        </div>
     </div>
-</div>
 
-            <div class="checkbox-group">
-                <input type="checkbox" id="auto-login">
-                <label for="auto-login" style="font-size: 14px; margin: 0 0 0 5px;">次回から自動ログイン</label>
-            </div>
-
-            <button type="submit" class="btn-login">ログイン</button>
-        </form>
-
+    <button type="submit" class="btn-login">ログイン</button>
+</form>
         <div class="admin-links">
             <a href="#">★管理者ログイン</a>
             <a href="#">★ゲスト管理者ログイン</a>

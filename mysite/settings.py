@@ -131,3 +131,8 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+# --- ここから追記 ---
+# settings.py の一番下
+LOGIN_REDIRECT_URL = 'closet:top_logged_in'  # アプリ名:名前 の形式
+LOGOUT_REDIRECT_URL = 'closet:top'         # ログアウト後はログイン画面へ

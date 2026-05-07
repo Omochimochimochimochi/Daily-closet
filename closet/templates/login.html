@@ -19,9 +19,10 @@
 <div class="login-box">
     <form method="post">
         {% csrf_token %}
+        
         <div class="field">
-            <label>メールアドレス</label>
-            <input type="email" name="email" placeholder="example@mail.com">
+            <label>メールアドレス / ユーザー名</label>
+            <input type="text" name="username" placeholder="admin2 または mail@example.com">
         </div>
 
         <div class="field">
@@ -46,7 +47,6 @@
 
         <div class="admin-links">
             <a href="{% url 'admin:index' %}">★管理者ログイン</a>
-            <a href="#">★ゲスト管理者ログイン</a>
         </div>
     </form>
 </div>

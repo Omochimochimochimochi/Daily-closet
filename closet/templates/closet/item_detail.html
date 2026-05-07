@@ -4,7 +4,6 @@
 
 {% block extra_css %}
 <style>
-    /* CSSの中身はそのまま */
     .header { display: flex; align-items: center; justify-content: space-between; padding: 0 15px; border-bottom: 1px solid #eee; background-color: white; height: 55px; width: 100%; box-sizing: border-box; }
     .back-btn { text-decoration: none; color: #666; font-size: 20px; width: 20px; display: flex; align-items: center; }
     .header-title { font-size: 20px; font-weight: bold; margin: 0; flex-grow: 1; text-align: center; }
@@ -14,8 +13,11 @@
     .detail-info-section { padding: 20px; }
     .brand-label, .item-name-label { font-size: 14px; margin-bottom: 5px; }
     .price-label { font-size: 20px; font-weight: bold; margin-top: 10px; }
-    .heart-icon { font-size: 30px; cursor: pointer; color: #ccc; }
+    
+    /* ハートアイコンのスタイル */
+    .heart-icon { font-size: 30px; cursor: pointer; color: #ccc; transition: color 0.2s; }
     .heart-icon.active { color: #ff69b4; } 
+    
     .select-row { display: flex; gap: 10px; margin-top: 20px; }
     .select-group { flex: 1; }
     .select-group label { display: block; font-size: 12px; margin-bottom: 5px; }
@@ -87,18 +89,49 @@
     </form>
 
     <div class="expand-menu" onclick="toggleInfoModal()">素材、サイズ詳細 ＞</div>
-    </div>
+</div>
 
-<div id="infoModal" class="modal"><div class="info-modal-content"><div class="close-modal-circle" onclick="toggleInfoModal()">&times;</div><h3>素材・サイズ詳細</h3><p>綿 100%</p></div></div>
+<div id="infoModal" class="modal">
+    <div class="info-modal-content">
+        <div class="close-modal-circle" onclick="toggleInfoModal()">&times;</div>
+        <h3>素材・サイズ詳細</h3>
+        <p>綿 100%</p>
+    </div>
+</div>
 {% endblock %}
 
 {% block extra_js %}
 <script>
-    function toggleHeart(element) {
-        element.classList.toggle('active');
-        element.innerHTML = element.classList.contains('active') ? '♥' : '♡';
-    }
-
+function toggleHeart(element) {
+    const url = "{% url 'closet:toggle_favorite' item.id %}";
+    
+    fetch(url, {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': '{{ csrf_token }}',  // Djangoのセキュリティ（おまじない）
+            'Content-Type': 'application/json'
+        },
+    })
+    .then(response => {
+        if (response.ok) {
+            return response.json();
+        }
+        // ログインしていない場合などはエラーになる
+        throw new Error('Network response was not ok');
+    })
+    .then(data => {
+        if (data.status === 'ok') {
+            // サーバー側で成功したら、見た目を変える
+            element.classList.toggle('active');
+            element.innerHTML = element.classList.contains('active') ? '♥' : '♡';
+        }
+    })
+    .catch(error => {
+        alert('ログインが必要です'); // ログインしていない場合などのエラー通知
+        console.error('Error:', error);
+    });
+}
+    
     function checkSelection() {
         const size = document.getElementById('size-select').value;
         const color = document.getElementById('color-select').value;
