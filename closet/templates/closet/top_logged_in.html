@@ -3,33 +3,38 @@
 
 {% block title %}Daily closet{% endblock %}
 
+{% block extra_css %}
+<style>
+    /* 画像をスマホサイズ(375px)の枠内に完全に収める */
+    .main-visual img {
+        width: 100% !important;
+        height: auto !important;
+        display: block;
+    }
+    
+    .welcome-msg {
+        text-align: center; 
+        margin: 15px 0;
+        font-size: 14px;
+        color: #333;
+    }
+</style>
+{% endblock %}
+
 {% block content %}
     <h1 style="text-align: center; margin-top: 20px; font-weight: bold;">Daily closet</h1>
     
-    <form action="{% url 'closet:search_results' %}" method="get" style="display: flex; gap: 5px; margin-bottom: 20px; padding: 0 10px;">
-        <input type="text" name="q" placeholder="キーワードを入力" style="flex: 1; padding: 8px;">
-        <button type="submit" style="padding: 8px;">🔍</button>
-    </form> 
+    <div class="welcome-msg">
+        ようこそ、{{ request.user.username }} さん
+    </div>
 
-    <div style="margin-bottom: 15px;">
+    <div class="main-visual">
         <img src="{% static 'images/main_visual.jpg' %}" alt="メイン画像">
     </div>
 
-<p style="font-size: 14px; color: #666; padding: 0 10px;">
-    注目のハッシュタグ：<br>
-    <a href="{% url 'closet:search_results' %}?tag=セール" style="text-decoration: none; color: #333;">#セール</a>
-    <a href="{% url 'closet:search_results' %}?tag=ブラウン" style="text-decoration: none; color: #333;">#ブラウン</a>
-    <a href="{% url 'closet:search_results' %}?tag=スウェット" style="text-decoration: none; color: #333;">#スウェット</a>
-</p>
+    {% endblock %}
 
-    <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
 
-    <div style="text-align: center; margin-top: 30px;">
-        <a href="{% url 'closet:admin_login' %}" style="font-weight: bold; display: block; margin-bottom: 10px; color: #1a73e8; text-decoration: underline;">
-            ＞ログイン
-        </a>
-        <a href="{% url 'closet:signup' %}" style="font-weight: bold; display: block; margin-bottom: 10px; color: #1a73e8; text-decoration: underline;">
-            ＞新規会員登録はこちら
-        </a>
-    </div>
+{% block bottom_nav %}
+    {{ block.super }}
 {% endblock %}

@@ -3,15 +3,22 @@
 
 {% block extra_css %}
 <style>
-    .login-box { background: white; padding: 40px; border: 1px solid #333; width: 350px; text-align: center; margin: 50px auto; }
-    .field { margin-bottom: 20px; text-align: left; }
+    .login-box { background: white; padding: 40px; border: 1px solid #333; width: 350px; text-align: center; margin: 50px auto; box-sizing: border-box; }
+    .field { margin-bottom: 20px; text-align: left; width: 100%; }
     label { display: block; margin-bottom: 8px; color: #555; text-align: center; font-size: 18px; }
-    input[type="email"], input[type="password"] { width: 100%; padding: 10px; border: 1px solid #333; box-sizing: border-box; }
+    
+  
+    .field input { 
+        width: 100% !important; 
+        padding: 12px !important; 
+        border: 1px solid #333 !important; 
+        box-sizing: border-box !important; 
+        display: block !important;
+        font-size: 16px;
+    }
+    
     .checkbox-group { text-align: left; margin-bottom: 25px; font-size: 14px; display: flex; align-items: center; justify-content: center; }
     .btn-login { background-color: #a0c4ff; border: none; padding: 12px; width: 80%; font-size: 18px; border-radius: 10px; cursor: pointer; margin-bottom: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-    .links a { display: block; margin-bottom: 12px; font-size: 14px; color: #1a73e8; text-decoration: underline; }
-    .admin-links { margin-top: 30px; border-top: 1px solid #eee; padding-top: 20px; }
-    .admin-links a { color: #999; text-decoration: none; font-size: 13px; display: block; margin-bottom: 8px; }
 </style>
 {% endblock %}
 
@@ -20,16 +27,22 @@
     <form method="post">
         {% csrf_token %}
         
+        {% if messages %}
+            <div style="color: red; margin-bottom: 20px; font-size: 14px;">
+                {% for m in messages %}{{ m }}{% endfor %}
+            </div>
+        {% endif %}
+
         <div class="field">
-            <label>メールアドレス / ユーザー名</label>
-            <input type="text" name="username" placeholder="admin2 または mail@example.com">
+            <label>ユーザー名</label>
+            <input type="text" name="username" placeholder="admin2" required>
         </div>
 
         <div class="field">
             <label>パスワード</label>
-            <div style="position: relative;">
-                <input type="password" name="password">
-                <span style="position: absolute; right: 10px; top: 8px; cursor: pointer;">👁️</span>
+            <div style="position: relative; width: 100%;">
+                <input type="password" name="password" required>
+                <span style="position: absolute; right: 10px; top: 12px; cursor: pointer;">👁️</span>
             </div>
         </div>
 
@@ -39,15 +52,6 @@
         </div>
 
         <button type="submit" class="btn-login">ログイン</button>
-
-        <div class="links">
-            <a href="{% url 'closet:signup' %}">＞新規会員登録はこちら</a>
-            <a href="#">＞パスワードをお忘れの方はこちら</a>
-        </div>
-
-        <div class="admin-links">
-            <a href="{% url 'admin:index' %}">★管理者ログイン</a>
-        </div>
     </form>
 </div>
 {% endblock %}

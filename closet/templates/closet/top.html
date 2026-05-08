@@ -3,20 +3,39 @@
 
 {% block title %}Daily closet{% endblock %}
 
-{% block content %}
+{% block extra_css %}
+<style>
+    /* 画像が app-container (375px) からはみ出さないように固定 */
+    .main-visual img {
+        width: 100% !important;
+        height: auto !important;
+        display: block;
+    }
     
+    /* 検索バーの微調整 */
+    .search-container {
+        display: flex; 
+        gap: 5px; 
+        margin-bottom: 20px; 
+        padding: 0 10px;
+        box-sizing: border-box;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
     <h1 style="text-align: center; margin-top: 20px; font-weight: bold;">Daily closet</h1>
     
-    <form action="{% url 'closet:search_results' %}" method="get" style="display: flex; gap: 5px; margin-bottom: 20px; padding: 0 10px;">
-        <input type="text" name="q" placeholder="キーワードを入力" style="flex: 1; padding: 8px;">
-        <button type="submit" style="padding: 8px;">🔍</button>
+    <form action="{% url 'closet:search_results' %}" method="get" class="search-container">
+        <input type="text" name="q" placeholder="キーワードを入力" style="flex: 1; padding: 8px; border: 1px solid #ccc;">
+        <button type="submit" style="padding: 8px; cursor: pointer;">🔍</button>
     </form> 
 
-    <div style="margin-bottom: 15px;">
-        <img src="{% static 'images/main_visual.jpg' %}" alt="メイン画像" style="width: 100%; max-width: 100%; height: auto; display: block;">
+    <div class="main-visual">
+        <img src="{% static 'images/main_visual.jpg' %}" alt="メイン画像">
     </div>
 
-    <p style="font-size: 14px; color: #666; padding: 0 10px;">
+    <p style="font-size: 14px; color: #666; padding: 0 10px; margin-top: 15px;">
         注目のハッシュタグ：<br>
         <a href="{% url 'closet:search_results' %}?tag=セール" style="text-decoration: none; color: #333;">#セール</a>
         <a href="{% url 'closet:search_results' %}?tag=ブラウン" style="text-decoration: none; color: #333;">#ブラウン</a>
@@ -35,5 +54,5 @@
     </div>
 {% endblock %}
 
-{% block footer %}{% endblock %}
+{# ログイン前のTOPページでは下のメニューを出さない設定 #}
 {% block bottom_nav %}{% endblock %}

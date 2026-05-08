@@ -1,0 +1,97 @@
+{% extends 'closet/base.html' %}
+{% load static %}
+
+{% block extra_css %}
+<style>
+    /* ログインボックスの中央寄せ */
+    .login-wrapper { 
+        display: flex; 
+        justify-content: center; 
+        padding-top: 50px; 
+    }
+    .login-box { 
+        background: white; 
+        padding: 30px; 
+        width: 330px; 
+        text-align: center; 
+        border: 1px solid #ddd;
+        box-sizing: border-box;
+    }
+    .field { margin-bottom: 20px; text-align: left; }
+    label { display: block; margin-bottom: 8px; color: #555; text-align: center; font-size: 16px; }
+    
+    /* ユーザー名(text)とパスワードの両方にデザインを適用 */
+    .field input { 
+        width: 100% !important; 
+        padding: 12px !important; 
+        border: 1px solid #333 !important; 
+        box-sizing: border-box !important; 
+        font-size: 16px;
+    }
+    
+    .btn-login { 
+        background-color: #a0c4ff; 
+        border: none; 
+        padding: 12px; 
+        width: 100%; 
+        font-size: 18px; 
+        border-radius: 10px; 
+        cursor: pointer; 
+        margin-top: 10px;
+    }
+    .admin-links { margin-top: 30px; border-top: 1px solid #eee; padding-top: 20px; }
+    .admin-links a { color: #999; text-decoration: none; font-size: 13px; display: block; margin-bottom: 10px; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="login-wrapper">
+    <div class="login-box">
+        <h1 style="font-size: 20px; margin-bottom: 25px;">Daily closet</h1>
+
+        <form method="post" action="{% url 'closet:login' %}">
+            {% csrf_token %}
+
+            {% if messages %}
+                <div style="color: red; font-size: 13px; margin-bottom: 15px;">
+                    {% for message in messages %}{{ message }}{% endfor %}
+                </div>
+            {% endif %}
+
+            <div class="field">
+                <label>ユーザー名</label>
+                <input type="text" name="username" placeholder="admin2" required>
+            </div>
+
+            <div class="field">
+                <label>パスワード</label>
+                <div style="position: relative;">
+                    <input type="password" name="password" id="passwordInput" required>
+                    <span id="togglePassword" style="position: absolute; right: 10px; top: 12px; cursor: pointer;">👁️</span>
+                </div>
+            </div>
+
+            <button type="submit" class="btn-login">ログイン</button>
+        </form>
+
+        <div class="admin-links">
+            <a href="#">★管理者ログイン</a>
+            <a href="#">★ゲスト管理者ログイン</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    const togglePassword = document.querySelector('#togglePassword');
+    const passwordInput = document.querySelector('#passwordInput');
+
+    togglePassword.addEventListener('click', function () {
+        // パスワードの表示・非表示の切り替え機能だけを残します
+        const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+        passwordInput.setAttribute('type', type);
+        // アイコンの textContent 書き換えを削除したので、👁️ のまま固定されます
+    });
+</script>
+{% endblock %}

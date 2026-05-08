@@ -32,7 +32,7 @@ def login_view(request):
             messages.error(request, "ユーザー名またはパスワードが正しくありません。")
             
     # GETの時、または失敗時はログイン画面を表示
-    return render(request, 'admin_login.html')
+    return render(request, 'closet/admin_login.html')
 
 def signup(request):
     if request.method == 'POST':
