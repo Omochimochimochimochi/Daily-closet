@@ -1,4 +1,5 @@
 {% extends 'closet/base.html' %}
+{% load humanize %}
 
 {% block title %}アイテム詳細 - {{ item.item_name }}{% endblock %}
 
@@ -53,7 +54,7 @@
         <div>
             <div class="brand-label">ブランド名：{{ item.brand_name }}</div>
             <div class="item-name-label">アイテム名：{{ item.item_name }}</div>
-            <div class="price-label">¥{{ item.price }}（税込み）</div>
+            <div class="price-label">¥{{ item.price|intcomma }}（税込み）</div>
         </div>
         <div class="heart-icon" onclick="toggleHeart(this)">♡</div>
     </div>
