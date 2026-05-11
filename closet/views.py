@@ -7,6 +7,8 @@ from django.contrib import messages
 from django.http import JsonResponse
 from .models import Item, ConsiderationItem, PurchaseItem
 
+from django.db.models import Q 
+
 # --- 1. 認証・トップページ ---
 
 def top(request):
@@ -70,15 +72,31 @@ def item_detail(request, pk):
         'is_favorite': is_favorite
     })
 
+
 def search_results(request):
-    query = request.GET.get('q') 
-    if query:
-        items = Item.objects.filter(
-            Q(item_name__icontains=query) | Q(brand_name__icontains=query)
+    # 1. userの絞り込みを一旦消して、すべてのアイテムを対象にする
+    items = Item.objects.all()
+
+    # 2. HTMLから送られてきたデータを受け取る
+    tag_keyword = request.GET.get('tag')
+    category_keyword = request.GET.get('category')
+
+    # 3. タグ（キーワード）で絞り込み
+    if tag_keyword:
+        items = items.filter(
+            Q(item_name__icontains=tag_keyword) | 
+            Q(brand_name__icontains=tag_keyword) |
+            Q(free_tags__icontains=tag_keyword)  # Choicesにあったfree_tagsに変更
         )
-    else:
-        items = Item.objects.all() 
-    return render(request, 'search_results.html', {'items': items, 'query': query})
+
+    # 4. カテゴリーで絞り込み
+    # あなたのモデルのフィールド名が 'style' かもしれないので一旦 style で試します
+    if category_keyword:
+        # もしエラーが出たらここを 'style' ではなく 'tags' などに変える必要があるかもしれません
+        items = items.filter(style=category_keyword)
+
+    return render(request, 'closet/search_results.html', {'items': items})
+
 
 # お気に入り登録（これ1つにまとめました！）
 @login_required
