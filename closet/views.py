@@ -5,8 +5,10 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout  # 追加
 from django.contrib import messages
 from django.http import JsonResponse
-from .models import Item, ConsiderationItem, PurchaseItem
-
+from .models import Item, ConsiderationItem, Order, OrderItem
+from django.shortcuts import render, redirect, get_object_or_404
+from .models import Item, Order, OrderItem, ConsiderationItem
+from django.contrib.auth.decorators import login_required
 from django.db.models import Q 
 
 # --- 1. 認証・トップページ ---
@@ -98,31 +100,52 @@ def search_results(request):
     return render(request, 'closet/search_results.html', {'items': items})
 
 
-# お気に入り登録（これ1つにまとめました！）
+# 1. お気に入り用（ハートマーク：Ajax用）
 @login_required
 def toggle_favorite(request, item_id):
+    # ここにさっきの toggle_favorite の中身を書く
+    # ※ もし中身を消しちゃってたら、一旦 pass とかでもサーバーは動きます
+    return JsonResponse({'status': 'ok'})
+
+# 2. 検討リスト用（カートへボタン：フォーム送信用）
+@login_required
+def add_to_consideration(request, item_id):
     if request.method == 'POST':
         item = get_object_or_404(Item, id=item_id)
         
-        # すでに検討リストにあるか確認
-        consideration, created = ConsiderationItem.objects.get_or_create(
+        size = request.POST.get('size')
+        color = request.POST.get('color')
+        quantity = int(request.POST.get('count', 1))
+
+        # --- ここで「実装メモ」の処理を行う ---
+        # 注文(Order)と明細(OrderItem)を作る
+        order = Order.objects.create(user=request.user)
+        OrderItem.objects.create(
+            order=order,
+            item=item,
+            size=size,
+            color=color,
+            quantity=quantity,
+            price_at_purchase=item.price
+        )
+
+        # 検討リスト(実質カート)にも保存
+        ConsiderationItem.objects.create(
             user=request.user,
-            item=item
+            item=item,
+            size=size,
+            color=color,
+            quantity=quantity
         )
         
-        if not created:
-            # すでにある場合は削除（お気に入り解除）
-            consideration.delete()
-            status = 'removed'
-        else:
-            # 新しく作った場合はそのまま（お気に入り登録）
-            status = 'added'
-            
-        return JsonResponse({'status': 'ok', 'action': status})
+        # 在庫を減らす処理（Itemにstockがある場合）
+        if hasattr(item, 'stock'):
+            item.stock -= quantity
+            item.save()
+
+        return redirect('closet:item_list')
     
-    return JsonResponse({'status': 'error'}, status=400)
-
-
+    return redirect('closet:item_detail', item_id=item_id)
 # --- 3. 検討リスト・購入フロー ---
 
 def consideration_list(request):
