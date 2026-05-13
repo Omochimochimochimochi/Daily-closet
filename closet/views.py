@@ -146,6 +146,21 @@ def add_to_consideration(request, item_id):
         return redirect('closet:item_list')
     
     return redirect('closet:item_detail', item_id=item_id)
+
+@login_required
+def consideration_list(request):
+    # 1. ログイン中のユーザーの検討アイテムを、登録が新しい順に取得
+    considerations = ConsiderationItem.objects.filter(user=request.user).order_by('-added_at')
+    
+    # 2. 合計金額を計算（オプションですが、あると便利！）
+    total_price = sum(c.item.price * c.quantity for c in considerations)
+    
+    # 3. テンプレートにデータを渡して表示
+    return render(request, 'closet/consideration_list.html', {
+        'considerations': considerations,
+        'total_price': total_price,
+    })
+
 # --- 3. 検討リスト・購入フロー ---
 
 def consideration_list(request):

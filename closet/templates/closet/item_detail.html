@@ -41,12 +41,20 @@
 </div>
 
 <div class="detail-image-slider">
-    <div class="slider-wrapper">
+    <div class="slider-wrapper" style="display: flex; overflow-x: auto; scroll-snap-type: x mandatory;">
         {% if item.image %}
-            <img src="{{ item.image.url }}" class="slider-img">
+            <img src="{{ item.image.url }}" class="slider-img" style="scroll-snap-align: start; flex-shrink: 0; width: 100%;">
         {% endif %}
+
+        {% for extra in item.additional_images.all %}
+            <img src="{{ extra.image.url }}" class="slider-img" style="scroll-snap-align: start; flex-shrink: 0; width: 100%;">
+        {% endfor %}
     </div>
-    <div class="slider-dots">● ○ ○</div>
+
+    <div class="slider-dots">
+        {% if item.image %}●{% endif %}
+        {% for _ in item.additional_images.all %}○{% endfor %}
+    </div>
 </div>
 
 <div class="detail-info-section">

@@ -1,42 +1,84 @@
 {% extends 'closet/base.html' %}
 {% load static %}
+{% load humanize %}
 
 {% block extra_css %}
 <style>
-    .fav-title { display: flex; justify-content: center; align-items: center; font-size: 1.2em; font-weight: bold; padding: 20px 0; width: 100%; }
-    .fav-count { text-align: center; color: #666; margin-bottom: 20px; }
-    .item-card { display: flex; align-items: center; padding: 15px; border-bottom: 1px solid #eee; }
-    .item-img { width: 100px; height: 100px; object-fit: cover; border: 1px solid #ddd; }
-    .item-details { margin-left: 15px; flex-grow: 1; }
-    .buy-button { display: block; width: 80%; margin: 10px auto; padding: 12px; background: #666; color: white; text-align: center; border-radius: 5px; text-decoration: none; }
+    /* 画像が巨大化するのを防ぐ設定 */
+    .item-img {
+        width: 120px;
+        height: 120px;
+        object-fit: cover; /* 縦横比を維持して切り抜き */
+        border-radius: 5px;
+        flex-shrink: 0;
+    }
+
+    /* 横並びにするための設定 */
+    .item-card {
+        display: flex;
+        align-items: flex-start;
+        padding: 10px 0;
+    }
+
+    .item-details {
+        margin-left: 15px;
+        flex-grow: 1;
+    }
+
+    /* ボタンのデザイン */
+    .buy-button {
+        display: block;
+        padding: 10px;
+        background: #888; /* 設計図に近いグレー */
+        color: white;
+        text-align: center;
+        border-radius: 5px;
+        text-decoration: none;
+        font-size: 0.9rem;
+        font-weight: bold;
+    }
 </style>
 {% endblock %}
 
 {% block content %}
-<div class="fav-title">お気に入り</div>
-<div class="fav-count">お気に入り登録アイテム：{{ items.count }}点</div>
+<div style="padding: 20px; max-width: 600px; margin: 0 auto;">
+    <h2 style="text-align: center; font-size: 1.2rem;">検討リスト</h2>
+    <p style="text-align: center; color: #666; font-size: 0.9rem; margin-bottom: 20px;">
+        登録アイテム：{{ items.count }}点
+    </p>
 
-{% for c_item in items %}
-    <div class="item-card">
-        {% if c_item.item.image %}
-            <img src="{{ c_item.item.image.url }}" class="item-img">
-        {% else %}
-            <div class="item-img" style="background:#eee; display:flex; align-items:center; justify-content:center;">No Image</div>
-        {% endif %}
+    {% for c_item in items %}
+        <div style="border: 1px solid #eee; border-radius: 10px; padding: 15px; margin-bottom: 20px; background: #fff;">
+            
+            <div class="item-card">
+                {% if c_item.item.image %}
+                    <img src="{{ c_item.item.image.url }}" class="item-img">
+                {% else %}
+                    <div class="item-img" style="background:#eee; display:flex; align-items:center; justify-content:center;">No Image</div>
+                {% endif %}
 
-        <div class="item-details">
-            <div><strong>{{ c_item.item.item_name }}</strong></div>
-            <div>カラー: {{ c_item.color }} / サイズ: {{ c_item.size }}</div>
-            <div>¥{{ c_item.item.price|default:"0" }} (税込)</div>
+                <div class="item-details">
+                    <div style="font-weight: bold; margin-bottom: 5px;">{{ c_item.item.item_name }}</div>
+                    <div style="font-size: 0.85rem; color: #555;">
+                        カラー: {{ c_item.color|default:"未選択" }} / サイズ: {{ c_item.size|default:"未選択" }}
+                    </div>
+                    <div style="margin-top: 5px; font-weight: bold;">
+                        ¥{{ c_item.item.price|intcomma }} <span style="font-size: 0.8rem; font-weight: normal;">(税込)</span>
+                    </div>
+                </div>
+
+                <form action="{% url 'closet:remove_from_consideration' c_item.id %}" method="POST" style="margin-left: 10px;">
+                    {% csrf_token %}
+                    <button type="submit" style="background:none; border:none; cursor:pointer; font-size: 1.2rem; color: #ccc;">🗑️</button>
+                </form>
+            </div>
+
+            <div style="display: flex; justify-content: flex-end; mt-3">
+                <a href="#" class="buy-button" style="width: 150px;">擬似購入へ進む</a>
+            </div>
         </div>
-
-        <form action="{% url 'closet:remove_from_consideration' c_item.id %}" method="POST">
-            {% csrf_token %}
-            <button type="submit" style="background:none; border:none; cursor:pointer; font-size: 1.2rem;">🗑️</button>
-        </form>
-    </div>
-    <a href="#" class="buy-button">擬似購入へ進む</a>
-{% empty %}
-    <p style="text-align:center; color:#999; margin-top:50px;">お気に入りアイテムはありません。</p>
-{% endfor %}
+    {% empty %}
+        <p style="text-align:center; color:#999; margin-top:50px;">アイテムはありません。</p>
+    {% endfor %}
+</div>
 {% endblock %}
