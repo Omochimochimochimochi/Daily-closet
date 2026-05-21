@@ -4,142 +4,64 @@
 
 {% block extra_css %}
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-
 <style>
-    /* 全体をスマホサイズ（設計図に近い凝縮感）に調整 */
-    .detail-container {
-        max-width: 400px; /* 少し幅を絞る */
-        margin: 0 auto;
-        padding: 10px;
-    }
-
-    /* 戻るボタン：少し文字を小さく、余白を調整 */
-    .back-link {
-        display: flex;
-        align-items: center;
-        text-decoration: none;
-        color: #333;
-        font-size: 0.8rem; /* 少し小さく */
-        margin-bottom: 8px;
-    }
-
-    /* スライダー：設計図通り正方形を維持 */
-    .slider-container {
-        width: 100%;
-        overflow-x: auto;
-        display: flex;
-        scroll-snap-type: x mandatory;
-        scrollbar-width: none;
-        border: 1px solid #f0f0f0;
-    }
-    .slider-container::-webkit-scrollbar { display: none; }
-    .slider-item { flex: 0 0 100%; scroll-snap-align: start; }
-    .slider-item img { width: 100%; aspect-ratio: 1 / 1; object-fit: cover; }
-
-    /* ハートアイコン */
-    .heart-btn {
-        background: none;
-        border: none;
-        cursor: pointer;
-        font-size: 1.2rem; /* 1.5から縮小 */
-        color: #ccc;
-        padding: 0;
-    }
+    .detail-container { max-width: 400px; margin: 0 auto; padding: 15px; box-sizing: border-box; }
+    .slider-container img { width: 100%; display: block; aspect-ratio: 1/1; object-fit: cover; }
+    .price-heart-row { display: flex; justify-content: space-between; align-items: center; margin: 15px 0; }
+    .heart-btn { background: none; border: none; cursor: pointer; font-size: 1.5rem; color: #ccc; }
     .heart-btn.is-active { color: #ff5a5f; }
-
-    /* セレクトボックス：高さを抑えてコンパクトに */
-    .selection-grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr 1fr;
-        gap: 8px;
-        margin-top: 12px;
-    }
-    .selection-grid small { font-size: 0.65rem; color: #888; }
-    .selection-grid select {
-        width: 100%;
-        padding: 6px; /* 8pxから短縮 */
-        border: 1px solid #ddd;
-        background: #fff;
-        font-size: 0.75rem;
-        border-radius: 4px;
-    }
-
-    /* 検討リストボタン：丸みを設計図に合わせる */
-    .btn-consideration {
-        display: block;
-        width: 100%;
-        padding: 12px; /* 15pxから少しスリムに */
-        background: #8e8e8e;
-        color: white;
-        text-align: center;
-        text-decoration: none;
-        margin-top: 15px;
-        border-radius: 12px; /* 設計図のような丸み */
-        font-weight: bold;
-        font-size: 0.9rem;
-    }
-
-    /* 下部メニュー：余白を詰める */
-    .detail-menu .menu-item {
-        border-bottom: 1px solid #eee;
-        padding: 12px 0;
-        display: flex;
-        justify-content: space-between;
-        text-decoration: none;
-        color: #333;
-        font-size: 0.85rem;
-    }
+    .selection-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 20px 0; }
+    .selection-grid select { width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; }
+    .btn-consideration { display: block; width: 100%; padding: 15px; background: #8e8e8e; color: white; text-align: center; border-radius: 12px; text-decoration: none; font-weight: bold; }
 </style>
 {% endblock %}
 
 {% block content %}
-<div style="max-width: 500px; margin: 0 auto; background: #fff; padding: 10px;">
-    
-    <a href="{% url 'closet:search_results' %}" class="back-link">
-        <i class="fa-solid fa-chevron-left" style="margin-right: 5px;"></i> アイテム詳細
-    </a>
-
-    <div class="slider-container" style="border: 1px solid #eee;">
-        {% if item.image %}
-        <div class="slider-item"><img src="{{ item.image.url }}"></div>
-        {% endif %}
-        {% for extra in item.additional_images.all %}
-        <div class="slider-item"><img src="{{ extra.image.url }}"></div>
-        {% endfor %}
+<div class="detail-container">
+    <div class="slider-container">
+        {% if item.image %}<img src="{{ item.image.url }}">{% endif %}
     </div>
 
-    <div style="padding: 15px 0;">
-        <div style="display: flex; justify-content: space-between; align-items: flex-start;">
-            <div>
-                <div style="font-size: 0.75rem; color: #888;">{{ item.brand_name }}</div>
-                </div>
-                <div style="font-weight: bold; font-size: 1.1rem; margin-top: 2px;">{{ item.item_name }}</div>
-            </div>
-            <div style="text-align: right;">
-                <div style="font-weight: bold; font-size: 1.1rem;">¥{{ item.price|intcomma }} <small style="font-weight: normal; font-size: 0.7rem;">(税込み)</small></div>
-                
-                <button class="heart-btn {% if is_favorite %}is-active{% endif %}" style="margin-top: 10px;">
-                    <i class="{% if is_favorite %}fa-solid{% else %}fa-regular{% endif %} fa-heart"></i>
-                </button>
-            </div>
+    <div class="info-wrapper">
+        <div class="brand">{{ item.brand_name }}</div>
+        <div class="item-name">{{ item.item_name }}</div>
+        
+        <div class="price-heart-row">
+            <div class="price">¥{{ item.price|intcomma }}</div>
+            <button id="heart-btn" class="heart-btn {% if is_favorite %}is-active{% endif %}" data-id="{{ item.id }}">
+                <i class="{% if is_favorite %}fa-solid{% else %}fa-regular{% endif %} fa-heart"></i>
+            </button>
         </div>
 
         <div class="selection-grid">
-            <div><small style="color:#666;">サイズ</small><select><option>S</option><option>M</option><option>L</option></select></div>
-            <div><small style="color:#666;">カラー</small><select><option>ブラック</option><option>ホワイト</option></select></div>
-            <div><small style="color:#666;">個数</small><select><option>1</option><option>2</option></select></div>
+            <div><small>サイズ</small><select><option>S</option><option>M</option></select></div>
+            <div><small>カラー</small><select><option>ブラック</option></select></div>
+            <div><small>個数</small><select><option>1</option></select></div>
         </div>
 
-<a href="{% url 'closet:consideration_list' %}" class="btn-consideration">
-    検討リストへ <i class="fa-solid fa-cart-shopping"></i>
-
-</a>
-
-        <div class="detail-menu" style="margin-top: 20px; border-top: 1px solid #eee;">
-            <a href="#" class="menu-item">素材、サイズ詳細 <i class="fa-solid fa-chevron-right" style="color:#ccc;"></i></a>
-            <a href="#" class="menu-item">アイテム説明（メニュー開閉） <i class="fa-solid fa-chevron-right" style="color:#ccc;"></i></a>
-            <a href="#" class="menu-item">配送について <i class="fa-solid fa-chevron-right" style="color:#ccc;"></i></a>
-        </div>
+        <a href="{% url 'closet:consideration_list' %}" class="btn-consideration">
+            検討リストへ <i class="fa-solid fa-cart-shopping"></i>
+        </a>
     </div>
 </div>
+
+<script>
+    document.getElementById('heart-btn').addEventListener('click', function() {
+        const itemId = this.getAttribute('data-id');
+        fetch(`/item/${itemId}/favorite/`, {
+            method: 'POST',
+            headers: { 'X-CSRFToken': '{{ csrf_token }}', 'Content-Type': 'application/json' },
+        })
+        .then(r => r.json())
+        .then(data => {
+            // views.pyが返す値が success になったので、ここも success でチェック
+            if (data.status === 'success') {
+                this.classList.toggle('is-active');
+                const icon = this.querySelector('i');
+                icon.classList.toggle('fa-solid');
+                icon.classList.toggle('fa-regular');
+            }
+        });
+    });
+</script>
 {% endblock %}

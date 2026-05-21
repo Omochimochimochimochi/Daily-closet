@@ -105,7 +105,7 @@ def search_results(request):
 def toggle_favorite(request, item_id):
     # ここにさっきの toggle_favorite の中身を書く
     # ※ もし中身を消しちゃってたら、一旦 pass とかでもサーバーは動きます
-    return JsonResponse({'status': 'ok'})
+   return JsonResponse({'status': 'success', 'is_favorite': True})
 
 # 2. 検討リスト用（カートへボタン：フォーム送信用）
 @login_required
