@@ -5,14 +5,38 @@
 {% block extra_css %}
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 <style>
-    .detail-container { max-width: 400px; margin: 0 auto; padding: 15px; box-sizing: border-box; }
-    .slider-container img { width: 100%; display: block; aspect-ratio: 1/1; object-fit: cover; }
+    /* 全体を囲むコンテナに max-width を設定 */
+    .detail-container {
+        max-width: 400px;
+        margin: 0 auto;
+        padding: 15px;
+        box-sizing: border-box; /* 重要：paddingを幅に含める */
+    }
+
+    .slider-container img { width: 100%; aspect-ratio: 1/1; object-fit: cover; }
+
     .price-heart-row { display: flex; justify-content: space-between; align-items: center; margin: 15px 0; }
-    .heart-btn { background: none; border: none; cursor: pointer; font-size: 1.5rem; color: #ccc; }
+    .heart-btn { background: none; border: none; font-size: 1.5rem; color: #ccc; cursor: pointer; }
     .heart-btn.is-active { color: #ff5a5f; }
+
     .selection-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 20px 0; }
-    .selection-grid select { width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; }
-    .btn-consideration { display: block; width: 100%; padding: 15px; background: #8e8e8e; color: white; text-align: center; border-radius: 12px; text-decoration: none; font-weight: bold; }
+    .selection-grid select { width: 100%; padding: 8px; box-sizing: border-box; }
+
+    /* ボタンがはみ出る場合は width を 100% にして padding を調整 */
+    .btn-consideration {
+        display: block;
+        width: 100%;
+        padding: 15px;
+        background: #8e8e8e;
+        color: white;
+        text-align: center;
+        border-radius: 12px;
+        text-decoration: none;
+        font-weight: bold;
+        box-sizing: border-box; /* 重要：はみ出し防止 */
+    }
+
+    .menu-link { display: block; padding: 15px 0; border-bottom: 1px solid #eee; text-decoration: none; color: #333; font-size: 0.9rem; }
 </style>
 {% endblock %}
 
@@ -34,32 +58,42 @@
         </div>
 
         <div class="selection-grid">
-            <div><small>サイズ</small><select><option>S</option><option>M</option></select></div>
-            <div><small>カラー</small><select><option>ブラック</option></select></div>
-            <div><small>個数</small><select><option>1</option></select></div>
+            <div><small>サイズ</small><br><select><option>S</option><option>M</option></select></div>
+            <div><small>カラー</small><br><select><option>ブラック</option></select></div>
+            <div><small>個数</small><br><select><option>1</option></select></div>
         </div>
 
-        <a href="{% url 'closet:consideration_list' %}" class="btn-consideration">
-            検討リストへ <i class="fa-solid fa-cart-shopping"></i>
-        </a>
+        <a href="#" class="btn-consideration">検討リストへ <i class="fa-solid fa-cart-shopping"></i></a>
+        
+        <a href="#" class="menu-link">素材、サイズ詳細 ></a>
+        <a href="#" class="menu-link">アイテム説明 ></a>
+        <a href="#" class="menu-link">配送について ></a>
     </div>
 </div>
 
 <script>
     document.getElementById('heart-btn').addEventListener('click', function() {
-        const itemId = this.getAttribute('data-id');
+        const btn = document.getElementById('heart-btn');
+        const itemId = btn.getAttribute('data-id');
+
         fetch(`/item/${itemId}/favorite/`, {
             method: 'POST',
-            headers: { 'X-CSRFToken': '{{ csrf_token }}', 'Content-Type': 'application/json' },
+            headers: { 
+                'X-CSRFToken': '{{ csrf_token }}', 
+                'Content-Type': 'application/json' 
+            },
         })
         .then(r => r.json())
         .then(data => {
-            // views.pyが返す値が success になったので、ここも success でチェック
-            if (data.status === 'success') {
-                this.classList.toggle('is-active');
-                const icon = this.querySelector('i');
-                icon.classList.toggle('fa-solid');
-                icon.classList.toggle('fa-regular');
+            console.log("サーバーからの返信:", data);
+            
+            // クラスの付け替えではなく、HTMLを直接書き換えて確実に反映させる
+            if (data.is_favorite === true) {
+                btn.className = 'heart-btn is-active';
+                btn.innerHTML = '<i class="fa-solid fa-heart"></i>';
+            } else {
+                btn.className = 'heart-btn';
+                btn.innerHTML = '<i class="fa-regular fa-heart"></i>';
             }
         });
     });
