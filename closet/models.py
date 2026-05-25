@@ -50,6 +50,12 @@ class ConsiderationItem(models.Model):
 
     def __str__(self):
         return f"{self.user.username}の検討リスト: {self.item.item_name}"
+    
+class Favorite(models.Model):
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    item = models.ForeignKey(Item, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
 
 # 5. 注文の「親」（レシート本体）
 class Order(models.Model):

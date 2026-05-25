@@ -1,6 +1,6 @@
 {% extends 'closet/base.html' %}
 {% load static %}
-{% load humanize %}  {# 金額カンマ用 #}
+{% load humanize %}
 
 {% block title %}検索結果 - Daily Closet{% endblock %}
 
@@ -9,71 +9,26 @@
     /* ヘッダー周り */
     .header { padding: 15px; text-align: center; border-bottom: 1px solid #eee; position: relative; }
     .back-btn { position: absolute; left: 15px; top: 18px; font-size: 18px; cursor: pointer; text-decoration: none; color: #333; }
-    .search-tag-display { 
-        display: inline-flex; align-items: center; gap: 10px; 
-        padding: 8px 20px; border: 1px solid #333; border-radius: 4px; font-size: 14px;
-    }
+    .search-tag-display { display: inline-flex; align-items: center; gap: 10px; padding: 8px 20px; border: 1px solid #333; border-radius: 4px; font-size: 14px; }
     .close-tag { text-decoration: none; color: #999; font-weight: bold; }
 
     /* グリッドレイアウト */
     .item-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding: 15px; padding-bottom: 100px; }
     .item-card { width: 100%; text-decoration: none; color: inherit; display: block; }
-    .item-image-box { 
-        aspect-ratio: 3/4; width: 100%; border: 1px solid #333; 
-        background: #fff; display: flex; align-items: center; justify-content: center; 
-        overflow: hidden; position: relative;
-    }
+    .item-image-box { aspect-ratio: 3/4; width: 100%; border: 1px solid #333; background: #fff; display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; }
     .item-image-box img { width: 100%; height: 100%; object-fit: cover; }
-    .swipe-hint { position: absolute; bottom: 5px; font-size: 10px; color: #999; }
     .item-info { margin-top: 8px; font-size: 11px; line-height: 1.4; color: #333; }
     .price { font-weight: bold; }
 
-    /* --- 絞り込みモーダル用の追加CSS --- */
-    .filter-trigger {
-        position: fixed;
+    /* 絞り込みボタン */
+    .filter-trigger { position: fixed; right: 20px; bottom: 85px; width: 50px; height: 50px; background: #fff; border: 1px solid #333; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 22px; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.15); z-index: 1000; }
 
-        left: calc(50% + 187.5px - 70px); 
-        bottom: 85px;
-        width: 50px;
-        height: 50px;
-        background: #fff;
-        border: 1px solid #333;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 22px;
-        cursor: pointer;
-        box-shadow: 0 4px 10px rgba(0,0,0,0.15);
-        z-index: 100;
-    }
-
-    @media (max-width: 375px) {
-        .filter-trigger {
-            left: auto;
-            right: 20px;
-        }
-    }
-
-    .modal-overlay {
-        display: none; /* 初期状態は非表示 */
-        position: fixed;
-        top: 0; left: 0; width: 100%; height: 100%;
-        background: rgba(0,0,0,0.5);
-        z-index: 2000;
-    }
-
-    .modal-content {
-        background: white;
-        width: 300px;
-        margin: 100px auto;
-        padding: 25px;
-        border-radius: 12px;
-        position: relative;
-        box-sizing: border-box;
-    }
+    /* モーダル用CSS */
+    .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 2000; }
+    .modal-content { background: #fff; margin: 20% auto; padding: 25px; width: 90%; max-width: 350px; border-radius: 12px; position: relative; box-sizing: border-box; }
+    .close-btn { position: absolute; right: 15px; top: 10px; cursor: pointer; font-size: 24px; color: #999; }
 </style>
-{% endblock %} 
+{% endblock %}
 
 {% block content %}
 <div class="header">
@@ -82,19 +37,13 @@
         <span>#{{ request.GET.tag|default:"すべて" }}</span>
         <a href="?" class="close-tag">×</a>
     </div>
-    <div style="font-size: 14px; margin-top: 10px;">検索結果</div>
 </div>
 
 <div class="item-grid">
     {% for item in items %}
         <a href="{% url 'closet:item_detail' item.pk %}" class="item-card">
             <div class="item-image-box">
-                {% if item.image %}
-                    <img src="{{ item.image.url }}">
-                {% else %}
-                    <div style="text-align:center; font-size:11px; color:#666;">No Image</div>
-                {% endif %}
-                <div class="swipe-hint">● ○ ○</div>
+                {% if item.image %}<img src="{{ item.image.url }}">{% else %}No Image{% endif %}
             </div>
             <div class="item-info">
                 <div class="price">¥{{ item.price|intcomma }}</div>
@@ -103,9 +52,7 @@
             </div>
         </a>
     {% empty %}
-        <p style="grid-column: 1 / span 2; text-align: center; padding: 40px 20px; color: #999;">
-            条件に合うアイテムがありません。
-        </p>
+        <p style="grid-column: 1 / span 2; text-align: center; padding: 40px 20px; color: #999;">条件に合うアイテムがありません。</p>
     {% endfor %}
 </div>
 
@@ -113,31 +60,14 @@
 
 <div id="filterModal" class="modal-overlay">
     <div class="modal-content">
-        <span id="closeModal" style="position:absolute; right:15px; top:10px; cursor:pointer; font-size:24px; color:#999;">×</span>
-        
+        <span id="closeModal" class="close-btn">×</span>
         <h3 style="text-align:center; margin-bottom:25px; font-size:18px;">絞り込み</h3>
-        
         <form method="get" action="{% url 'closet:search_results' %}">
             <div style="margin-bottom:20px;">
                 <label style="display:block; font-size:14px; font-weight:bold; margin-bottom:8px;">ハッシュタグ</label>
-                <div style="display:flex; border-bottom:1px solid #333; padding-bottom:5px;">
-                    <input type="text" name="tag" placeholder="#セール" style="border:none; outline:none; flex:1; font-size:14px;">
-                    <button type="submit" style="background:none; border:none; cursor:pointer;">🔍</button>
-                </div>
+                <input type="text" name="tag" placeholder="#セール" style="width:100%; border:1px solid #ccc; padding:8px; border-radius:4px;">
             </div>
-
-            <div style="margin-bottom:35px; display:flex; justify-content:space-between; align-items:center;">
-                <label style="font-size:14px; font-weight:bold;">カテゴリー</label>
-                <select name="category" style="border:none; font-size:14px; cursor:pointer; background:none;">
-                    <option value="">すべて </option>
-                    <option value="tops">トップス</option>
-                    <option value="bottoms">ボトムス</option>
-                </select>
-            </div>
-
-            <button type="submit" style="width:100%; background:#333; color:#fff; padding:12px; border:none; border-radius:4px; font-size:16px; cursor:pointer;">
-                検索 🔍
-            </button>
+            <button type="submit" style="width:100%; background:#333; color:#fff; padding:12px; border:none; border-radius:4px; font-size:16px; cursor:pointer;">検索</button>
         </form>
     </div>
 </div>
@@ -149,21 +79,8 @@
     const openBtn = document.getElementById("openModal");
     const closeBtn = document.getElementById("closeModal");
 
-    // モーダルを開く
-    openBtn.onclick = () => {
-        modal.style.display = "block";
-    };
-
-    // モーダルを閉じる (×ボタン)
-    closeBtn.onclick = () => {
-        modal.style.display = "none";
-    };
-
-    // 背景クリックで閉じる
-    window.onclick = (event) => {
-        if (event.target == modal) {
-            modal.style.display = "none";
-        }
-    };
+    openBtn.onclick = () => { modal.style.display = "block"; };
+    closeBtn.onclick = () => { modal.style.display = "none"; };
+    window.onclick = (event) => { if (event.target == modal) modal.style.display = "none"; };
 </script>
 {% endblock %}

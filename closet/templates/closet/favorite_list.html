@@ -1,0 +1,35 @@
+{% extends 'closet/base.html' %}
+{% load humanize %}
+
+{% block content %}
+<div style="padding: 20px; max-width: 400px; margin: 0 auto;">
+    <h2>お気に入り</h2>
+    <p>お気に入り登録アイテム：{{ favorites|length }}点</p>
+
+    <div style="display: flex; flex-direction: column; gap: 15px;">
+        {% for fav in favorites %}
+            <div style="display: flex; gap: 10px; border-bottom: 1px solid #eee; padding-bottom: 10px;">
+                <div style="width: 80px; height: 80px; background: #eee;">
+                    {% if fav.item.image %}<img src="{{ fav.item.image.url }}" style="width: 100%; height: 100%; object-fit: cover;">{% endif %}
+                </div>
+                
+                <div style="flex-grow: 1; font-size: 14px;">
+                    <a href="{% url 'closet:item_detail' fav.item.pk %}" style="text-decoration: none; color: #333; font-weight: bold;">{{ fav.item.item_name }}</a>
+                    <div>カラー・サイズ表記</div>
+                    <div style="font-weight: bold;">¥{{ fav.item.price|intcomma }} (税込)</div>
+                </div>
+
+                <form method="post" action="{% url 'closet:remove_favorite' fav.item.pk %}">
+                    {% csrf_token %}
+                    <button type="submit" style="background: none; border: none; cursor: pointer; font-size: 20px;">🗑️</button>
+                </form>
+            </div>
+            
+            <a href="{% url 'closet:move_to_cart' fav.item.pk %}" 
+               style="display: block; text-align: center; padding: 10px; background: #eee; text-decoration: none; color: #333; border-radius: 5px; font-size: 13px; margin-bottom: 20px;">
+               検討リストへ追加
+            </a>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

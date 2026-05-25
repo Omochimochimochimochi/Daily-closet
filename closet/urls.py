@@ -21,7 +21,7 @@ urlpatterns = [
     path('consideration/add/<int:item_id>/', views.add_to_consideration, name='add_to_consideration'),
     path('consideration/remove/<int:item_id>/', views.remove_from_consideration, name='remove_from_consideration'),
     path('consideration/', views.consideration_list, name='consideration_list'),
-
+    path('favorites/', views.favorite_list, name='favorite_list'), 
     path('item/<int:item_id>/favorite/', views.toggle_favorite, name='toggle_favorite'),
 
     # ユーザー用：購入フロー

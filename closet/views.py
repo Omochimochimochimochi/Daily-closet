@@ -2,14 +2,12 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.db.models import Q
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from django.contrib.auth import authenticate, login, logout  # 追加
+from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.http import JsonResponse
-from .models import Item, ConsiderationItem, Order, OrderItem
-from django.shortcuts import render, redirect, get_object_or_404
-from .models import Item, Order, OrderItem, ConsiderationItem
-from django.contrib.auth.decorators import login_required
-from django.db.models import Q 
+
+# ここにモデルをまとめて記述します
+from .models import Item, ConsiderationItem, Order, OrderItem, Favorite
 
 # --- 1. 認証・トップページ ---
 
@@ -73,6 +71,21 @@ def item_detail(request, pk):
         'item': item,
         'is_favorite': is_favorite
     })
+@login_required
+def toggle_favorite(request, item_id):
+    item = get_object_or_404(Item, id=item_id)
+    # 既存のお気に入りがあるかチェック
+    favorite, created = Favorite.objects.get_or_create(user=request.user, item=item)
+    
+    if not created:
+        # すでにあれば削除（お気に入り解除）
+        favorite.delete()
+        is_favorite = False
+    else:
+        # なければ作成（お気に入り登録）
+        is_favorite = True
+        
+    return JsonResponse({'status': 'success', 'is_favorite': is_favorite})
 
 
 def search_results(request):
@@ -267,3 +280,9 @@ def inventory_manage(request):
 
 def mypage(request):
     return render(request, 'mypage.html')
+
+@login_required
+def favorite_list(request):
+    # 現在のユーザーのお気に入りをすべて取得
+    favorites = Favorite.objects.filter(user=request.user)
+    return render(request, 'closet/favorite_list.html', {'favorites': favorites})
