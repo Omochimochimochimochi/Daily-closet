@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Item, ItemAdditionalImage, ConsiderationItem, Order, OrderItem, Tag
+from .models import Item, ItemAdditionalImage, ConsiderationItem, Order, OrderItem, Tag, Favorite
 
 
 class ItemAdditionalImageInline(admin.TabularInline):
@@ -21,3 +21,4 @@ admin.site.register(ConsiderationItem)
 admin.site.register(Order)
 admin.site.register(OrderItem)
 admin.site.register(Tag)
+admin.site.register(Favorite)
