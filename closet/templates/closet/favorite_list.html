@@ -25,10 +25,13 @@
                 </form>
             </div>
             
-            <a href="{% url 'closet:move_to_cart' fav.item.pk %}" 
-               style="display: block; text-align: center; padding: 10px; background: #eee; text-decoration: none; color: #333; border-radius: 5px; font-size: 13px; margin-bottom: 20px;">
-               検討リストへ追加
-            </a>
+            <form method="post" action="{% url 'closet:add_to_consideration' fav.item.pk %}">
+                 {% csrf_token %}
+                 <button type="submit" 
+                            style="display: block; width: 100%; text-align: center; padding: 10px; background: #eee; border: none; cursor: pointer; border-radius: 5px; font-size: 13px; margin-bottom: 20px;">
+              検討リストへ追加
+         </button>
+</form>
         {% endfor %}
     </div>
 </div>

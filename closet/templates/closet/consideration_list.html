@@ -4,50 +4,23 @@
 
 {% block extra_css %}
 <style>
-    /* 画像が巨大化するのを防ぐ設定 */
-    .item-img {
-        width: 120px;
-        height: 120px;
-        object-fit: cover; /* 縦横比を維持して切り抜き */
-        border-radius: 5px;
-        flex-shrink: 0;
-    }
-
-    /* 横並びにするための設定 */
-    .item-card {
-        display: flex;
-        align-items: flex-start;
-        padding: 10px 0;
-    }
-
-    .item-details {
-        margin-left: 15px;
-        flex-grow: 1;
-    }
-
-    /* ボタンのデザイン */
-    .buy-button {
-        display: block;
-        padding: 10px;
-        background: #888; /* 設計図に近いグレー */
-        color: white;
-        text-align: center;
-        border-radius: 5px;
-        text-decoration: none;
-        font-size: 0.9rem;
-        font-weight: bold;
-    }
+    /* （スタイルは今のままでOKです） */
+    .item-img { width: 120px; height: 120px; object-fit: cover; border-radius: 5px; flex-shrink: 0; }
+    .item-card { display: flex; align-items: flex-start; padding: 10px 0; }
+    .item-details { margin-left: 15px; flex-grow: 1; }
+    .buy-button { display: block; padding: 10px; background: #888; color: white; text-align: center; border-radius: 5px; text-decoration: none; font-size: 0.9rem; font-weight: bold; }
 </style>
 {% endblock %}
 
 {% block content %}
 <div style="padding: 20px; max-width: 600px; margin: 0 auto;">
     <h2 style="text-align: center; font-size: 1.2rem;">検討リスト</h2>
+    
     <p style="text-align: center; color: #666; font-size: 0.9rem; margin-bottom: 20px;">
-        登録アイテム：{{ items.count }}点
+        登録アイテム：{{ considerations|length }}点
     </p>
 
-    {% for c_item in items %}
+    {% for c_item in considerations %}
         <div style="border: 1px solid #eee; border-radius: 10px; padding: 15px; margin-bottom: 20px; background: #fff;">
             
             <div class="item-card">
@@ -73,12 +46,12 @@
                 </form>
             </div>
 
-            <div style="display: flex; justify-content: flex-end; mt-3">
+            <div style="display: flex; justify-content: flex-end;">
                 <a href="#" class="buy-button" style="width: 150px;">擬似購入へ進む</a>
             </div>
         </div>
     {% empty %}
         <p style="text-align:center; color:#999; margin-top:50px;">アイテムはありません。</p>
     {% endfor %}
-</div>
+    </div>
 {% endblock %}

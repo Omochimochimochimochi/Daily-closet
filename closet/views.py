@@ -90,7 +90,7 @@ def add_to_consideration(request, item_id):
 
 @login_required
 def remove_from_consideration(request, item_id):
-    ConsiderationItem.objects.filter(id=item_id, user=request.user).delete()
+    ConsiderationItem.objects.filter(item_id=item_id, user=request.user).delete()
     return redirect('closet:consideration_list')
 
 @login_required
@@ -98,6 +98,18 @@ def consideration_list(request):
     considerations = ConsiderationItem.objects.filter(user=request.user).order_by('-added_at')
     total_price = sum(c.item.price * c.quantity for c in considerations)
     return render(request, 'closet/consideration_list.html', {'considerations': considerations, 'total_price': total_price})
+
+@login_required
+def add_to_consideration(request, item_id):
+    if request.method == 'POST':
+        item = get_object_or_404(Item, id=item_id)
+        # sizeとcolorを明示的に指定して作成
+        ConsiderationItem.objects.get_or_create(
+            user=request.user, 
+            item=item,
+            defaults={'size': '未選択', 'color': '未選択', 'quantity': 1}
+        )
+    return redirect('closet:consideration_list')
 
 # 管理・その他
 def inventory_manage(request):
