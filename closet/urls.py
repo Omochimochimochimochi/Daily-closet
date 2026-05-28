@@ -29,6 +29,7 @@ urlpatterns = [
     # ユーザー用：購入フロー
     path('purchase/', views.purchase_list, name='purchase_list'),
     path('move-to-purchase/<int:item_id>/', views.move_to_purchase, name='move_to_purchase'),
+    path('buy/', views.buy_items, name='buy_items'),
     path('purchase/complete/', views.purchase_complete, name='purchase_complete'),
 
     # 管理用・ユーザーアカウント関連

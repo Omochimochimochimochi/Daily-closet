@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.http import JsonResponse
-from .models import Item, ConsiderationItem, Order, OrderItem, Favorite
+from .models import Item, ConsiderationItem, Order, OrderItem, Favorite, PurchaseItem
 
 # 認証・トップ
 def top(request):
@@ -111,6 +111,27 @@ def add_to_consideration(request, item_id):
         )
     return redirect('closet:consideration_list')
 
+
+def buy_items(request):
+    # 1. 検討リストからログインユーザーの全アイテムを取得
+    considerations = ConsiderationItem.objects.filter(user=request.user)
+    
+    for c_item in considerations:
+        # 2. 購入履歴モデルに保存
+        PurchaseItem.objects.create(
+            user=request.user,
+            item=c_item.item,
+            size=c_item.size,
+            color=c_item.color
+        )
+    
+    # 3. 検討リストを空にする
+    considerations.delete()
+    
+    # 4. 購入一覧へ飛ばす
+    return redirect('closet:purchase_list')
+
+
 # 管理・その他
 def inventory_manage(request):
     return render(request, 'inventory_manage.html', {'items': Item.objects.all()})
@@ -120,10 +141,8 @@ def mypage(request):
 
 @login_required
 def purchase_list(request):
-    # 購入履歴などのデータを取得して表示する関数
-    # ※もし PurchaseItem というモデルがない場合は、一旦空のリストを渡すだけでもエラーは消えます
-    from .models import PurchaseItem # モデルが別にある場合はインポートが必要
-    items = PurchaseItem.objects.filter(user=request.user).order_by('-added_at')
+    # ここを修正：'added_at' -> 'purchased_at'
+    items = PurchaseItem.objects.filter(user=request.user).order_by('-purchased_at')
     return render(request, 'closet/purchase_list.html', {'items': items})
 
 # 検討リストから購入リストへ移動する処理

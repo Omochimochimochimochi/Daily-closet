@@ -1,27 +1,37 @@
 {% extends 'closet/base.html' %}
-{% load static %}
-
-{% block title %}検討（カート）画面{% endblock %}
+{% load static humanize %}  {% block title %}検討（カート）画面{% endblock %}
 
 {% block content %}
-<div style="padding: 20px; max-width: 400px; margin: 0 auto;">
+<div style="padding: 20px; max-width: 450px; margin: 0 auto;">
     <h2>検討（カート）画面</h2>
     <p>カートに入っているアイテム：{{ items|length }}点</p>
 
-    <ul style="list-style: none; padding: 0;">
+    <div style="margin-top: 20px;">
         {% for item in items %}
-            <li style="border-bottom: 1px solid #eee; padding: 10px 0; display: flex; justify-content: space-between;">
-                <span>{{ item.item.item_name }} ({{ item.color }} / {{ item.size }})</span>
-                
-                <form method="post" action="{% url 'closet:remove_item' item.id %}">
-                    {% csrf_token %}
-                    <button type="submit" style="color: red; border: none; background: none; cursor: pointer;">削除</button>
-                </form>
-            </li>
-        {% endfor %}
-    </ul>
+            <div style="border: 1px solid #ddd; padding: 15px; margin-bottom: 15px; border-radius: 8px; display: flex; gap: 15px;">
+                <div style="flex-shrink: 0;">
+                    {% if item.item.image %}
+                        <img src="{{ item.item.image.url }}" style="width: 80px; height: 80px; object-fit: cover; border-radius: 4px;">
+                    {% else %}
+                        <div style="width: 80px; height: 80px; background: #eee; display: flex; align-items: center; justify-content: center; font-size: 10px;">No Image</div>
+                    {% endif %}
+                </div>
 
-    <form method="post" action="{% url 'closet:purchase_complete' %}" style="margin-top: 30px;">
+                <div style="flex-grow: 1;">
+                    <div style="font-weight: bold;">{{ item.item.item_name }}</div>
+                    <div style="font-size: 0.85rem; color: #666;">カラー: {{ item.color }} / サイズ: {{ item.size }}</div>
+                    <div style="font-weight: bold; margin-top: 5px;">¥{{ item.item.price|intcomma }}</div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+    <div style="font-size: 0.8rem; color: #555; margin: 20px 0; padding: 10px; background: #f9f9f9;">
+        <p>お届け先：〒123-4567 東京都〇〇区...</p>
+        <p>支払方法：クレジットカード (****-1234)</p>
+    </div>
+
+    <form method="post" action="{% url 'closet:purchase_complete' %}" style="margin-top: 20px;">
         {% csrf_token %}
         <button type="submit" 
                 class="purchase-btn" 
@@ -33,18 +43,20 @@
 
 <style>
     .purchase-btn {
-        background-color: #a0c4ff;
+        background-color: #6c7b94fd;
         padding: 15px;
         width: 100%;
         color: white;
-        border: none;
+        /* border: none; を以下のように変更します */
+        border: 3px solid #555;  /* 3pxの太さで、濃いグレーの線 */
         border-radius: 5px;
         font-size: 16px;
         cursor: pointer;
     }
-    .purchase-btn:disabled {
-        background-color: #ccc;
-        cursor: not-allowed;
+    
+    /* ホバー（マウスを乗せた）時の動きも変えたい場合 */
+    .purchase-btn:hover {
+        border-color: #333; /* マウスを乗せると少し濃くなる */
     }
 </style>
 {% endblock %}

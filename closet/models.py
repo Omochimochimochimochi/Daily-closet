@@ -76,3 +76,14 @@ class OrderItem(models.Model):
 
     def __str__(self):
         return f"{self.item.item_name} ({self.quantity})"
+    
+
+class PurchaseItem(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    item = models.ForeignKey(Item, on_delete=models.CASCADE)
+    purchased_at = models.DateTimeField("購入日時", auto_now_add=True)
+    size = models.CharField("サイズ", max_length=50, default="未選択")
+    color = models.CharField("カラー", max_length=50, default="未選択")
+
+    def __str__(self):
+        return f"{self.user.username} - {self.item.item_name}"
