@@ -72,7 +72,7 @@ class OrderItem(models.Model):
     size = models.CharField("サイズ", max_length=10)
     color = models.CharField("カラー", max_length=20)
     quantity = models.PositiveIntegerField("数量", default=1)
-    price_at_purchase = models.IntegerField("購入時の価格")
+    price_at_purchase = models.IntegerField("購入時の価格") # 必須：価格変動に備える
 
     def __str__(self):
         return f"{self.item.item_name} ({self.quantity})"

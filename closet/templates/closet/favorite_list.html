@@ -13,12 +13,20 @@
                     {% if fav.item.image %}<img src="{{ fav.item.image.url }}" style="width: 100%; height: 100%; object-fit: cover;">{% endif %}
                 </div>
                 
-                <div style="flex-grow: 1; font-size: 14px;">
-                    <a href="{% url 'closet:item_detail' fav.item.pk %}" style="text-decoration: none; color: #333; font-weight: bold;">{{ fav.item.item_name }}</a>
-                    <div>カラー・サイズ表記</div>
-                    <div style="font-weight: bold;">¥{{ fav.item.price|intcomma }} (税込)</div>
-                </div>
-
+<div style="flex-grow: 1; font-size: 14px;">
+    <a href="{% url 'closet:item_detail' fav.item.pk %}" style="text-decoration: none; color: #333; font-weight: bold;">
+        {{ fav.item.item_name }}
+    </a>
+    
+    <div style="color: #666; font-size: 12px;">
+        カラー: 
+        {% if fav.item.color %}{{ fav.item.color }}{% else %}未設定{% endif %}
+        / サイズ: 
+        {% if fav.item.size %}{{ fav.item.size }}{% else %}未設定{% endif %}
+    </div>
+    
+    <div style="font-weight: bold;">¥{{ fav.item.price|intcomma }} (税込)</div>
+</div>
                 <form method="post" action="{% url 'closet:remove_favorite' fav.item.pk %}">
                     {% csrf_token %}
                     <button type="submit" style="background: none; border: none; cursor: pointer; font-size: 20px;">🗑️</button>

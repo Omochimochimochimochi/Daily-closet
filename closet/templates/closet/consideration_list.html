@@ -40,11 +40,12 @@
                     </div>
                 </div>
 
-                <form action="{% url 'closet:remove_from_consideration' c_item.id %}" method="POST" style="margin-left: 10px;">
+                <form action="{% url 'closet:remove_from_consideration' c_item.item.id %}" method="POST" style="margin-left: 10px;">
                     {% csrf_token %}
                     <button type="submit" style="background:none; border:none; cursor:pointer; font-size: 1.2rem; color: #ccc;">🗑️</button>
                 </form>
             </div>
+
 
             <div style="display: flex; justify-content: flex-end;">
                 <a href="{% url 'closet:purchase_list' %}"class="buy-button" style="width: 150px;">擬似購入へ進む</a>
