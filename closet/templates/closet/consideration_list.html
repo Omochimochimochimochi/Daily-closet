@@ -14,7 +14,20 @@
 
 {% block content %}
 <div style="padding: 20px; max-width: 600px; margin: 0 auto;">
+    
+    {% if messages %}
+        <div style="margin-bottom: 20px;">
+            {% for message in messages %}
+                <div style="background-color: #ffeef0; color: #d8000c; padding: 15px; border-radius: 5px; text-align: center; border: 1px solid #fcc;">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
     <h2 style="text-align: center; font-size: 1.2rem;">検討リスト</h2>
+    
+
     
     <p style="text-align: center; color: #666; font-size: 0.9rem; margin-bottom: 20px;">
         登録アイテム：{{ considerations|length }}点

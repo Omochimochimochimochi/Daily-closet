@@ -6,6 +6,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.http import JsonResponse
 from .models import Item, ConsiderationItem, Order, OrderItem, Favorite, PurchaseItem
+from django.db import transaction  
 
 # 認証・トップ
 def top(request):
@@ -198,3 +199,41 @@ def password_change(request):
 
 def email_change(request):
     return render(request, 'email_change.html')
+
+def purchase_complete(request):
+    cart_items = ConsiderationItem.objects.filter(user=request.user)
+    
+    if not cart_items.exists():
+        return redirect('closet:purchase_list')
+
+    # ここから下が関数の中身なので、すべて右にずらします
+    with transaction.atomic():
+        # 1. 親（Order）を作る
+        order = Order.objects.create(user=request.user)
+        
+        # 2. 子（OrderItem）を一つずつ作る
+        for c_item in cart_items:
+            # 在庫チェック
+            if c_item.item.stock < c_item.quantity:
+                messages.error(request, f"{c_item.item.item_name} は在庫不足です。")
+                return redirect('closet:consideration_list')
+            
+            # 在庫を減らす
+            item = c_item.item
+            item.stock -= c_item.quantity
+            item.save()
+
+            # 注文明細の作成
+            OrderItem.objects.create(
+                order=order,
+                item=c_item.item,
+                size=c_item.size,
+                color=c_item.color,
+                price_at_purchase=c_item.item.price
+            )
+        
+        # 3. カートを空にする
+        cart_items.delete()
+    
+    # 4. 完了画面へ
+    return render(request, 'closet/purchase_complete.html')

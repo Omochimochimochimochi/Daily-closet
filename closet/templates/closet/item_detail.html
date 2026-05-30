@@ -44,9 +44,28 @@
             <div><small>カラー</small><br><select><option>ブラック</option></select></div>
             <div><small>個数</small><br><select><option>1</option></select></div>
         </div>
+<style>
+    .add-to-cart-btn {
+        background-color: #6c7b94fd;
+        padding: 15px;
+        width: 100%;
+        color: white;
+        /* border: none; を以下のように変更します */
+        border: 3px solid #555;  /* 3pxの太さで、濃いグレーの線 */
+        border-radius: 5px;
+        font-size: 16px;
+        cursor: pointer;
+    }
+    }
+    .add-to-cart-btn:hover {
+        border-color: #333; /* マウスを乗せると少し濃くなる */
+    }
+</style>
 
-        <a href="{% url 'closet:consideration_list' %}" class="btn-consideration">検討リストへ <i class="fa-solid fa-cart-shopping"></i></a>
-        
+<form action="{% url 'closet:add_to_consideration' item.id %}" method="POST">
+    {% csrf_token %}
+    <button type="submit" class="add-to-cart-btn">🛒 検討リストに追加</button>
+</form>
         <a id="open-modal" class="menu-link">素材、サイズ詳細 ></a>
         <a href="#" class="menu-link">アイテム説明 ></a>
         <a href="#" class="menu-link">配送について ></a>
