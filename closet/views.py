@@ -96,23 +96,12 @@ def remove_from_consideration(request, item_id):
 
 @login_required
 def consideration_list(request):
-    considerations = ConsiderationItem.objects.filter(user=request.user).order_by('-added_at')
+    # order_by('-added_at') を削除するか、idなどの存在する項目に変更します
+    considerations = ConsiderationItem.objects.filter(user=request.user).order_by('-id')
     total_price = sum(c.item.price * c.quantity for c in considerations)
     return render(request, 'closet/consideration_list.html', {'considerations': considerations, 'total_price': total_price})
 
-@login_required
-def add_to_consideration(request, item_id):
-    if request.method == 'POST':
-        item = get_object_or_404(Item, id=item_id)
-        # sizeとcolorを明示的に指定して作成
-        ConsiderationItem.objects.get_or_create(
-            user=request.user, 
-            item=item,
-            defaults={'size': '未選択', 'color': '未選択', 'quantity': 1}
-        )
-    return redirect('closet:consideration_list')
-
-
+add_to_consideration
 def buy_items(request):
     # 1. 検討リストからログインユーザーの全アイテムを取得
     considerations = ConsiderationItem.objects.filter(user=request.user)
@@ -200,36 +189,31 @@ def password_change(request):
 def email_change(request):
     return render(request, 'email_change.html')
 
+# ファイルの末尾にある purchase_complete を以下に書き換えてください
 def purchase_complete(request):
     cart_items = ConsiderationItem.objects.filter(user=request.user)
     
     if not cart_items.exists():
         return redirect('closet:purchase_list')
 
-    # ここから下が関数の中身なので、すべて右にずらします
     with transaction.atomic():
-        # 1. 親（Order）を作る
-        order = Order.objects.create(user=request.user)
-        
-        # 2. 子（OrderItem）を一つずつ作る
+        # 1. 在庫チェックと在庫減らし（ここは元のままでOK）
         for c_item in cart_items:
-            # 在庫チェック
             if c_item.item.stock < c_item.quantity:
                 messages.error(request, f"{c_item.item.item_name} は在庫不足です。")
                 return redirect('closet:consideration_list')
             
-            # 在庫を減らす
             item = c_item.item
             item.stock -= c_item.quantity
             item.save()
 
-            # 注文明細の作成
-            OrderItem.objects.create(
-                order=order,
+            # 2. ★ここを修正：OrderItem ではなく PurchaseItem に保存する
+            PurchaseItem.objects.create(
+                user=request.user,
                 item=c_item.item,
                 size=c_item.size,
                 color=c_item.color,
-                price_at_purchase=c_item.item.price
+                quantity=c_item.quantity
             )
         
         # 3. カートを空にする

@@ -15,6 +15,7 @@ class Item(models.Model):
     price = models.IntegerField("金額", default=0)
     color = models.CharField("カラー", max_length=50, blank=True)
     image = models.ImageField("アイテム画像", upload_to='items/', blank=True, null=True)
+    stock = models.IntegerField(default=0)
 
     # tags はここに1つだけ残します
     tags = models.ManyToManyField(Tag, verbose_name="タグ", blank=True)
@@ -40,14 +41,13 @@ class ItemAdditionalImage(models.Model):
         return f"{self.item.item_name} の追加画像"
 
 # 4. 検討リスト（お気に入り）
+# models.py
 class ConsiderationItem(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     item = models.ForeignKey(Item, on_delete=models.CASCADE)
-    size = models.CharField("サイズ", max_length=50)
-    color = models.CharField("カラー", max_length=50)
-    quantity = models.IntegerField("数量", default=1)
-    added_at = models.DateTimeField("登録日時", auto_now_add=True)
-
+    size = models.CharField(max_length=50)   # これが必要！
+    color = models.CharField(max_length=50)  # これが必要！
+    quantity = models.IntegerField(default=1)
     def __str__(self):
         return f"{self.user.username}の検討リスト: {self.item.item_name}"
     
@@ -87,3 +87,5 @@ class PurchaseItem(models.Model):
 
     def __str__(self):
         return f"{self.user.username} - {self.item.item_name}"
+    
+
