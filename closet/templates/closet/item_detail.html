@@ -61,21 +61,11 @@
         border-color: #333; /* マウスを乗せると少し濃くなる */
     }
 </style>
-
-<form action="{% url 'closet:add_to_consideration' item.id %}" method="POST">
+<form id="add-to-list-form" action="{% url 'closet:add_to_consideration' item.id %}" method="POST">
     {% csrf_token %}
-    <select name="size">
-        <option value="S">S</option>
-        <option value="M">M</option>
-    </select>
-    
-    <select name="color">
-        <option value="Black">Black</option>
-        <option value="White">White</option>
-    </select>
-    
-    <button type="submit">検討リストに追加</button>
+    <button type="submit" id="submit-btn" class="add-to-cart-btn">検討リストに追加</button>
 </form>
+
         <a id="open-modal" class="menu-link">素材、サイズ詳細 ></a>
         <a href="#" class="menu-link">アイテム説明 ></a>
         <a href="#" class="menu-link">配送について ></a>
@@ -117,7 +107,17 @@ document.addEventListener("DOMContentLoaded", () => {
         modals.forEach(m => { if (e.target == m) m.style.display = "none"; });
     });
 
-    // 2. お気に入りボタンの制御
+    // 2. 検討リスト追加ボタンの連打防止
+    const form = document.getElementById('add-to-list-form');
+    const btn = document.getElementById('submit-btn');
+    if (form && btn) {
+        form.addEventListener('submit', function() {
+            btn.disabled = true;
+            btn.innerText = '追加中...';
+        });
+    }
+
+    // 3. お気に入りボタンの制御
     const heartBtn = document.getElementById('heart-btn');
     if (heartBtn) {
         heartBtn.addEventListener('click', function() {
@@ -131,10 +131,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     'Content-Type': 'application/json' 
                 },
             })
-            .then(r => {
-                if (!r.ok) throw new Error('Network response was not ok');
-                return r.json();
-            })
+            .then(r => r.json())
             .then(data => {
                 if (data.status === 'success') {
                     const icon = btn.querySelector('i');
@@ -151,7 +148,6 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 });
-
 </script>
 
 <div id="description-modal" class="modal">
