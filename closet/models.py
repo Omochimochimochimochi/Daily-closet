@@ -16,6 +16,9 @@ class Item(models.Model):
     color = models.CharField("カラー", max_length=50, blank=True)
     image = models.ImageField("アイテム画像", upload_to='items/', blank=True, null=True)
     stock = models.IntegerField(default=0)
+    created_at = models.DateTimeField(auto_now_add=True, null=True)
+    updated_at = models.DateTimeField(auto_now=True, null=True)
+
 
     # tags はここに1つだけ残します
     tags = models.ManyToManyField(Tag, verbose_name="タグ", blank=True)
@@ -36,6 +39,8 @@ class Item(models.Model):
 class ItemAdditionalImage(models.Model):
     item = models.ForeignKey(Item, on_delete=models.CASCADE, related_name='additional_images')
     image = models.ImageField("追加詳細画像", upload_to='items/extra/')
+    created_at = models.DateTimeField(auto_now_add=True, null=True)
+    updated_at = models.DateTimeField(auto_now=True, null=True)
 
     def __str__(self):
         return f"{self.item.item_name} の追加画像"
@@ -45,11 +50,14 @@ class ItemAdditionalImage(models.Model):
 class ConsiderationItem(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     item = models.ForeignKey(Item, on_delete=models.CASCADE)
-    size = models.CharField(max_length=50)   # これが必要！
-    color = models.CharField(max_length=50)  # これが必要！
+    size = models.CharField(max_length=50)   
+    color = models.CharField(max_length=50)  
+    created_at = models.DateTimeField(auto_now_add=True, null=True)
+    updated_at = models.DateTimeField(auto_now=True, null=True)
     quantity = models.IntegerField(default=1)
     def __str__(self):
         return f"{self.user.username}の検討リスト: {self.item.item_name}"
+    
     
 class Favorite(models.Model):
 
@@ -61,6 +69,7 @@ class Favorite(models.Model):
 class Order(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="購入者")
     created_at = models.DateTimeField("購入日時", auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True, null=True)
 
     def __str__(self):
         return f"注文ID:{self.id} - {self.user.username}"
@@ -72,7 +81,12 @@ class OrderItem(models.Model):
     size = models.CharField("サイズ", max_length=10)
     color = models.CharField("カラー", max_length=20)
     quantity = models.PositiveIntegerField("数量", default=1)
-    price_at_purchase = models.IntegerField("購入時の価格") # 必須：価格変動に備える
+    price_at_purchase = models.IntegerField("購入時の価格") 
+
+    created_at = models.DateTimeField(auto_now_add=True, null=True)
+    updated_at = models.DateTimeField(auto_now=True, null=True)
+
+    
 
     def __str__(self):
         return f"{self.item.item_name} ({self.quantity})"
@@ -84,6 +98,7 @@ class PurchaseItem(models.Model):
     purchased_at = models.DateTimeField("購入日時", auto_now_add=True)
     size = models.CharField("サイズ", max_length=50, default="未選択")
     color = models.CharField("カラー", max_length=50, default="未選択")
+    updated_at = models.DateTimeField(auto_now=True, null=True)
 
     def __str__(self):
         return f"{self.user.username} - {self.item.item_name}"

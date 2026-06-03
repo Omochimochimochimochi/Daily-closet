@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.http import JsonResponse
-from .models import Item, ConsiderationItem, Order, OrderItem, Favorite, PurchaseItem
+from .models import Item, ConsiderationItem, Favorite, PurchaseItem
 from django.db import transaction
 
 # --- 認証・トップ ---
@@ -108,11 +108,28 @@ def consideration_list(request):
     total_price = sum(c.item.price * int(c.quantity) for c in considerations)
     return render(request, 'closet/consideration_list.html', {'considerations': considerations, 'total_price': total_price})
 
-# --- 検討リストから購入リストへ移動する処理 ---
+# --- 購入処理 ---
+@login_required
+def buy_items(request):
+    considerations = ConsiderationItem.objects.filter(user=request.user)
+    if not considerations.exists():
+        return redirect('closet:consideration_list')
+    
+    with transaction.atomic():
+        for c_item in considerations:
+            PurchaseItem.objects.create(
+                user=request.user,
+                item=c_item.item,
+                size=c_item.size,
+                color=c_item.color,
+                quantity=c_item.quantity
+            )
+        considerations.delete()
+    return redirect('closet:purchase_list')
+
 @login_required
 def move_to_purchase(request, item_id):
     c_item = get_object_or_404(ConsiderationItem, id=item_id, user=request.user)
-    # 検討リストのデータを購入モデルにコピーして作成
     PurchaseItem.objects.create(
         user=c_item.user, 
         item=c_item.item, 
@@ -120,83 +137,17 @@ def move_to_purchase(request, item_id):
         color=c_item.color, 
         quantity=c_item.quantity
     )
-    c_item.delete() # 検討リストからは削除
-    return redirect('closet:purchase_list')
-
-# --- 購入処理 ---
-@login_required
-def purchase_complete(request):
-    cart_items = ConsiderationItem.objects.filter(user=request.user)
-    if not cart_items.exists():
-        return redirect('closet:purchase_list')
-
-    with transaction.atomic():
-        for c_item in cart_items:
-            if c_item.item.stock < int(c_item.quantity):
-                messages.error(request, f"{c_item.item.item_name} は在庫不足です。")
-                return redirect('closet:consideration_list')
-            
-            item = c_item.item
-            item.stock -= int(c_item.quantity)
-            item.save()
-
-            PurchaseItem.objects.create(
-                user=request.user,
-                item=c_item.item,
-                size=c_item.size,
-                color=c_item.color,
-                quantity=c_item.quantity
-            )
-        cart_items.delete()
-    return render(request, 'closet/purchase_complete.html')
-@login_required
-def buy_items(request):
-    # 1. 検討リストからログインユーザーの全アイテムを取得
-    considerations = ConsiderationItem.objects.filter(user=request.user)
-    
-    with transaction.atomic():
-        for c_item in considerations:
-            # 2. 購入履歴モデルに保存
-            PurchaseItem.objects.create(
-                user=request.user,
-                item=c_item.item,
-                size=c_item.size,
-                color=c_item.color,
-                quantity=c_item.quantity
-            )
-        
-        # 3. 検討リストを空にする
-        considerations.delete()
-    
-    # 4. 購入一覧へ飛ばす
-    return redirect('closet:purchase_list')
-
-@login_required
-def buy_items(request):
-    # 1. 検討リストからログインユーザーの全アイテムを取得
-    considerations = ConsiderationItem.objects.filter(user=request.user)
-    
-    with transaction.atomic():
-        for c_item in considerations:
-            # 2. 購入履歴モデルに保存
-            PurchaseItem.objects.create(
-                user=request.user,
-                item=c_item.item,
-                size=c_item.size,
-                color=c_item.color,
-                quantity=c_item.quantity
-            )
-        
-        # 3. 検討リストを空にする
-        considerations.delete()
-    
-    # 4. 購入一覧へ飛ばす
+    c_item.delete()
     return redirect('closet:purchase_list')
 
 @login_required
 def purchase_list(request):
     items = PurchaseItem.objects.filter(user=request.user).order_by('-id')
     return render(request, 'closet/purchase_list.html', {'items': items})
+
+@login_required
+def purchase_complete(request):
+    return render(request, 'closet/purchase_complete.html')
 
 # --- その他 ---
 def inventory_manage(request):
@@ -214,7 +165,7 @@ def item_register(request):
         )
         return redirect('closet:inventory_manage')
     return render(request, 'item_register.html')
-# --- 管理機能の追記 ---
+
 def admin_login(request):
     return login_view(request)
 
@@ -232,6 +183,3 @@ def email_change(request):
 
 def mypage(request):
     return render(request, 'mypage.html')
-
-def purchase_complete_view(request):
-    return render(request, 'closet/purchase_complete.html')
