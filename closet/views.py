@@ -122,7 +122,8 @@ def buy_items(request):
                 item=c_item.item,
                 size=c_item.size,
                 color=c_item.color,
-                quantity=c_item.quantity
+                quantity=c_item.quantity ,
+                price_at_purchase=c_item.item.price
             )
         considerations.delete()
     return redirect('closet:purchase_list')

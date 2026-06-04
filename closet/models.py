@@ -18,7 +18,9 @@ class Item(models.Model):
     stock = models.IntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True, null=True)
     updated_at = models.DateTimeField(auto_now=True, null=True)
+    is_published = models.BooleanField("公開状態", default=True)
 
+    
 
     # tags はここに1つだけ残します
     tags = models.ManyToManyField(Tag, verbose_name="タグ", blank=True)
@@ -37,13 +39,26 @@ class Item(models.Model):
    
 # 3. 追加画像
 class ItemAdditionalImage(models.Model):
+    # 画像タイプの選択肢を定義
+    IMAGE_TYPES = (
+        (0, 'モデル着用'),
+        (1, 'ディテール'),
+        (2, 'コーディネート'),
+        (3, 'バックスタイル'),
+    )
+
     item = models.ForeignKey(Item, on_delete=models.CASCADE, related_name='additional_images')
     image = models.ImageField("追加詳細画像", upload_to='items/extra/')
+    
+    # ここに追記！
+    image_type = models.IntegerField("画像タイプ", choices=IMAGE_TYPES, default=0)
+    
     created_at = models.DateTimeField(auto_now_add=True, null=True)
     updated_at = models.DateTimeField(auto_now=True, null=True)
 
     def __str__(self):
-        return f"{self.item.item_name} の追加画像"
+        # 管理画面で画像タイプも表示されるようにすると便利です
+        return f"{self.item.item_name} ({self.get_image_type_display()})"
 
 # 4. 検討リスト（お気に入り）
 # models.py
@@ -99,6 +114,8 @@ class PurchaseItem(models.Model):
     size = models.CharField("サイズ", max_length=50, default="未選択")
     color = models.CharField("カラー", max_length=50, default="未選択")
     updated_at = models.DateTimeField(auto_now=True, null=True)
+    price_at_purchase = models.IntegerField("購入時の価格", default=0)
+
 
     def __str__(self):
         return f"{self.user.username} - {self.item.item_name}"

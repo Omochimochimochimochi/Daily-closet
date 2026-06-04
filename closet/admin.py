@@ -1,24 +1,38 @@
 from django.contrib import admin
-from .models import Item, ItemAdditionalImage, ConsiderationItem, Order, OrderItem, Tag, Favorite
+from .models import Item, ItemAdditionalImage, ConsiderationItem, Order, OrderItem, Tag, Favorite, PurchaseItem
 
-
+# --- インライン定義 ---
 class ItemAdditionalImageInline(admin.TabularInline):
     model = ItemAdditionalImage
-    extra = 3  # 最初から表示しておく入力欄の数（お好みで！）
+    extra = 3
 
+# --- 便利な機能付きでモデルを登録 ---
 @admin.register(Item)
 class ItemAdmin(admin.ModelAdmin):
     inlines = [ItemAdditionalImageInline]
-    
-    # 一覧に表示する項目（モデルにある実際のフィールド名に合わせてください）
-    list_display = ('item_name', 'price') 
-    
-    # ★ 右側に「絞り込み」メニューを出す（カテゴリーに相当するフィールド名を指定）
-    # もしモデルの項目名が 'category' ならこれで動きます
-    # list_filter = ('category',)
-    
+    list_display = ('item_name', 'brand_name', 'price', 'is_published', 'stock') 
+    list_filter = ('is_published', 'brand_name', 'tags')
+    list_editable = ('is_published', 'stock')
+    search_fields = ('item_name', 'brand_name')
+
+@admin.register(Order)
+class OrderAdmin(admin.ModelAdmin):
+    list_display = ('id', 'user', 'created_at')
+    list_filter = ('created_at',)
+
+@admin.register(PurchaseItem)
+class PurchaseItemAdmin(admin.ModelAdmin):
+    list_display = ('user', 'item', 'price_at_purchase', 'purchased_at')
+    list_filter = ('purchased_at',)
+
+@admin.register(Tag)
+class TagAdmin(admin.ModelAdmin):
+    list_display = ('name',)
+
+@admin.register(Favorite)
+class FavoriteAdmin(admin.ModelAdmin):
+    list_display = ('user', 'item', 'created_at')
+
+# --- @admin.register を使わないモデルだけをシンプルに登録 ---
 admin.site.register(ConsiderationItem)
-admin.site.register(Order)
 admin.site.register(OrderItem)
-admin.site.register(Tag)
-admin.site.register(Favorite)
