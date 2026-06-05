@@ -33,8 +33,24 @@
         .modal-close { position: absolute; top: 5px; right: 10px; font-size: 20px; cursor: pointer; border: none; background: none; }
         .btn-save { background-color: #bbb; border: none; padding: 8px 20px; border-radius: 5px; margin-right: 5px; }
         .btn-cancel { background-color: #ddd; border: none; padding: 8px 20px; border-radius: 5px; }
+/* フッター全体の枠組みと横並びの設定 */
+.footer-nav { 
+    position: fixed; 
+    bottom: 0; 
+    width: 375px; 
+    display: flex; 
+    justify-content: space-around; 
+    padding: 10px 0; 
+    background: #eee; 
+    border-top: 1px solid #ddd; 
+}
 
-        .footer-nav { position: fixed; bottom: 0; width: 375px; display: flex; justify-content: space-around; padding: 15px 0; background: #eee; border-top: 1px solid #ddd; }
+/* 絵文字の大きさと位置調整 */
+.footer-nav a {
+    font-size: 28px;        /* ここで絵文字の大きさを変更 */
+    text-decoration: none;
+    padding: 5px;           /* リンクのクリック範囲を確保 */
+}
     </style>
 </head>
 <body>
@@ -42,21 +58,27 @@
 <div class="app-container">
     <div class="header">在庫管理画面</div>
     
-    <a href="{% url 'item_register' %}" class="btn-add">＋新規アイテム登録</a>
-    <p style="font-size: 12px;">登録アイテム：x点</p>
+    <a href="{% url 'closet:item_register' %}" class="btn-add">＋新規アイテム登録</a>
 
-    <div class="item-card">
-        <div class="item-img">アイテム画像</div>
-        <div class="item-info">
-            <p>アイテム名：ワイドパンツ</p>
-            <p>タグ：#セール, #きれいめ</p>
-            <p>状態：公開中</p>
-            <div class="btn-group">
-                <button class="btn-status" onclick="openModal()">公開設定を変更</button>
-                <a href="#" class="btn-edit">編集</a>
-            </div>
+<p style="font-size: 12px;">登録アイテム：{{ items.count }}点</p>
+
+{% for item in items %}
+<div class="item-card">
+    <div class="item-img">
+        {% if item.image %}<img src="{{ item.image.url }}" width="80">{% else %}画像なし{% endif %}
+    </div>
+    <div class="item-info">
+        <p>アイテム名：{{ item.item_name }}</p>
+        <p>タグ：{% for tag in item.tags.all %}#{{ tag.name }}{% endfor %}</p>
+        <p>状態：{{ item.is_published|yesno:"公開中,非公開" }}</p>
+        
+        <div class="btn-group">
+            <button class="btn-status" onclick="openModal()">公開設定を変更</button>
+            <a href="{% url 'closet:item_edit' item.id %}" class="btn-edit">編集</a>
         </div>
     </div>
+</div>
+{% endfor %}
 
     <div id="modal-overlay">
         <div class="modal-content">
@@ -74,9 +96,9 @@
     </div>
 
     <div class="footer-nav">
-        <a href="{% url 'top' %}" style="text-decoration:none">🏡</a>
-        <a href="{% url 'inventory_manage' %}" style="text-decoration:none">👕</a>
-        <a href="{% url 'admin_menu' %}" style="text-decoration:none">📋</a>
+        <a href="{% url 'closet:top' %}" style="text-decoration:none">🏡</a>
+        <a href="{% url 'closet:inventory_manage' %}" style="text-decoration:none">👕</a>
+        <a href="{% url 'closet:admin_menu' %}" style="text-decoration:none">📋</a>
     </div>
 </div>
 

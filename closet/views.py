@@ -7,6 +7,7 @@ from django.contrib import messages
 from django.http import JsonResponse
 from .models import Item, ConsiderationItem, Favorite, PurchaseItem
 from django.db import transaction
+from django.shortcuts import render, redirect
 
 # --- 認証・トップ ---
 def top(request):
@@ -156,6 +157,7 @@ def inventory_manage(request):
 
 def item_register(request):
     if request.method == 'POST':
+        # データを保存
         Item.objects.create(
             item_name=request.POST.get('name'),
             brand_name=request.POST.get('brand'),
@@ -164,8 +166,14 @@ def item_register(request):
             image=request.FILES.get('image'),
             free_tags=request.POST.get('free_tags', "")
         )
-        return redirect('closet:inventory_manage')
-    return render(request, 'item_register.html')
+       
+        return redirect('inventory_manage') 
+    
+    return render(request, 'closet/item_register.html')
+
+def inventory_management(request):
+    items = Item.objects.all()
+    return render(request, 'inventory_manage.html', {'items': items})
 
 def admin_login(request):
     return login_view(request)
@@ -184,3 +192,10 @@ def email_change(request):
 
 def mypage(request):
     return render(request, 'mypage.html')
+
+def inventory_manage(request):
+    items = Item.objects.all() 
+    return render(request, 'inventory_manage.html', {'items': items})
+
+def item_edit(request, pk):
+    return render(request, 'closet/item_edit.html') # 必要に応じてパスは調整してください
