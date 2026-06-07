@@ -152,8 +152,6 @@ def purchase_complete(request):
     return render(request, 'closet/purchase_complete.html')
 
 # --- その他 ---
-def inventory_manage(request):
-    return render(request, 'inventory_manage.html', {'items': Item.objects.all()})
 
 def item_register(request):
     if request.method == 'POST':
@@ -206,4 +204,4 @@ def update_username(request):
         new_name = request.POST.get('new_username')
         request.user.username = new_name
         request.user.save()
-        return redirect('closet:my_page')
+        return redirect('closet:mypage')
