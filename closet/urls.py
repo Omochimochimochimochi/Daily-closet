@@ -44,6 +44,6 @@ urlpatterns = [
     path('email-change/', views.email_change, name='email_change'),
     path('password-change/', views.password_change, name='password_change'),
     path('item/<int:pk>/edit/', views.item_edit, name='item_edit'),
-   
+    path('update-username/', views.update_username, name='update_username'),
 ]
 

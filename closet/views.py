@@ -198,4 +198,12 @@ def inventory_manage(request):
     return render(request, 'inventory_manage.html', {'items': items})
 
 def item_edit(request, pk):
-    return render(request, 'closet/item_edit.html') # 必要に応じてパスは調整してください
+    return render(request, 'closet/item_edit.html') 
+
+
+def update_username(request):
+    if request.method == 'POST':
+        new_name = request.POST.get('new_username')
+        request.user.username = new_name
+        request.user.save()
+        return redirect('closet:my_page')

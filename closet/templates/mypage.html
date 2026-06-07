@@ -88,15 +88,23 @@
         </div>
     </div>
 
-    <div id="usernameModal" class="modal-overlay">
-        <div class="modal-content">
-            <h2 style="font-size: 1.2rem;">ユーザー名編集</h2>
-            <input type="text" class="modal-input" value="{{ request.user.username }}" readonly>
-            <input type="text" class="modal-input" placeholder="新しいユーザー名を入力">
-            <button class="btn-update-modal">更新する</button>
-            <p onclick="document.getElementById('usernameModal').style.display='none'" style="cursor:pointer; color:gray; margin-top:10px;">キャンセル</p>
-        </div>
+<div id="usernameModal" class="modal-overlay">
+    <div class="modal-content">
+        <h2 style="font-size: 1.2rem; margin-bottom: 20px;">ユーザー名編集</h2>
+        
+        <form method="POST" action="{% url 'closet:update_username' %}">
+            {% csrf_token %}
+            
+            <input type="text" class="modal-input" value="{{ request.user.username }}" readonly style="margin-bottom: 10px;">
+            
+            <input type="text" name="new_username" class="modal-input" placeholder="新しいユーザー名を入力" required style="margin-bottom: 20px;">
+            
+            <button type="submit" class="btn-update-modal">更新する</button>
+        </form>
+        
+        <p onclick="document.getElementById('usernameModal').style.display='none'" style="cursor:pointer; color:gray; margin-top:15px;">キャンセル</p>
     </div>
+</div>
 
 </body>
 </html>
