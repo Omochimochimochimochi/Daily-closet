@@ -3,70 +3,88 @@
 
 {% block extra_css %}
 <style>
- <style>
-    /* 1. 全体コンテナの余白（みちみち感の解消） */
+    /* 全体レイアウト */
     .app-container {
-        padding: 20px 15px; /* 左右に15pxの余裕を持たせる */
+        padding: 20px 15px;
+        min-height: 100vh;
+        position: relative;
+        padding-bottom: 80px; /* フッター用の余白 */
     }
+
     .search-box-container {
         display: flex;
         align-items: center;
-        gap: 15px;
-        
-        /* ★ここで上側の余白を調整します */
-        margin-top: 40px;      /* フォームを上に40px分押し下げる */
-        margin-bottom: 30px;   /* 下のトレンドワードとの間隔 */
-        
-        padding: 0 15px;       /* 横幅が窮屈な場合はここも調整 */
-    }
-    
-    .search-input {
-        flex: 1;
-        padding: 15px;
-        border: 1px solid #333;
-        border-radius: 8px; /* フォームの角を少し出す */
-        background-color: #f9f9f9;
-        font-size: 1rem;
+        gap: 10px;
+        margin-top: 20px;
+        margin-bottom: 30px;
     }
 
-    /* 3. セクション（タイトルとタグ群） */
-    .search-section { margin-bottom: 25px; }
-    .section-title { 
-        font-size: 0.9rem; 
-        color: #666; 
-        margin-bottom: 12px; /* タイトル下の隙間を調整 */
+    .search-input {
+        flex: 1;
+        padding: 12px;
+        border: 1px solid #333;
+        border-radius: 10px;
+        background-color: #f9f9f9;
     }
-    
-    /* 4. ボタンデザイン（角出し＆白背景） */
+
+    .search-section { margin-bottom: 25px; }
+    .section-title { font-size: 0.9rem; color: #666; margin-bottom: 12px; }
+
+    /* フッターを完全に固定 */
+    .bottom-nav {
+         position: fixed !important;
+        bottom: 0 !important;
+        left: 50% !important;
+        transform: translateX(-50%) !important;
+        width: 375px !important;
+        z-index: 9999 !important;
+    }
+
+/* コンテナが画面を正しく埋めるように */
+    .app-container {
+        width: 375px;
+        margin: 0 auto;
+        min-height: 100vh;
+        padding: 20px 15px;
+        padding-bottom: 100px; /* フッターに被らないよう余裕を増やす */
+       box-sizing: border-box;
+       position: relative;
+      background: white;
+    }
+
     .tag-group {
         display: flex;
-        flex-wrap: wrap; /* タグが多い場合は折り返す */
+        flex-wrap: nowrap;
+        overflow-x: auto;
         gap: 10px;
+        padding: 10px 0;
+        -webkit-overflow-scrolling: touch;
+        width: 100%;
+        max-width: 345px;
+        
+        /* スクロールバーを消すための設定 */
+        scrollbar-width: none;      /* Firefox */
+        -ms-overflow-style: none;   /* IE, Edge */
     }
     
+    /* Chrome, Safari, Opera用 */
+    .tag-group::-webkit-scrollbar {
+        display: none;
+    }
+
+    /* ボタン交互配色 */
     .tag-btn {
         display: inline-flex;
-        align-items: center;
-        gap: 5px;
         padding: 10px 18px;
-        border: 1px solid #999;
-        
-        /* ★角を8pxにして、少しカクっとさせる */
-        border-radius: 8px; 
-        
-        background-color: white; /* 背景は白 */
+        border-radius: 8px;
         text-decoration: none;
         color: #333;
         font-size: 0.85rem;
-        cursor: pointer;
         white-space: nowrap;
     }
-    
-    .tag-btn:hover {
-        background-color: #f5f5f5;
-    }
+    .tag-btn:nth-child(odd) { background-color: #fff; border: 1px solid #999; }
+    .tag-btn:nth-child(even) { background-color: #e0e0e0; border: 1px solid #ccc; }
 </style>
-
 {% endblock %}
 
 {% block content %}
@@ -86,6 +104,7 @@
         <a href="{% url 'closet:search_results' %}?tag=セール" class="tag-btn">🔎 セール</a>
         <a href="{% url 'closet:search_results' %}?tag=アウター" class="tag-btn">🔎 アウター</a>
         <a href="{% url 'closet:search_results' %}?tag=シャツ" class="tag-btn">🔎 シャツ</a>
+        <a href="{% url 'closet:search_results' %}?tag=シャツ" class="tag-btn">🔎 ワイドパンツ</a>
     </div>
 </div>
 
@@ -95,6 +114,25 @@
         <a href="{% url 'closet:search_results' %}?tag=洗濯可" class="tag-btn">🔎 #洗濯可</a>
         <a href="{% url 'closet:search_results' %}?tag=ブルベ" class="tag-btn">🔎 #ブルベ</a>
         <a href="{% url 'closet:search_results' %}?tag=ミニ丈" class="tag-btn">🔎 #ミニ丈</a>
+        <a href="{% url 'closet:search_results' %}?tag=ミニ丈" class="tag-btn">🔎 #2026SS</a>
     </div>
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // 1. Enterキーでの検索実行
+    const searchInput = document.querySelector('.search-input');
+    searchInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            this.form.submit();
+        }
+    });
+
+    // 2. サジェスト表示の準備（まずはコンソール出力で確認）
+    searchInput.addEventListener('input', function() {
+        console.log("入力中:", this.value);
+        // ここに候補を表示するUI処理を後から追加できます
+    });
+</script>
 {% endblock %}
