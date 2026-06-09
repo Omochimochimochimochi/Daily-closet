@@ -49,10 +49,16 @@
         height: 100%; 
         background: rgba(0,0,0,0.5); 
         z-index: 2000; 
+        /* --- ここを追加・変更 --- */
+        display: flex;          /* 追加 */
+        align-items: center;    /* 垂直方向中央 */
+        justify-content: center; /* 水平方向中央 */
+        display: none;          /* 元々のdisplay:noneはここへ */
     }
+
     .modal-content { 
         background: #fff; 
-        margin: 20% auto; 
+        /* margin: 20% auto;  <-- これを削除 */
         padding: 25px; 
         width: 85%; 
         max-width: 400px; 
@@ -127,7 +133,7 @@
         const closeBtn = document.getElementById("closeModal");
 
         if (openBtn && modal) {
-            openBtn.onclick = () => { modal.style.display = "block"; };
+            openBtn.onclick = () => { modal.style.display = "flex"; };
             closeBtn.onclick = () => { modal.style.display = "none"; };
             window.onclick = (event) => { if (event.target == modal) modal.style.display = "none"; };
         }
