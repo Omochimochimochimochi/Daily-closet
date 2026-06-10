@@ -137,3 +137,5 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 # settings.py の一番下
 LOGIN_REDIRECT_URL = 'closet:top_logged_in'  # アプリ名:名前 の形式
 LOGOUT_REDIRECT_URL = 'closet:top'         # ログアウト後はログイン画面へ
+
+LOGIN_URL = 'closet:login'

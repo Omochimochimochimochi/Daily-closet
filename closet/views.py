@@ -8,6 +8,8 @@ from django.http import JsonResponse
 from .models import Item, ConsiderationItem, Favorite, PurchaseItem
 from django.db import transaction
 from django.shortcuts import render, redirect
+from django.contrib.admin.views.decorators import staff_member_required
+
 
 # --- 認証・トップ ---
 def top(request):
@@ -152,7 +154,7 @@ def purchase_complete(request):
     return render(request, 'closet/purchase_complete.html')
 
 # --- その他 ---
-
+@staff_member_required
 def item_register(request):
     if request.method == 'POST':
         # データを保存
@@ -169,36 +171,40 @@ def item_register(request):
     
     return render(request, 'closet/item_register.html')
 
-def inventory_management(request):
+@staff_member_required
+def inventory_manage(request):
     items = Item.objects.all()
     return render(request, 'inventory_manage.html', {'items': items})
 
+@staff_member_required
 def admin_login(request):
     return login_view(request)
 
+@staff_member_required
 def admin_menu(request):
     return render(request, 'admin_menu.html')
 
+@staff_member_required
 def admin_item_list(request):
     return render(request, 'admin_item_list.html', {'items': Item.objects.all()})
 
+@login_required
 def password_change(request):
     return render(request, 'password_change.html')
 
+@login_required
 def email_change(request):
     return render(request, 'email_change.html')
 
+@login_required
 def mypage(request):
     return render(request, 'mypage.html')
 
-def inventory_manage(request):
-    items = Item.objects.all() 
-    return render(request, 'inventory_manage.html', {'items': items})
 
 def item_edit(request, pk):
     return render(request, 'closet/item_edit.html') 
 
-
+@login_required
 def update_username(request):
     if request.method == 'POST':
         new_name = request.POST.get('new_username')
