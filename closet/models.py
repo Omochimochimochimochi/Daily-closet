@@ -15,6 +15,10 @@ class Item(models.Model):
     price = models.IntegerField("金額", default=0)
     color = models.CharField("カラー", max_length=50, blank=True)
     image = models.ImageField("アイテム画像", upload_to='items/', blank=True, null=True)
+    detail_image1 = models.ImageField("生地のアップ", upload_to='items/', blank=True, null=True)
+    detail_image2 = models.ImageField("裏地", upload_to='items/', blank=True, null=True)
+    detail_image3 = models.ImageField("ポケット等の詳細", upload_to='items/', blank=True, null=True)
+
     stock = models.IntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True, null=True)
     updated_at = models.DateTimeField(auto_now=True, null=True)
