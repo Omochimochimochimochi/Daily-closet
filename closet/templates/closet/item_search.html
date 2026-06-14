@@ -97,25 +97,24 @@
     
     <button type="submit" style="display:none;"></button>
 </form>
-
 <div class="search-section">
     <p class="section-title">トレンドワード</p>
     <div class="tag-group">
-        <a href="{% url 'closet:search_results' %}?tag=セール" class="tag-btn">🔎 セール</a>
-        <a href="{% url 'closet:search_results' %}?tag=アウター" class="tag-btn">🔎 アウター</a>
-        <a href="{% url 'closet:search_results' %}?tag=シャツ" class="tag-btn">🔎 シャツ</a>
-        <a href="{% url 'closet:search_results' %}?tag=シャツ" class="tag-btn">🔎 ワイドパンツ</a>
+        {% for tag in trending_tags %}
+            <a href="{% url 'closet:search_results' %}?tag={{ tag }}" class="tag-btn">#{{ tag }}</a>
+        {% endfor %}
     </div>
 </div>
 
 <div class="search-section">
     <p class="section-title">体型・好みで探す</p>
     <div class="tag-group">
-        <a href="{% url 'closet:search_results' %}?tag=洗濯可" class="tag-btn">🔎 #洗濯可</a>
-        <a href="{% url 'closet:search_results' %}?tag=ブルベ" class="tag-btn">🔎 #ブルベ</a>
-        <a href="{% url 'closet:search_results' %}?tag=ミニ丈" class="tag-btn">🔎 #ミニ丈</a>
-        <a href="{% url 'closet:search_results' %}?tag=ミニ丈" class="tag-btn">🔎 #2026SS</a>
+        {% for tag in category_tags %}
+            <a href="{% url 'closet:search_results' %}?tag={{ tag }}" class="tag-btn">#{{ tag }}</a>
+        {% endfor %}
     </div>
+</div>
+</div>
 </div>
 {% endblock %}
 
@@ -134,5 +133,30 @@
         console.log("入力中:", this.value);
         // ここに候補を表示するUI処理を後から追加できます
     });
+
+// 3. マウスドラッグでのスクロール機能を追加
+    const sliders = document.querySelectorAll('.tag-group');
+    let isDown = false;
+    let startX;
+    let scrollLeft;
+
+    sliders.forEach(slider => {
+        slider.addEventListener('mousedown', (e) => {
+            isDown = true;
+            slider.classList.add('active'); // 必要ならCSSでcursor: grabbingなどを設定
+            startX = e.pageX - slider.offsetLeft;
+            scrollLeft = slider.scrollLeft;
+        });
+        slider.addEventListener('mouseleave', () => isDown = false);
+        slider.addEventListener('mouseup', () => isDown = false);
+        slider.addEventListener('mousemove', (e) => {
+            if (!isDown) return;
+            e.preventDefault();
+            const x = e.pageX - slider.offsetLeft;
+            const walk = (x - startX) * 2; // スクロール速度の調整
+            slider.scrollLeft = scrollLeft - walk;
+        });
+    });
+
 </script>
 {% endblock %}

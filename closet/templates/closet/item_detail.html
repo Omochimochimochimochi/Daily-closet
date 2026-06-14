@@ -45,6 +45,23 @@
         <div class="brand">{{ item.brand_name }}</div>
         <div class="item-name">{{ item.item_name }}</div>
         
+        {% for tag in item.free_tags.split %}
+    <a href="{% url 'closet:search_results' %}?tag={{ tag|cut:'#' }}" 
+       style="text-decoration: none; color: #6c7b94; font-size: 13px; margin-right: 8px;">
+        #{{ tag|cut:"#" }}
+    </a>
+{% endfor %}
+
+    <div class="tag-list" style="margin: 10px 0;">
+        {% for tag in item.free_tags.split %}
+            <a href="{% url 'closet:search_results' %}?tag={{ tag|cut:'#' }}" 
+               style="text-decoration: none; color: #6c7b94; font-size: 13px; margin-right: 8px;">
+                {{ tag }}
+            </a>
+        {% endfor %}
+    </div>
+
+
         <div class="price-heart-row">
             <div class="price">¥{{ item.price|intcomma }}</div>
             <button id="heart-btn" class="heart-btn {% if is_favorite %}is-active{% endif %}" data-id="{{ item.id }}">

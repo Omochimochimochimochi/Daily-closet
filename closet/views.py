@@ -49,19 +49,46 @@ def item_detail(request, pk):
 
 def search_results(request):
     items = Item.objects.all()
-    tag = request.GET.get('tag')
-    if tag:
-        items = items.filter(Q(item_name__icontains=tag) | Q(free_tags__icontains=tag))
-    return render(request, 'closet/search_results.html', {'items': items})
-
+    raw_tag = request.GET.get('tag')
+    
+    if raw_tag:
+        # 1. 全角スペースも考慮してリスト化
+        tags = raw_tag.replace(' ', ' ').split(' ')
+        
+        # 2. 各タグごとにフィルタリング
+        for tag in tags:
+            if tag:
+                # '#' を含めて検索できるようにする、あるいはタグから '#' を除いて検索するなど統一が必要
+                # ここでは「タグ名そのもの」が含まれているかで絞り込みます
+                clean_tag = tag.replace('#', '') # '#'を除去して検索文字列をクリーンに
+                items = items.filter(Q(item_name__icontains=clean_tag) | Q(free_tags__icontains=clean_tag))
+            
 def item_search(request):
-    return render(request, 'closet/item_search.html')
+    context = {
+        'trending_tags': ["セール", "アウター", "シャツ", "ワイドパンツ"],
+        'category_tags': ["洗濯可", "ブルベ", "ミニ丈", "2026SS"]
+    }
+    return render(request, 'closet/item_search.html', context)
+
+def search_results(request):
+    items = Item.objects.all()
+    raw_tag = request.GET.get('tag')
+    
+    if raw_tag:
+        tags = raw_tag.replace(' ', ' ').split(' ')
+        for tag in tags:
+            if tag:
+                clean_tag = tag.replace('#', '')
+                items = items.filter(Q(item_name__icontains=clean_tag) | Q(free_tags__icontains=clean_tag))
+    
+    return render(request, 'closet/search_results.html', {'items': items, 'tag': raw_tag})
 
 def search_by_tag(request, tag_name=None):
     tag = tag_name or request.GET.get('tag')
-    items = Item.objects.filter(free_tags__icontains=tag) if tag else Item.objects.none()
+    # search_resultsとロジックを統一するため、clean_tag化
+    clean_tag = tag.replace('#', '') if tag else ""
+    items = Item.objects.filter(Q(item_name__icontains=clean_tag) | Q(free_tags__icontains=clean_tag)) if clean_tag else Item.objects.none()
     return render(request, 'closet/search_results.html', {'items': items, 'tag': tag})
-
 @login_required
 def toggle_favorite(request, item_id):
     item = get_object_or_404(Item, id=item_id)

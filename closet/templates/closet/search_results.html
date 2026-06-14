@@ -102,25 +102,35 @@
     <div class="modal-content">
         <span id="closeModal" class="close-btn">×</span>
         <h3 style="text-align:center; margin-bottom:25px; font-size:18px;">絞り込み</h3>
-        <form method="get" action="{% url 'closet:search_results' %}">
-            
-            <div style="margin-bottom:20px;">
-                <label style="display:block; font-size:14px; font-weight:bold; margin-bottom:8px;">ハッシュタグ</label>
-                <input type="text" name="tag" value="{{ request.GET.tag|default:'' }}" placeholder="#セール" style="width:100%; border:1px solid #ccc; padding:8px; border-radius:4px; box-sizing:border-box;">
-            </div>
+<form method="get" action="{% url 'closet:search_results' %}">
+    
+    <div style="margin-bottom:20px;">
+        <label style="display:block; font-size:14px; font-weight:bold; margin-bottom:8px;">ハッシュタグで絞り込む</label>
+        <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+            <label style="font-size: 13px; border: 1px solid #ccc; padding: 5px 10px; border-radius: 4px;">
+                <input type="checkbox" name="tag" value="骨格ウェーブ"> #骨格ウェーブ
+            </label>
+            <label style="font-size: 13px; border: 1px solid #ccc; padding: 5px 10px; border-radius: 4px;">
+                <input type="checkbox" name="tag" value="イエベ"> #イエベ
+            </label>
+            <label style="font-size: 13px; border: 1px solid #ccc; padding: 5px 10px; border-radius: 4px;">
+                <input type="checkbox" name="tag" value="洗濯可"> #洗濯可
+            </label>
+        </div>
+    </div>
 
-            <div style="margin-bottom:30px;">
-                <label style="display:block; font-size:14px; font-weight:bold; margin-bottom:8px;">カテゴリー</label>
-                <select name="category" style="width:100%; border:1px solid #ccc; padding:8px; border-radius:4px; background:#fff;">
-                    <option value="">すべて</option>
-                    <option value="tops">トップス</option>
-                    <option value="pants">パンツ</option>
-                    <option value="outer">アウター</option>
-                </select>
-            </div>
+    <div style="margin-bottom:30px;">
+        <label style="display:block; font-size:14px; font-weight:bold; margin-bottom:8px;">カテゴリー</label>
+        <select name="category" style="width:100%; border:1px solid #ccc; padding:8px; border-radius:4px; background:#fff;">
+            <option value="">すべて</option>
+            <option value="tops">トップス</option>
+            <option value="pants">パンツ</option>
+            <option value="outer">アウター</option>
+        </select>
+    </div>
 
-            <button type="submit" style="width:100%; background:#333; color:#fff; padding:12px; border:none; border-radius:4px; font-size:16px; cursor:pointer;">検索</button>
-        </form>
+    <button type="submit" style="width:100%; background:#333; color:#fff; padding:12px; border:none; border-radius:4px; font-size:16px; cursor:pointer;">検索</button>
+</form>
     </div>
 </div>
 {% endblock %}
