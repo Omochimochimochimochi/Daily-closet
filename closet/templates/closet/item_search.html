@@ -30,27 +30,6 @@
     .search-section { margin-bottom: 25px; }
     .section-title { font-size: 0.9rem; color: #666; margin-bottom: 12px; }
 
-    /* フッターを完全に固定 */
-    .bottom-nav {
-         position: fixed !important;
-        bottom: 0 !important;
-        left: 50% !important;
-        transform: translateX(-50%) !important;
-        width: 375px !important;
-        z-index: 9999 !important;
-    }
-
-/* コンテナが画面を正しく埋めるように */
-    .app-container {
-        width: 375px;
-        margin: 0 auto;
-        min-height: 100vh;
-        padding: 20px 15px;
-        padding-bottom: 100px; /* フッターに被らないよう余裕を増やす */
-       box-sizing: border-box;
-       position: relative;
-      background: white;
-    }
 
     .tag-group {
         display: flex;
@@ -114,8 +93,7 @@
         {% endfor %}
     </div>
 </div>
-</div>
-</div>
+
 {% endblock %}
 
 {% block extra_js %}

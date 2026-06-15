@@ -22,14 +22,17 @@
     }
 </style>
 {% endblock %}
-
 {% block content %}
-    <h1 style="text-align: center; margin-top: 20px; font-weight: bold;">Daily closet</h1>
+<div class="app-container"> <h1 style="text-align: center; margin-top: 20px; font-weight: bold;">Daily closet</h1>
     
-    <form action="{% url 'closet:search_results' %}" method="get" class="search-container">
-        <input type="text" name="q" placeholder="キーワードを入力" style="flex: 1; padding: 8px; border: 1px solid #ccc;">
-        <button type="submit" style="padding: 8px; cursor: pointer;">🔍</button>
-    </form> 
+<form action="{% url 'closet:search_results' %}" method="get" 
+      style="display: flex; gap: 5px; width: 100%; max-width: 375px; margin: 0 auto; box-sizing: border-box; padding: 0 10px;">
+    
+    <input type="text" name="q" placeholder="キーワードを入力" 
+           style="flex: 1; padding: 10px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box;">
+    
+    <button type="submit" style="padding: 10px 15px; cursor: pointer; background: #eee; border: 1px solid #ccc; border-radius: 5px;">🔍</button>
+</form>
 
     <div class="main-visual">
         <img src="{% static 'images/main_visual.jpg' %}" alt="メイン画像">
@@ -52,7 +55,8 @@
             ＞新規会員登録はこちら
         </a>
     </div>
-{% endblock %}
+
+</div> {% endblock %}
 
 {# ログイン前のTOPページでは下のメニューを出さない設定 #}
 {% block bottom_nav %}{% endblock %}

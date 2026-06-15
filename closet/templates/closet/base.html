@@ -8,71 +8,54 @@
     
     <style>
         /* 共通スタイル */
-        body { 
-            font-family: sans-serif; 
-            margin: 0; 
-            background-color: #f8f9fa; 
-            display: flex; 
-            justify-content: center; 
+        body { font-family: sans-serif; margin: 0; background-color: #f8f9fa; display: flex; justify-content: center; }
+
+        .bottom-nav {
+            position: fixed !important;
+            bottom: 0 !important;
+            left: 50% !important;
+            transform: translateX(-50%) !important;
+            width: 375px !important;
+            height: 65px !important;
+            background-color: #d3d3d3 !important;
+            z-index: 9999 !important;
+            border-top: 1px solid #bbb !important;
+            /* ここを追加：フッター内のボタン配置用 */
+            display: flex !important;
+            justify-content: space-around !important;
+            align-items: center !important;
         }
-        
-        /* スマホサイズコンテナ */
-        .app-container { 
-            width: 375px; 
-            background: white; 
-            min-height: 100vh; 
-            border-left: 1px solid #ddd; 
-            border-right: 1px solid #ddd; 
-            padding-bottom: 80px; 
-            position: relative; 
-            box-sizing: border-box; 
+
+        .app-container {
+            width: 375px !important;
+            margin: 0 auto !important;
+            min-height: 100vh !important;
+            padding-bottom: 100px !important;
+            background: white !important;
+            box-sizing: border-box;
         }
-        
-        /* 下部ナビゲーション */
-        .bottom-nav { 
-            position: fixed; 
-            bottom: 0; 
-            width: 375px; 
-            height: 65px; 
-            background-color: #d3d3d3; 
-            display: flex; 
-            justify-content: space-around; 
-            align-items: center; 
-            border-top: 1px solid #bbb; 
-            z-index: 1000; 
-        }
+
+        /* 壊れていたスタイル定義を修正 */
         .nav-item { text-decoration: none; width: 50px; height: 50px; display: flex; justify-content: center; align-items: center; }
         .nav-icon { font-size: 24px; display: block; }
-
-        
     </style>
-
-     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
-
-    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
-
 
     {% block extra_css %}{% endblock %}
 </head>
 <body>
-    <div class="app-container">
-        
+    <div class="app-container">   
         {% block content %}{% endblock %}
-
-        {% block bottom_nav %}
-        <div class="bottom-nav">
-            <a href="{% url 'closet:top' %}" class="nav-item"><span class="nav-icon">🏠</span></a>
-            <a href="{% url 'closet:item_search' %}" class="nav-item"><span class="nav-icon">🔍</span></a>
-            <a href="{% url 'closet:consideration_list' %}" class="nav-item"><span class="nav-icon">🛒</span></a>
-            <a href="{% url 'closet:mypage' %}" class="nav-item"><span class="nav-icon">👤</span></a>
-        </div>
-        {% endblock %}
-
     </div>
+    
+    {% block bottom_nav %}
+    <div class="bottom-nav">
+        <a href="{% url 'closet:top' %}" class="nav-item"><span class="nav-icon">🏠</span></a>
+        <a href="{% url 'closet:item_search' %}" class="nav-item"><span class="nav-icon">🔍</span></a>
+        <a href="{% url 'closet:consideration_list' %}" class="nav-item"><span class="nav-icon">🛒</span></a>
+        <a href="{% url 'closet:mypage' %}" class="nav-item"><span class="nav-icon">👤</span></a>
+    </div>
+    {% endblock %}
 
     {% block extra_js %}{% endblock %}
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
-
-    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 </body>
 </html>

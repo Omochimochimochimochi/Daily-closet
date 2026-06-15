@@ -20,11 +20,16 @@
 {% endblock %}
 
 {% block content %}
-    <h1 style="text-align: center; margin-top: 20px; font-weight: bold;">Daily closet</h1>
+<div class="app-container"> <h1 style="text-align: center; margin-top: 20px; font-weight: bold;">Daily closet</h1>
     
-    <div class="welcome-msg">
-        ようこそ、{{ request.user.username }} さん
-    </div>
+<form action="{% url 'closet:search_results' %}" method="get" 
+      style="display: flex; gap: 5px; width: 100%; max-width: 375px; margin: 0 auto; box-sizing: border-box; padding: 0 10px;">
+    
+    <input type="text" name="q" placeholder="キーワードを入力" 
+           style="flex: 1; padding: 10px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box;">
+    
+    <button type="submit" style="padding: 10px 15px; cursor: pointer; background: #eee; border: 1px solid #ccc; border-radius: 5px;">🔍</button>
+</form>
 
     <div class="main-visual">
         <img src="{% static 'images/main_visual.jpg' %}" alt="メイン画像">
@@ -38,7 +43,9 @@
     </p>
 
     <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
-    {% endblock %}
+</div> {% endblock %}
+
+   
 
 {% block bottom_nav %}
     {{ block.super }}
