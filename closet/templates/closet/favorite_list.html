@@ -27,10 +27,14 @@
     
     <div style="font-weight: bold;">¥{{ fav.item.price|intcomma }} (税込)</div>
 </div>
-                <form method="post" action="{% url 'closet:remove_favorite' fav.item.pk %}">
-                    {% csrf_token %}
-                    <button type="submit" style="background: none; border: none; cursor: pointer; font-size: 20px;">🗑️</button>
-                </form>
+            <form method="post" action="{% url 'closet:remove_favorite' fav.item.pk %}">
+            {% csrf_token %}
+            <button type="submit" 
+            style="background: none; border: none; cursor: pointer; font-size: 20px;"
+            onclick="return confirm('本当に削除してもよろしいですか？');">
+          🗑️
+    </button>
+</form>
             </div>
             
             <form method="post" action="{% url 'closet:add_to_consideration' fav.item.pk %}">
