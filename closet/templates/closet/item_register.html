@@ -146,20 +146,25 @@
     <div class="modal-content" onclick="event.stopPropagation()">
         <span class="modal-close" onclick="closeModal()">&times;</span>
         <h3 style="font-size: 16px; margin-bottom: 15px; text-align: center;">カメラロール</h3>
-        <div class="image-grid">
-            <div class="grid-item" onclick="selectImage('📷')">📷</div>
-            <div class="grid-item" onclick="selectImage('🧥')">🧥</div>
-            <div class="grid-item" onclick="selectImage('👗')">👗</div>
-            <div class="grid-item" onclick="selectImage('👕')">👕</div>
-            <div class="grid-item" onclick="selectImage('👜')">👜</div>
-            <div class="grid-item" onclick="selectImage('👟')">👟</div>
+        
+        <div id="modal-main-preview" style="width: 100%; height: 200px; border: 1px solid #ccc; display: flex; align-items: center; justify-content: center; background: #f9f9f9; border-radius: 8px; margin-bottom: 15px;">
+            画像を選択してください
         </div>
+
+        <div id="modal-thumbnail-list" style="display: flex; gap: 10px; overflow-x: auto; padding-bottom: 10px;">
+            </div>
+
+        <label style="display: block; width: 100%; padding: 12px; background: #a0c4ff; color: white; text-align: center; border-radius: 5px; cursor: pointer; margin-top: 10px;">
+            ＋ 写真を追加
+            <input type="file" accept="image/*" style="display:none" onchange="handleImageUpload(event)">
+        </label>
     </div>
 </div>
 
 <script>
-    let currentTarget = ''; 
+    let currentTarget = '';
 
+    // 1. モーダルの開閉関数
     function openModal(target) {
         currentTarget = target;
         document.getElementById('image-modal').style.display = 'flex';
@@ -169,76 +174,40 @@
         document.getElementById('image-modal').style.display = 'none';
     }
 
-    function selectImage(emoji) {
-        if (currentTarget === 'main') {
-            const mainBox = document.getElementById('main-preview');
-            mainBox.innerHTML = `<span style="font-size: 80px;">${emoji}</span>`;
-        } else if (currentTarget === 'detail-sub') {
-            const subBox = document.getElementById('detail-sub-preview');
-            subBox.innerHTML = `<span style="font-size: 50px;">${emoji}</span>`;
-        } else if (currentTarget === 'detail') {
-            const container = document.getElementById('thumbnail-container');
-            const div = document.createElement('div');
-            div.className = 'thumbnail-item';
-            div.innerHTML = `
-                <div class="thumbnail-placeholder"><span style="font-size:30px;">${emoji}</span></div>
-                <button type="button" class="remove-btn" onclick="this.parentElement.remove()">×</button>
-            `;
-            container.appendChild(div);
-        }
-        closeModal();
+    // 2. ★追加する画像アップロード関数
+    function handleImageUpload(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const imageUrl = e.target.result;
+            
+            if (currentTarget === 'main') {
+                document.getElementById('main-preview').innerHTML = `<img src="${imageUrl}" style="width:100%; height:100%; object-fit:cover;">`;
+            } else if (currentTarget === 'detail') {
+                const container = document.getElementById('thumbnail-container');
+                const div = document.createElement('div');
+                div.className = 'thumbnail-item';
+                div.innerHTML = `<img src="${imageUrl}" style="width:100%; height:100%; object-fit:cover; border-radius:5px;"><button type="button" class="remove-btn" onclick="this.parentElement.remove()">×</button>`;
+                container.appendChild(div);
+            }
+            closeModal();
+        };
+        reader.readAsDataURL(file);
     }
 
-   /* 入力エリア全体の並び */
-.free-tag-input-area {
-    display: flex !important; /* 強制的にフレックスボックスにする */
-    gap: 8px;
-    margin-bottom: 15px;
-    width: 100%;             /* 横幅いっぱいに広げる */
-    box-sizing: border-box;
-}
-
-/* 入力欄 */
-#free-tag-input {
-    flex: 1;                 /* ボタン以外の余ったスペースをすべて使う */
-    min-width: 0;            /* flex内での潰れ防止 */
-    height: 40px;
-    padding: 0 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    box-sizing: border-box;
-    font-size: 14px;
-}
-
-/* 「追加」ボタン の縦書きを直す */
-.add-tag-btn {
-    background: #eee;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 14px;
-    height: 40px;
-    padding: 0 15px;         /* 左右に余白を作る */
-    
-    /* 文字を横に並べるための最重要設定 */
-    white-space: nowrap !important; 
-    display: inline-block !important;
-    width: auto !important;  /* 幅を文字に合わせる */
-    min-width: 60px;         /* 縦にならないための最小幅 */
-}
+    // 3. タグ追加関数
     function addFreeTag() {
-    const input = document.getElementById('free-tag-input');
-    if(!input.value.trim()) return;
-    const list = document.getElementById('free-tag-list');
-    const tag = document.createElement('span');
-    tag.className = 'tag-label';
-    tag.style.background = '#eee';
-    tag.innerText = input.value.startsWith('#') ? input.value : '#' + input.value;
-    tag.onclick = function() { this.remove(); };
-    list.appendChild(tag);
-    input.value = '';
-}
+        const input = document.getElementById('free-tag-input');
+        if(!input.value.trim()) return;
+        const list = document.getElementById('free-tag-list');
+        const tag = document.createElement('span');
+        tag.className = 'tag-label';
+        tag.style.background = '#eee';
+        tag.innerText = input.value.startsWith('#') ? input.value : '#' + input.value;
+        tag.onclick = function() { this.remove(); };
+        list.appendChild(tag);
+        input.value = '';
+    }
 </script>
-
-</body>
-</html>
