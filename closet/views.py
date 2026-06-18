@@ -50,18 +50,27 @@ def item_detail(request, pk):
 def search_results(request):
     items = Item.objects.all()
     raw_tag = request.GET.get('tag')
-    
+
     if raw_tag:
-        # 1. 全角スペースも考慮してリスト化
-        tags = raw_tag.replace(' ', ' ').split(' ')
-        
-        # 2. 各タグごとにフィルタリング
+        tags = raw_tag.replace('　', ' ').split(' ')
+
         for tag in tags:
             if tag:
-                # '#' を含めて検索できるようにする、あるいはタグから '#' を除いて検索するなど統一が必要
-                # ここでは「タグ名そのもの」が含まれているかで絞り込みます
-                clean_tag = tag.replace('#', '') # '#'を除去して検索文字列をクリーンに
-                items = items.filter(Q(item_name__icontains=clean_tag) | Q(free_tags__icontains=clean_tag))
+                clean_tag = tag.replace('#', '').strip()
+
+                items = items.filter(
+                    Q(tags__name__icontains=clean_tag) |
+                    Q(kokkaku__icontains=clean_tag) |
+                    Q(personal_color__icontains=clean_tag) |
+                    Q(style__icontains=clean_tag) |
+                    Q(free_tags__icontains=clean_tag) |
+                    Q(item_name__icontains=clean_tag)
+                ).distinct()
+
+    return render(request, 'closet/search_results.html', {
+        'items': items,
+        'tag': raw_tag
+    })
             
 def item_search(request):
     context = {
@@ -70,18 +79,7 @@ def item_search(request):
     }
     return render(request, 'closet/item_search.html', context)
 
-def search_results(request):
-    items = Item.objects.all()
-    raw_tag = request.GET.get('tag')
-    
-    if raw_tag:
-        tags = raw_tag.replace(' ', ' ').split(' ')
-        for tag in tags:
-            if tag:
-                clean_tag = tag.replace('#', '')
-                items = items.filter(Q(item_name__icontains=clean_tag) | Q(free_tags__icontains=clean_tag))
-    
-    return render(request, 'closet/search_results.html', {'items': items, 'tag': raw_tag})
+
 
 def search_by_tag(request, tag_name=None):
     tag = tag_name or request.GET.get('tag')
