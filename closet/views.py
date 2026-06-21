@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.http import JsonResponse
-from .models import Item, ConsiderationItem, Favorite, PurchaseItem
+from .models import Item, ConsiderationItem, Favorite, PurchaseItem, ItemAdditionalImage
 from django.db import transaction
 from django.shortcuts import render, redirect
 from django.contrib.admin.views.decorators import staff_member_required
@@ -55,17 +55,24 @@ def search_results(request):
         tags = raw_tag.replace('　', ' ').split(' ')
 
         for tag in tags:
-            if tag:
-                clean_tag = tag.replace('#', '').strip()
+            if not tag:
+                continue
+            clean_tag = tag.replace('#', '').strip()
+            if not clean_tag:
+                continue
 
-                items = items.filter(
-                    Q(tags__name__icontains=clean_tag) |
-                    Q(kokkaku__icontains=clean_tag) |
-                    Q(personal_color__icontains=clean_tag) |
-                    Q(style__icontains=clean_tag) |
-                    Q(free_tags__icontains=clean_tag) |
-                    Q(item_name__icontains=clean_tag)
-                ).distinct()
+            # 1タグごとに新しいクエリを作り、ここで個別に.filter()して
+            # 「タグごとのfilter()」をループで積み重ねる = タグ間はAND
+            items = items.filter(
+                Q(tags__name__icontains=clean_tag) |
+                Q(kokkaku__icontains=clean_tag) |
+                Q(personal_color__icontains=clean_tag) |
+                Q(style__icontains=clean_tag) |
+                Q(free_tags__icontains=clean_tag) |
+                Q(item_name__icontains=clean_tag)
+            )
+
+    items = items.distinct()
 
     return render(request, 'closet/search_results.html', {
         'items': items,
@@ -182,16 +189,39 @@ def purchase_complete(request):
 @staff_member_required
 def item_register(request):
     if request.method == 'POST':
-        # データを保存
-        Item.objects.create(
+        try:
+            price = int(request.POST.get('price') or 0)
+        except ValueError:
+            price = 0
+
+        # チェックボックスは複数選択可なので getlist() で受け取り、カンマ区切りの文字列にして保存する
+        kokkaku_value = ','.join(request.POST.getlist('kokkaku'))
+        personal_color_value = ','.join(request.POST.getlist('personal_color'))
+        style_value = ','.join(request.POST.getlist('style'))
+
+        item = Item.objects.create(
             item_name=request.POST.get('name'),
             brand_name=request.POST.get('brand'),
-            price=request.POST.get('price'),
+            price=price,
             color=request.POST.get('color'),
             image=request.FILES.get('image'),
-            free_tags=request.POST.get('free_tags', "")
+            description=request.POST.get('description', ''),
+            details_text=request.POST.get('details_text', ''),
+            detail_image=request.FILES.get('detail_image'),
+            free_tags=request.POST.get('free_tags', ''),
+            kokkaku=kokkaku_value,
+            personal_color=personal_color_value,
+            style=style_value,
         )
-       
+
+        # 詳細部分（ポケット・裏地など）の画像は何枚でも追加できるので ItemAdditionalImage に保存する
+        for image_file in request.FILES.getlist('additional_images'):
+            ItemAdditionalImage.objects.create(
+                item=item,
+                image=image_file,
+                image_type=1,  # ディテール画像として保存
+            )
+
         return redirect('inventory_manage') 
     
     return render(request, 'closet/item_register.html')
