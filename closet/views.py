@@ -49,20 +49,18 @@ def item_detail(request, pk):
 
 def search_results(request):
     items = Item.objects.all()
-    raw_tag = request.GET.get('tag')
 
-    if raw_tag:
-        tags = raw_tag.replace('　', ' ').split(' ')
+    raw_query = request.GET.get('q', '').strip()
+
+    if raw_query:
+        tags = raw_query.replace('　', ' ').split()
 
         for tag in tags:
-            if not tag:
-                continue
             clean_tag = tag.replace('#', '').strip()
+
             if not clean_tag:
                 continue
 
-            # 1タグごとに新しいクエリを作り、ここで個別に.filter()して
-            # 「タグごとのfilter()」をループで積み重ねる = タグ間はAND
             items = items.filter(
                 Q(tags__name__icontains=clean_tag) |
                 Q(kokkaku__icontains=clean_tag) |
@@ -72,6 +70,12 @@ def search_results(request):
                 Q(item_name__icontains=clean_tag)
             )
 
+    items = items.distinct()
+
+    return render(request, 'closet/search_results.html', {
+        'items': items,
+        'tag': raw_query,
+    })
     items = items.distinct()
 
     return render(request, 'closet/search_results.html', {
@@ -222,7 +226,7 @@ def item_register(request):
                 image_type=1,  # ディテール画像として保存
             )
 
-        return redirect('inventory_manage') 
+        return redirect('closet:inventory_manage') 
     
     return render(request, 'closet/item_register.html')
 
