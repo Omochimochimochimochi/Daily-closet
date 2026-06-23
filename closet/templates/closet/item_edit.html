@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>アイテム編集 - Daily Closet</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        /* 基本レイアウト */
+        body { font-family: sans-serif; background-color: #f8f9fa; margin: 0; display: flex; justify-content: center; }
+        .app-container { width: 375px; background: white; min-height: 100vh; padding: 20px; border: 1px solid #ddd; box-sizing: border-box; position: relative; padding-bottom: 60px; }
+        h2 { font-size: 16px; margin-bottom: 20px; text-align: center; font-weight: bold; }
+        
+        /* フォーム共通 */
+        .form-row { display: flex; gap: 10px; margin-bottom: 15px; }
+        .form-group { flex: 1; }
+        .form-group-full { width: 100%; margin-bottom: 15px; }
+        label { display: block; font-size: 11px; margin-bottom: 5px; color: #333; font-weight: bold; }
+        input[type="text"] { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px; font-size: 14px; box-sizing: border-box; }
+        textarea { width: 100%; display: block; height: 60px; padding: 8px 12px; border: 1px solid #ccc; border-radius: 5px; resize: none; font-size: 14px; box-sizing: border-box; }
+
+        /* 画像登録枠（メイン・詳細共通） */
+        .image-preview-box { 
+            border: 1px solid #333; margin: 0 auto; 
+            display: flex; flex-direction: column; align-items: center; justify-content: center; 
+            background-color: #fdfdfd; cursor: pointer; overflow: hidden;
+        }
+
+        /* 詳細画像登録（横並びリスト） */
+        .detail-add-section { text-align: center; margin-top: 20px; border-bottom: 1px solid #eee; padding-bottom: 20px; margin-bottom: 20px; }
+        .detail-add-btn { border: 1px dashed #333; width: 100%; padding: 15px; cursor: pointer; font-size: 13px; border-radius: 5px; background: white; }
+        .thumbnail-list { display: flex; gap: 10px; overflow-x: auto; padding: 10px 0; }
+        .thumbnail-item { position: relative; width: 80px; height: 80px; flex-shrink: 0; }
+        .thumbnail-placeholder { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: #f9f9f9; border: 1px solid #ddd; border-radius: 5px; }
+        .remove-btn { position: absolute; top: -8px; right: -8px; background: #7a7aff; color: white; border: 2px solid white; border-radius: 50%; width: 22px; height: 22px; cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 10; }
+
+        /* タグセクション */
+        .tag-section-title { font-size: 13px; font-weight: bold; margin: 20px 0 10px; }
+        .tag-group-label { font-size: 12px; font-weight: bold; margin-top: 15px; display: flex; align-items: center; }
+        .tag-list { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+        .free-tag-input-area { display: flex; gap: 5px; margin-bottom: 10px; }
+        .add-tag-btn { background: #eee; border: 1px solid #ccc; padding: 0 15px; border-radius: 5px; cursor: pointer; font-size: 12px; }
+
+        /* --- タグのデザイン設定を追加 --- */
+
+        .tag-checkbox {
+        display: none;
+    }    
+
+/* 2. タグの見た目をボタン（チップス）状にする */
+       .tag-label {
+        display: inline-block;
+        padding: 6px 14px;
+        border: 1px solid #ccc;
+        border-radius: 20px;
+        font-size: 12px;
+        cursor: pointer;
+        background: white;
+        color: #666;
+        transition: all 0.2s;
+    }
+
+/* 3. タグが選択された時の色（薄いグレー） */
+        .tag-checkbox:checked + .tag-label {
+        background: #e0e0e0 !important; 
+        border-color: #bbbbbb !important;
+        color: #333333 !important;
+    }
+
+        /* モーダル */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 10000; justify-content: center; align-items: center; }
+        .modal-content { background: white; width: 320px; padding: 20px; border-radius: 12px; position: relative; }
+        .modal-close { position: absolute; top: 10px; right: 15px; cursor: pointer; font-size: 24px; color: #999; }
+        .image-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 15px; }
+        .grid-item { aspect-ratio: 1/1; background: #eee; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 24px; border-radius: 8px; }
+
+        .save-btn { width: 100%; background-color: #a0c4ff; color: white; border: none; padding: 15px; border-radius: 5px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 40px; }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    <h2>アイテム編集画面</h2>
+    <form id="item-form" method="post" enctype="multipart/form-data" action="">
+        {% csrf_token %}
+        <div class="form-group-full">
+            <div id="main-preview" class="image-preview-box" style="width: 150px; height: 180px;" onclick="openModal('main')">
+                <p style="font-size: 12px; margin: 0;">アイテム画像</p>
+                <p style="font-size:24px; margin:5px 0;">📷</p>
+            </div>
+            <input type="file" name="image" id="main-image-input" accept="image/*" style="display:none">
+        </div>
+
+        <div class="form-group-full"><label>ブランド名</label><input type="text" name="brand" placeholder="例：ユニクロ"></div>
+        <div class="form-row">
+            <div class="form-group"><label>金額</label><input type="text" name="price" placeholder="¥"></div>
+            <div class="form-group"><label>カラー</label><input type="text" name="color" placeholder="例：White"></div>
+        </div>
+        <div class="form-group-full"><label style="text-align:center">アイテム名</label><input type="text" name="name" style="text-align:center" placeholder="例：デニムシャツ"></div>
+        <div class="form-group-full"><label style="text-align:center">アイテム説明</label><textarea name="description" placeholder="説明を入力してください"></textarea></div>
+
+        <div class="form-group-full">
+            <label style="text-align: center;">アイテム詳細（素材、洗濯表示など）</label>
+            <textarea name="details_text" placeholder="詳細を入力してください"></textarea>
+            <div id="detail-sub-preview" class="image-preview-box" style="width: 100px; height: 120px; margin-top: 10px;" onclick="openModal('detail-sub')">
+                <p style="font-size: 10px; margin: 0;">詳細画像</p>
+                <p style="font-size:20px; margin:5px 0;">📷</p>
+            </div>
+            <input type="file" name="detail_image" id="detail-sub-image-input" accept="image/*" style="display:none">
+        </div>
+
+        <div class="detail-add-section">
+            <p style="font-size: 11px; font-weight: bold; margin-bottom:10px;">詳細部分（ポケット、裏地など）の画像登録</p>
+            <div id="thumbnail-container" class="thumbnail-list"></div>
+            <button type="button" class="detail-add-btn" onclick="openModal('detail')">＋ 詳細画像を追加</button>
+            <input type="file" name="additional_images" id="additional-images-input" accept="image/*" multiple style="display:none">
+        </div>
+
+        <label>自由記入タグ</label>
+        <div class="free-tag-input-area">
+            <input type="text" id="free-tag-input" placeholder="#2Way">
+          <button type="button" class="add-tag-btn" onclick="addFreeTag()" style="white-space: nowrap;">追加</button>
+</div>
+<div id="free-tag-list" class="tag-list" style="margin-bottom:20px;"></div>
+<input type="hidden" name="free_tags" id="free-tags-hidden" value="">
+
+        <p class="tag-section-title">タグ（複数選択）</p>
+        <div class="tag-group-label">■ スタイル</div>
+        <div class="tag-list">
+            <label><input type="checkbox" name="style" value="シンプル" class="tag-checkbox"><span class="tag-label">#シンプル</span></label>
+            <label><input type="checkbox" name="style" value="きれいめ" class="tag-checkbox"><span class="tag-label">#きれいめ</span></label>
+            <label><input type="checkbox" name="style" value="Aライン" class="tag-checkbox"><span class="tag-label">#Aライン</span></label>
+        </div>
+        <div class="tag-group-label">■ 骨格タイプ</div>
+        <div class="tag-list">
+            <label><input type="checkbox" name="kokkaku" value="ストレート" class="tag-checkbox"><span class="tag-label">#ストレート</span></label>
+            <label><input type="checkbox" name="kokkaku" value="ウェーブ" class="tag-checkbox"><span class="tag-label">#ウェーブ</span></label>
+            <label><input type="checkbox" name="kokkaku" value="ナチュラル" class="tag-checkbox"><span class="tag-label">#ナチュラル</span></label>
+        </div>
+         <div class="tag-group-label">■ パーソナルカラー</div>
+        <div class="tag-list">
+            <label><input type="checkbox" name="personal_color" value="イエベ" class="tag-checkbox"><span class="tag-label">#イエベ</span></label>
+            <label><input type="checkbox" name="personal_color" value="ブルベ" class="tag-checkbox"><span class="tag-label">#ブルベ</span></label>
+            <label><input type="checkbox" name="personal_color" value="ニュートラル" class="tag-checkbox"><span class="tag-label">#ニュートラル</span></label>
+        </div>
+
+        <button type="submit" class="save-btn">保存</button>
+    </form>
+</div>
+
+<div id="image-modal" class="modal-overlay" onclick="closeModal()">
+    <div class="modal-content" onclick="event.stopPropagation()">
+        <span class="modal-close" onclick="closeModal()">&times;</span>
+        <h3 style="font-size: 16px; margin-bottom: 15px; text-align: center;">カメラロール</h3>
+        
+        <div id="modal-main-preview" style="width: 100%; height: 200px; border: 1px solid #ccc; display: flex; align-items: center; justify-content: center; background: #f9f9f9; border-radius: 8px; margin-bottom: 15px;">
+            画像を選択してください
+        </div>
+
+        <div id="modal-thumbnail-list" style="display: flex; gap: 10px; overflow-x: auto; padding-bottom: 10px;">
+            </div>
+
+        <label style="display: block; width: 100%; padding: 12px; background: #a0c4ff; color: white; text-align: center; border-radius: 5px; cursor: pointer; margin-top: 10px;">
+            ＋ 写真を追加
+            <input type="file" accept="image/*" style="display:none" onchange="handleImageUpload(event)">
+        </label>
+    </div>
+</div>
+
+<script>
+    let currentTarget = '';
+    let additionalFiles = []; // 詳細画像（複数）はここに溜めてから input.files に反映する
+
+    // 1. モーダルの開閉関数
+    function openModal(target) {
+        currentTarget = target;
+        document.getElementById('image-modal').style.display = 'flex';
+    }
+
+    function closeModal() {
+        document.getElementById('image-modal').style.display = 'none';
+    }
+
+    // 複数ファイルをまとめてinput要素のfilesプロパティに反映するためのヘルパー
+    function syncAdditionalFilesToInput() {
+        const dataTransfer = new DataTransfer();
+        additionalFiles.forEach(file => dataTransfer.items.add(file));
+        document.getElementById('additional-images-input').files = dataTransfer.files;
+    }
+
+    // 2. 画像アップロード関数（targetごとに実際のinputへファイルをセットする）
+    function handleImageUpload(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const imageUrl = e.target.result;
+
+            if (currentTarget === 'main') {
+                document.getElementById('main-preview').innerHTML = `<img src="${imageUrl}" style="width:100%; height:100%; object-fit:cover;">`;
+                // メイン画像用の実inputにファイルをセット
+                const dt = new DataTransfer();
+                dt.items.add(file);
+                document.getElementById('main-image-input').files = dt.files;
+
+            } else if (currentTarget === 'detail-sub') {
+                document.getElementById('detail-sub-preview').innerHTML = `<img src="${imageUrl}" style="width:100%; height:100%; object-fit:cover;">`;
+                const dt = new DataTransfer();
+                dt.items.add(file);
+                document.getElementById('detail-sub-image-input').files = dt.files;
+
+            } else if (currentTarget === 'detail') {
+                additionalFiles.push(file);
+                syncAdditionalFilesToInput();
+
+                const container = document.getElementById('thumbnail-container');
+                const div = document.createElement('div');
+                div.className = 'thumbnail-item';
+                const fileIndex = additionalFiles.length - 1;
+                div.innerHTML = `<img src="${imageUrl}" style="width:100%; height:100%; object-fit:cover; border-radius:5px;"><button type="button" class="remove-btn" data-index="${fileIndex}">×</button>`;
+                div.querySelector('.remove-btn').onclick = function() {
+                    const idx = additionalFiles.indexOf(file);
+                    if (idx > -1) additionalFiles.splice(idx, 1);
+                    syncAdditionalFilesToInput();
+                    div.remove();
+                };
+                container.appendChild(div);
+            }
+            closeModal();
+        };
+        reader.readAsDataURL(file);
+    }
+
+    // 3. 自由記入タグ追加関数（hidden inputに値を反映してサーバーに送信できるようにする）
+    function syncFreeTagsToHiddenInput() {
+        const tags = Array.from(document.querySelectorAll('#free-tag-list .tag-label')).map(el => el.innerText);
+        document.getElementById('free-tags-hidden').value = tags.join(',');
+    }
+
+    function addFreeTag() {
+        const input = document.getElementById('free-tag-input');
+        if(!input.value.trim()) return;
+        const list = document.getElementById('free-tag-list');
+        const tag = document.createElement('span');
+        tag.className = 'tag-label';
+        tag.style.background = '#eee';
+        tag.innerText = input.value.startsWith('#') ? input.value : '#' + input.value;
+        tag.onclick = function() {
+            this.remove();
+            syncFreeTagsToHiddenInput();
+        };
+        list.appendChild(tag);
+        input.value = '';
+        syncFreeTagsToHiddenInput();
+    }
+</script>

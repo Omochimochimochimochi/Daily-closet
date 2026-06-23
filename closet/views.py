@@ -270,3 +270,44 @@ def update_username(request):
         request.user.username = new_name
         request.user.save()
         return redirect('closet:mypage')
+    
+    @staff_member_required
+    def item_edit(request, pk):
+    # 1. 対象アイテムを取得
+     item = get_object_or_404(Item, pk=pk)
+
+    if request.method == 'POST':
+        # 2. 値の更新処理
+        try:
+            item.price = int(request.POST.get('price') or 0)
+        except ValueError:
+            item.price = 0
+
+        item.item_name = request.POST.get('name')
+        item.brand_name = request.POST.get('brand')
+        item.color = request.POST.get('color')
+        item.description = request.POST.get('description', '')
+        item.details_text = request.POST.get('details_text', '')
+        item.free_tags = request.POST.get('free_tags', '')
+        
+        # チェックボックスの更新
+        item.kokkaku = ','.join(request.POST.getlist('kokkaku'))
+        item.personal_color = ','.join(request.POST.getlist('personal_color'))
+        item.style = ','.join(request.POST.getlist('style'))
+
+        # 画像の更新（新しい画像がアップロードされた場合のみ保存）
+        if request.FILES.get('image'):
+            item.image = request.FILES.get('image')
+        if request.FILES.get('detail_image'):
+            item.detail_image = request.FILES.get('detail_image')
+
+        item.save()
+
+        # 追加画像の処理（既存に追加する場合はここで create する）
+        for image_file in request.FILES.getlist('additional_images'):
+            ItemAdditionalImage.objects.create(item=item, image=image_file, image_type=1)
+
+        return redirect('closet:inventory_manage')
+
+    # 3. GET時はテンプレートにアイテムを渡す
+    return render(request, 'closet/item_edit.html', {'item': item})
