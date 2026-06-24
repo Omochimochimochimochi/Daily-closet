@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>在庫管理 - Daily Closet</title>
+    {% load tag_filters %}
     <style>
         body { font-family: sans-serif; background-color: #f8f9fa; margin: 0; display: flex; justify-content: center; }
         .app-container { width: 375px; background: white; min-height: 100vh; padding-bottom: 80px; position: relative; border: 1px solid #ddd; text-align: center; }
@@ -56,6 +57,7 @@
 <body>
 
 <div class="app-container">
+    {% csrf_token %}
     <div class="header">在庫管理画面</div>
     
     <a href="{% url 'closet:item_register' %}" class="btn-add">＋新規アイテム登録</a>
@@ -69,11 +71,16 @@
     </div>
     <div class="item-info">
         <p>アイテム名：{{ item.item_name }}</p>
-        <p>タグ：{% for tag in item.tags.all %}#{{ tag.name }}{% endfor %}</p>
+        <p>タグ：
+            {{ item.kokkaku|hashtags }}
+            {{ item.personal_color|hashtags }}
+            {{ item.style|hashtags }}
+            {{ item.free_tags|hashtags }}
+        </p>
         <p>状態：{{ item.is_published|yesno:"公開中,非公開" }}</p>
         
         <div class="btn-group">
-            <button class="btn-status" onclick="openModal()">公開設定を変更</button>
+            <button class="btn-status" onclick="openModal({{ item.id }}, '{{ item.is_published|yesno:"公開中,非公開" }}')">公開設定を変更</button>
             <a href="{% url 'closet:item_edit' item.id %}" class="btn-edit">編集</a>
         </div>
     </div>
@@ -84,12 +91,12 @@
         <div class="modal-content">
             <button class="modal-close" onclick="closeModal()">×</button>
             <h3>公開設定</h3>
-            <select style="width: 80%; padding: 10px; margin-bottom: 20px;">
+            <select id="publish-status-select" style="width: 80%; padding: 10px; margin-bottom: 20px;">
                 <option>公開中</option>
                 <option>非公開</option>
             </select>
             <div>
-                <button class="btn-save" onclick="closeModal()">保存</button>
+                <button class="btn-save" onclick="savePublishStatus()">保存</button>
                 <button class="btn-cancel" onclick="closeModal()">キャンセル</button>
             </div>
         </div>
@@ -103,8 +110,47 @@
 </div>
 
 <script>
-    function openModal() { document.getElementById('modal-overlay').style.display = 'block'; }
-    function closeModal() { document.getElementById('modal-overlay').style.display = 'none'; }
+    let currentItemId = null;
+
+    function openModal(itemId, currentStatus) {
+        currentItemId = itemId;
+        const select = document.getElementById('publish-status-select');
+        select.value = currentStatus; // 現在の状態をセレクトボックスに反映
+        document.getElementById('modal-overlay').style.display = 'block';
+    }
+
+    function closeModal() {
+        document.getElementById('modal-overlay').style.display = 'none';
+    }
+
+    function getCsrfToken() {
+        return document.querySelector('[name=csrfmiddlewaretoken]').value;
+    }
+
+    function savePublishStatus() {
+        const select = document.getElementById('publish-status-select');
+        const isPublished = select.value === '公開中';
+
+        fetch(`/admin-inventory/${currentItemId}/publish/`, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': getCsrfToken(),
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: `is_published=${isPublished}`,
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                location.reload(); // 一覧の表示を最新状態に更新
+            } else {
+                alert('更新に失敗しました');
+            }
+        })
+        .catch(() => alert('通信エラーが発生しました'));
+
+        closeModal();
+    }
 </script>
 
 </body>

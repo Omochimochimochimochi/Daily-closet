@@ -49,18 +49,20 @@ def item_detail(request, pk):
 
 def search_results(request):
     items = Item.objects.all()
+    raw_tag = request.GET.get('tag')
 
-    raw_query = request.GET.get('q', '').strip()
-
-    if raw_query:
-        tags = raw_query.replace('　', ' ').split()
+    if raw_tag:
+        tags = raw_tag.replace('　', ' ').split(' ')
 
         for tag in tags:
+            if not tag:
+                continue
             clean_tag = tag.replace('#', '').strip()
-
             if not clean_tag:
                 continue
 
+            # 1タグごとに新しいクエリを作り、ここで個別に.filter()して
+            # 「タグごとのfilter()」をループで積み重ねる = タグ間はAND
             items = items.filter(
                 Q(tags__name__icontains=clean_tag) |
                 Q(kokkaku__icontains=clean_tag) |
@@ -70,12 +72,6 @@ def search_results(request):
                 Q(item_name__icontains=clean_tag)
             )
 
-    items = items.distinct()
-
-    return render(request, 'closet/search_results.html', {
-        'items': items,
-        'tag': raw_query,
-    })
     items = items.distinct()
 
     return render(request, 'closet/search_results.html', {
@@ -236,6 +232,15 @@ def inventory_manage(request):
     return render(request, 'inventory_manage.html', {'items': items})
 
 @staff_member_required
+def update_publish_status(request, item_id):
+    if request.method != 'POST':
+        return JsonResponse({'status': 'error'}, status=405)
+    item = get_object_or_404(Item, id=item_id)
+    item.is_published = request.POST.get('is_published') == 'true'
+    item.save()
+    return JsonResponse({'status': 'success', 'is_published': item.is_published})
+
+@staff_member_required
 def admin_login(request):
     return login_view(request)
 
@@ -270,44 +275,3 @@ def update_username(request):
         request.user.username = new_name
         request.user.save()
         return redirect('closet:mypage')
-    
-    @staff_member_required
-    def item_edit(request, pk):
-    # 1. 対象アイテムを取得
-     item = get_object_or_404(Item, pk=pk)
-
-    if request.method == 'POST':
-        # 2. 値の更新処理
-        try:
-            item.price = int(request.POST.get('price') or 0)
-        except ValueError:
-            item.price = 0
-
-        item.item_name = request.POST.get('name')
-        item.brand_name = request.POST.get('brand')
-        item.color = request.POST.get('color')
-        item.description = request.POST.get('description', '')
-        item.details_text = request.POST.get('details_text', '')
-        item.free_tags = request.POST.get('free_tags', '')
-        
-        # チェックボックスの更新
-        item.kokkaku = ','.join(request.POST.getlist('kokkaku'))
-        item.personal_color = ','.join(request.POST.getlist('personal_color'))
-        item.style = ','.join(request.POST.getlist('style'))
-
-        # 画像の更新（新しい画像がアップロードされた場合のみ保存）
-        if request.FILES.get('image'):
-            item.image = request.FILES.get('image')
-        if request.FILES.get('detail_image'):
-            item.detail_image = request.FILES.get('detail_image')
-
-        item.save()
-
-        # 追加画像の処理（既存に追加する場合はここで create する）
-        for image_file in request.FILES.getlist('additional_images'):
-            ItemAdditionalImage.objects.create(item=item, image=image_file, image_type=1)
-
-        return redirect('closet:inventory_manage')
-
-    # 3. GET時はテンプレートにアイテムを渡す
-    return render(request, 'closet/item_edit.html', {'item': item})

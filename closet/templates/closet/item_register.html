@@ -233,7 +233,7 @@
 
     // 3. 自由記入タグ追加関数（hidden inputに値を反映してサーバーに送信できるようにする）
     function syncFreeTagsToHiddenInput() {
-        const tags = Array.from(document.querySelectorAll('#free-tag-list .tag-label')).map(el => el.innerText);
+        const tags = Array.from(document.querySelectorAll('#free-tag-list .tag-label')).map(el => el.innerText.replace(/^#/, ''));
         document.getElementById('free-tags-hidden').value = tags.join(',');
     }
 
