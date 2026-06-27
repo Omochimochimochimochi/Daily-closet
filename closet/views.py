@@ -9,6 +9,7 @@ from .models import Item, ConsiderationItem, Favorite, PurchaseItem, ItemAdditio
 from django.db import transaction
 from django.shortcuts import render, redirect
 from django.contrib.admin.views.decorators import staff_member_required
+from django.views.decorators.http import require_POST
 
 
 # --- 認証・トップ ---
@@ -249,6 +250,13 @@ def admin_menu(request):
     return render(request, 'admin_menu.html')
 
 @staff_member_required
+@require_POST  # POST通信のみ許可
+def item_delete(request, item_id):
+    item = get_object_or_404(Item, id=item_id)
+    item.delete()
+    return JsonResponse({'status': 'success'})
+
+@staff_member_required
 def admin_item_list(request):
     return render(request, 'admin_item_list.html', {'items': Item.objects.all()})
 
@@ -265,8 +273,26 @@ def mypage(request):
     return render(request, 'mypage.html')
 
 
+# views.py の末尾付近にある item_edit を書き換える
+@staff_member_required
 def item_edit(request, pk):
-    return render(request, 'closet/item_edit.html') 
+    item = get_object_or_404(Item, pk=pk)
+    
+    if request.method == 'POST':
+        # ここに更新処理（POSTデータの保存）を実装します
+        item.item_name = request.POST.get('name')
+        item.brand_name = request.POST.get('brand')
+        item.price = request.POST.get('price')
+        item.color = request.POST.get('color')
+        item.description = request.POST.get('description')
+        item.details_text = request.POST.get('details_text')
+        
+        # 画像の更新などは必要に応じて追加
+        item.save()
+        return redirect('closet:inventory_manage')
+    
+    # ここが重要：テンプレートに item を渡す
+    return render(request, 'closet/item_edit.html', {'item': item})
 
 @login_required
 def update_username(request):

@@ -108,12 +108,21 @@
             <input type="file" name="detail_image" id="detail-sub-image-input" accept="image/*" style="display:none">
         </div>
 
-        <div class="detail-add-section">
-            <p style="font-size: 11px; font-weight: bold; margin-bottom:10px;">詳細部分（ポケット、裏地など）の画像登録</p>
-            <div id="thumbnail-container" class="thumbnail-list"></div>
-            <button type="button" class="detail-add-btn" onclick="openModal('detail')">＋ 詳細画像を追加</button>
-            <input type="file" name="additional_images" id="additional-images-input" accept="image/*" multiple style="display:none">
+<div class="detail-add-section">
+    <p style="font-size: 11px; font-weight: bold; margin-bottom:10px;">詳細部分（ポケット、裏地など）の画像登録</p>
+    
+    <div id="thumbnail-container" class="thumbnail-list">
+        {% for img in item.additional_images.all %}
+        <div class="thumbnail-item" id="existing-img-{{ img.id }}">
+            <img src="{{ img.image.url }}" style="width:100%; height:100%; object-fit:cover; border-radius:5px;">
+            <button type="button" class="remove-btn" onclick="deleteExistingImage('{{ img.id }}')">×</button>
         </div>
+        {% endfor %}
+    </div>
+    
+    <button type="button" class="detail-add-btn" onclick="openModal('detail')">＋ 詳細画像を追加</button>
+    <input type="file" name="additional_images" id="additional-images-input" accept="image/*" multiple style="display:none">
+</div>
 
         <label>自由記入タグ</label>
         <div class="free-tag-input-area">
@@ -198,7 +207,7 @@
 
             if (currentTarget === 'main') {
                 document.getElementById('main-preview').innerHTML = `<img src="${imageUrl}" style="width:100%; height:100%; object-fit:cover;">`;
-                // メイン画像用の実inputにファイルをセット
+      
                 const dt = new DataTransfer();
                 dt.items.add(file);
                 document.getElementById('main-image-input').files = dt.files;
@@ -252,5 +261,24 @@
         list.appendChild(tag);
         input.value = '';
         syncFreeTagsToHiddenInput();
+    }
+    function deleteExistingImage(imageId) {
+        if (!confirm('この画像を削除しますか？')) return;
+
+        fetch(`/item/delete-image/${imageId}/`, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+            },
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                // 画面から要素を削除
+                document.getElementById(`existing-img-${imageId}`).remove();
+            } else {
+                alert('削除に失敗しました');
+            }
+        });
     }
 </script>
