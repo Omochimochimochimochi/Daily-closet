@@ -2,6 +2,8 @@ from django.conf import settings
 from django.conf.urls.static import static  
 from django.urls import path
 from . import views
+from django.contrib import admin
+
 
 
 app_name = 'closet'
@@ -45,7 +47,7 @@ urlpatterns = [
     path('email-change/', views.email_change, name='email_change'),
     path('password-change/', views.password_change, name='password_change'),
     path('item/<int:pk>/edit/', views.item_edit, name='item_edit'),
+    path('item/delete-image/<int:image_id>/', views.delete_additional_image, name='delete_additional_image'),
     path('update-username/', views.update_username, name='update_username'),
 
 ]
-

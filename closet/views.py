@@ -27,7 +27,7 @@ def login_view(request):
             login(request, user)
             return redirect('closet:top')
         messages.error(request, "ログイン失敗")
-    return render(request, 'closet/admin_login.html')
+    return render(request, 'closet/login.html')
 
 def signup(request):
     if request.method == 'POST':
@@ -277,21 +277,44 @@ def mypage(request):
 @staff_member_required
 def item_edit(request, pk):
     item = get_object_or_404(Item, pk=pk)
-    
+
     if request.method == 'POST':
-        # ここに更新処理（POSTデータの保存）を実装します
+        try:
+            price = int(request.POST.get('price') or 0)
+        except ValueError:
+            price = 0
+
         item.item_name = request.POST.get('name')
         item.brand_name = request.POST.get('brand')
-        item.price = request.POST.get('price')
+        item.price = price
         item.color = request.POST.get('color')
-        item.description = request.POST.get('description')
-        item.details_text = request.POST.get('details_text')
-        
-        # 画像の更新などは必要に応じて追加
+        item.description = request.POST.get('description', '')
+        item.details_text = request.POST.get('details_text', '')
+
+        # チェックボックスは複数選択可なので getlist() で受け取り、カンマ区切りの文字列にして保存する
+        item.kokkaku = ','.join(request.POST.getlist('kokkaku'))
+        item.personal_color = ','.join(request.POST.getlist('personal_color'))
+        item.style = ','.join(request.POST.getlist('style'))
+        item.free_tags = request.POST.get('free_tags', '')
+
+        # 画像は新しいファイルが送られてきた場合だけ上書きする（送られていなければ既存の画像を維持）
+        if request.FILES.get('image'):
+            item.image = request.FILES.get('image')
+        if request.FILES.get('detail_image'):
+            item.detail_image = request.FILES.get('detail_image')
+
         item.save()
+
+        # 詳細部分（ポケット・裏地など）の追加画像は、新たに送られてきたものを追加保存する
+        for image_file in request.FILES.getlist('additional_images'):
+            ItemAdditionalImage.objects.create(
+                item=item,
+                image=image_file,
+                image_type=1,  # ディテール画像として保存
+            )
+
         return redirect('closet:inventory_manage')
-    
-    # ここが重要：テンプレートに item を渡す
+
     return render(request, 'closet/item_edit.html', {'item': item})
 
 @login_required
@@ -301,3 +324,10 @@ def update_username(request):
         request.user.username = new_name
         request.user.save()
         return redirect('closet:mypage')
+
+@staff_member_required
+@require_POST
+def delete_additional_image(request, image_id):
+    image = get_object_or_404(ItemAdditionalImage, id=image_id)
+    image.delete()
+    return JsonResponse({'status': 'success'})

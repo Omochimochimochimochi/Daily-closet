@@ -40,6 +40,13 @@ class Item(models.Model):
 
     def __str__(self):
         return self.item_name
+
+    @property
+    def free_tags_list(self):
+        """free_tags（カンマ区切り文字列）を編集画面でチップ表示するためのリストに変換する"""
+        if not self.free_tags:
+            return []
+        return [t.strip() for t in self.free_tags.split(',') if t.strip()]
    
 # 3. 追加画像
 class ItemAdditionalImage(models.Model):
@@ -123,5 +130,3 @@ class PurchaseItem(models.Model):
 
     def __str__(self):
         return f"{self.user.username} - {self.item.item_name}"
-    
-
