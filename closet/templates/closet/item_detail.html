@@ -21,9 +21,31 @@
     .menu-link { display: block; padding: 15px 0; border-bottom: 1px solid #eee; text-decoration: none; color: #333; cursor: pointer; }
     
     /* モーダルのスタイル */
-    .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); }
-    .modal-content { background: #fff; margin: 15% auto; padding: 25px; width: 90%; max-width: 350px; border-radius: 12px; position: relative; }
+
+.modal {
+    display: none; /* 初期状態は非表示 */
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.5);
+    z-index: 9999;
+
+}
+.modal-content {
+    background: white;
+    margin: 100px auto;
+    padding: 20px;
+    width: 80%;
+    border-radius: 10px;
+
+}
     .close-btn { position: absolute; right: 15px; top: 10px; cursor: pointer; font-size: 24px; color: #999; }
+    /* 文字が見えない問題を解決するためのテストCSS */
+.modal-content p {
+    color: #000000 !important; /* 文字を強制的に黒にする */
+    visibility: visible !important; /* 強制的に表示する */
+    opacity: 1 !important; /* 透明度を1にする */
+    font-size: 16px !important; /* 大きさを標準に戻す */
+}
 </style>
 {% endblock %}
 
@@ -78,9 +100,29 @@
     </div>
 </div>
 
-<div id="detail-modal" class="modal"><div class="modal-content"><span id="close-btn" class="close-btn">&times;</span><h2>素材・サイズ詳細</h2><p>素材：{{ item.material }}</p><p>サイズ詳細：<br>{{ item.size_details }}</p></div></div>
-<div id="description-modal" class="modal"><div class="modal-content"><span id="close-description" class="close-btn">&times;</span><h2>アイテム説明</h2><p>{{ item.description }}</p></div></div>
-<div id="shipping-modal" class="modal"><div class="modal-content"><span id="close-shipping" class="close-btn">&times;</span><h2>配送について</h2><p>送料：全国一律300円</p></div></div>
+<div id="detail-modal" class="modal">
+    <div class="modal-content">
+        <span id="close-btn" class="close-btn">&times;</span>
+        <h2>素材・サイズ詳細</h2>
+        <p>素材：{{ item.material|default:"未入力" }}</p>
+        <p>サイズ：{{ item.size_details|default:"未入力" }}</p>
+    </div>
+</div>
+
+<script>
+    // デバッグ：ボタンがちゃんと認識されているか確認
+    const trigger = document.getElementById("open-modal");
+    console.log("ボタン要素:", trigger); // これが null ならボタンが見つかっていない
+    
+    // 確実なモーダル表示処理
+    if(trigger) {
+        trigger.onclick = function(e) {
+            e.preventDefault();
+            document.getElementById("detail-modal").style.display = "block";
+        };
+    }
+</script>
+
 {% endblock %}
 
 {% block extra_js %}

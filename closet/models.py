@@ -23,7 +23,8 @@ class Item(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, null=True)
     updated_at = models.DateTimeField(auto_now=True, null=True)
     is_published = models.BooleanField("公開状態", default=True)
-
+    material = models.CharField("素材", max_length=200, blank=True)
+    size_details = models.TextField("サイズ詳細", blank=True)
     
 
     # tags はここに1つだけ残します

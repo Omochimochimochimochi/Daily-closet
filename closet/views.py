@@ -48,6 +48,12 @@ def item_detail(request, pk):
     is_favorite = Favorite.objects.filter(user=request.user, item=item).exists() if request.user.is_authenticated else False
     return render(request, 'closet/item_detail.html', {'item': item, 'is_favorite': is_favorite})
 
+# views.py の item_detail 関数内
+def item_detail(request, pk):
+    item = get_object_or_404(Item, pk=pk)
+    print(f"DEBUG: アイテム名={item.item_name}, 素材={item.material}") # ターミナルに出力
+    return render(request, 'closet/item_detail.html', {'item': item})
+
 def search_results(request):
     items = Item.objects.all()
     raw_tag = request.GET.get('tag')
@@ -278,6 +284,12 @@ def mypage(request):
 def item_edit(request, pk):
     item = get_object_or_404(Item, pk=pk)
 
+    print("--- テンプレートをレンダリングします ---")
+    
+    if request.method == 'POST':
+        # ... 保存処理 ...
+        return redirect('closet:inventory_manage')
+
     if request.method == 'POST':
         try:
             price = int(request.POST.get('price') or 0)
@@ -312,6 +324,7 @@ def item_edit(request, pk):
                 image=image_file,
                 image_type=1,  # ディテール画像として保存
             )
+            
 
         return redirect('closet:inventory_manage')
 
@@ -329,5 +342,13 @@ def update_username(request):
 @require_POST
 def delete_additional_image(request, image_id):
     image = get_object_or_404(ItemAdditionalImage, id=image_id)
+    image.delete()
+    return JsonResponse({'status': 'success'})
+
+# views.py に追加
+@staff_member_required
+@require_POST
+def delete_item_image(request, image_id):
+    image = get_object_or_404(ItemAdditionalImage, pk=image_id)
     image.delete()
     return JsonResponse({'status': 'success'})
