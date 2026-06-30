@@ -97,6 +97,7 @@
 <script>
     document.addEventListener("DOMContentLoaded", () => {
         new Swiper(".mySwiper", { pagination: { el: ".swiper-pagination" }, loop: true });
+        
         function setupModal(triggerId, modalId, closeId) {
             const trigger = document.getElementById(triggerId);
             const modal = document.getElementById(modalId);
@@ -109,25 +110,37 @@
         setupModal("open-desc", "description-modal", "close-description");
         setupModal("open-ship", "shipping-modal", "close-shipping");
 
-        document.getElementById('heart-btn').addEventListener('click', function() {
-    const itemId = this.dataset.id;
-    fetch(`/item/favorite/${itemId}/`, {
-        method: 'POST',
-        headers: {
-            'X-CSRFToken': '{{ csrf_token }}',
-        },
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.status === 'added') {
-            this.classList.add('is-active');
-            this.querySelector('i').className = 'fa-solid fa-heart';
-        } else {
-            this.classList.remove('is-active');
-            this.querySelector('i').className = 'fa-regular fa-heart';
+        // ハートボタンの処理を修正
+        const heartBtn = document.getElementById('heart-btn');
+        if (heartBtn) {
+            heartBtn.addEventListener('click', function() {
+                const itemId = this.dataset.id;
+                // DjangoのCSRFトークンを取得
+                const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+                fetch(`/item/${itemId}/favorite/`, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': csrfToken,
+                        'Content-Type': 'application/json'
+                    },
+                })
+                .then(response => {
+                    if (!response.ok) throw new Error('Network response was not ok');
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.is_favorite) {
+                        this.classList.add('is-active');
+                        this.querySelector('i').className = 'fa-solid fa-heart';
+                    } else {
+                        this.classList.remove('is-active');
+                        this.querySelector('i').className = 'fa-regular fa-heart';
+                    }
+                })
+                .catch(err => console.error('Fetch error:', err));
+            });
         }
     });
-});
-
 </script>
 {% endblock %}
