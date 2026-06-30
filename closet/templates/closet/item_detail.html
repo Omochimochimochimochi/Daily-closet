@@ -7,45 +7,44 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
 <style>
     .detail-container { max-width: 400px; margin: 0 auto; padding: 15px; }
-    
-    /* スワイパーのスタイル */
     .swiper { width: 100%; aspect-ratio: 1/1; }
     .swiper-slide img { width: 100%; height: 100%; object-fit: cover; }
-    
     .price-heart-row { display: flex; justify-content: space-between; align-items: center; margin: 15px 0; }
     .heart-btn { background: none; border: none; font-size: 1.5rem; color: #ccc; cursor: pointer; }
     .heart-btn.is-active { color: #ff5a5f; }
-    .selection-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 20px 0; }
-    .selection-grid select { width: 100%; padding: 8px; }
+.selection-grid { 
+    display: grid; 
+    grid-template-columns: repeat(3, 1fr); 
+    gap: 15px; /* 余白を少し広げる */
+    margin: 25px 0; 
+}
+
+.selection-grid select { 
+    width: 100%; 
+    padding: 12px 8px; /* 上下のパディングを大きくして高さを出す */
+    font-size: 16px;   /* 文字サイズを大きくする */
+    border: 1px solid #999; 
+    border-radius: 5px;
+    background-color: white;
+}
+
+/* ラベル文字も見やすくする */
+.selection-grid small {
+    font-size: 13px;
+    font-weight: bold;
+    color: #555;
+}
     .add-to-cart-btn { background-color: #6c7b94fd; padding: 15px; width: 100%; color: white; border: 3px solid #555; border-radius: 5px; cursor: pointer; }
     .menu-link { display: block; padding: 15px 0; border-bottom: 1px solid #eee; text-decoration: none; color: #333; cursor: pointer; }
     
-    /* モーダルのスタイル */
-
-.modal {
-    display: none; /* 初期状態は非表示 */
-    position: fixed;
-    top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(0,0,0,0.5);
-    z-index: 9999;
-
-}
-.modal-content {
-    background: white;
-    margin: 100px auto;
-    padding: 20px;
-    width: 80%;
-    border-radius: 10px;
-
-}
+    /* モーダルスタイル */
+    .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 9999; }
+    .modal-content {
+        background: white; margin: 100px auto; padding: 20px;
+        width: 90%; max-width: 400px;
+        border-radius: 10px; position: relative; color: black;
+    }
     .close-btn { position: absolute; right: 15px; top: 10px; cursor: pointer; font-size: 24px; color: #999; }
-    /* 文字が見えない問題を解決するためのテストCSS */
-.modal-content p {
-    color: #000000 !important; /* 文字を強制的に黒にする */
-    visibility: visible !important; /* 強制的に表示する */
-    opacity: 1 !important; /* 透明度を1にする */
-    font-size: 16px !important; /* 大きさを標準に戻す */
-}
 </style>
 {% endblock %}
 
@@ -53,115 +52,82 @@
 <div class="detail-container">
     <div class="swiper mySwiper">
         <div class="swiper-wrapper">
-            {% if item.image %}
-                <div class="swiper-slide"><img src="{{ item.image.url }}" alt="{{ item.item_name }}"></div>
-            {% endif %}
+            {% if item.image %}<div class="swiper-slide"><img src="{{ item.image.url }}"></div>{% endif %}
             {% for extra in item.additional_images.all %}
-                <div class="swiper-slide"><img src="{{ extra.image.url }}" alt="詳細画像"></div>
+                <div class="swiper-slide"><img src="{{ extra.image.url }}"></div>
             {% endfor %}
         </div>
         <div class="swiper-pagination"></div>
     </div>
 
-    <div class="info-wrapper">
+<div class="info-wrapper">
         <div class="brand">{{ item.brand_name }}</div>
         <div class="item-name">{{ item.item_name }}</div>
         
-        {% for tag in item.free_tags.split %}
-    <a href="{% url 'closet:search_results' %}?tag={{ tag|cut:'#' }}" 
-       style="text-decoration: none; color: #6c7b94; font-size: 13px; margin-right: 8px;">
-        #{{ tag|cut:"#" }}
-    </a>
-{% endfor %}
-
-    </div>
-
-
         <div class="price-heart-row">
             <div class="price">¥{{ item.price|intcomma }}</div>
             <button id="heart-btn" class="heart-btn {% if is_favorite %}is-active{% endif %}" data-id="{{ item.id }}">
                 <i class="{% if is_favorite %}fa-solid{% else %}fa-regular{% endif %} fa-heart"></i>
             </button>
         </div>
-
-        <form id="add-to-list-form" action="{% url 'closet:add_to_consideration' item.id %}" method="POST">
-            {% csrf_token %}
-            <div class="selection-grid">
-                <div><small>サイズ</small><br><select name="size"><option value="S">S</option><option value="M">M</option></select></div>
-                <div><small>カラー</small><br><select name="color"><option value="ブラック">ブラック</option></select></div>
-                <div><small>個数</small><br><select name="quantity"><option value="1">1</option><option value="2">2</option><option value="3">3</option></select></div>
-            </div>
-            <button type="submit" id="submit-btn" class="add-to-cart-btn">検討リストに追加</button>
-        </form>
-
-        <a id="open-modal" class="menu-link">素材、サイズ詳細 ></a>
-        <a id="open-desc" class="menu-link">アイテム説明 ></a>
-        <a id="open-ship" class="menu-link">配送について ></a>
     </div>
+
+    <form id="add-to-list-form" action="{% url 'closet:add_to_consideration' item.id %}" method="POST">
+        {% csrf_token %}
+        <div class="selection-grid">
+            <div><small>サイズ</small><br><select name="size"><option>S</option><option>M</option></select></div>
+            <div><small>カラー</small><br><select name="color"><option>ブラック</option></select></div>
+            <div><small>個数</small><br><select name="quantity"><option>1</option><option>2</option></select></div>
+        </div>
+        <button type="submit" class="add-to-cart-btn">検討リストに追加</button>
+    </form>
+
+    <a id="open-modal" class="menu-link">素材、サイズ詳細 ></a>
+    <a id="open-desc" class="menu-link">アイテム説明 ></a>
+    <a id="open-ship" class="menu-link">配送について ></a>
 </div>
 
-<div id="detail-modal" class="modal">
-    <div class="modal-content">
-        <span id="close-btn" class="close-btn">&times;</span>
-        <h2>素材・サイズ詳細</h2>
-        <p>素材：{{ item.material|default:"未入力" }}</p>
-        <p>サイズ：{{ item.size_details|default:"未入力" }}</p>
-    </div>
-</div>
-
-<script>
-    // デバッグ：ボタンがちゃんと認識されているか確認
-    const trigger = document.getElementById("open-modal");
-    console.log("ボタン要素:", trigger); // これが null ならボタンが見つかっていない
-    
-    // 確実なモーダル表示処理
-    if(trigger) {
-        trigger.onclick = function(e) {
-            e.preventDefault();
-            document.getElementById("detail-modal").style.display = "block";
-        };
-    }
-</script>
-
+<div id="detail-modal" class="modal"><div class="modal-content"><span id="close-btn" class="close-btn">&times;</span><h2>素材・サイズ詳細</h2><p>素材：{{ item.material|default:"未入力" }}</p><p>サイズ：{{ item.size_details|default:"未入力" }}</p></div></div>
+<div id="description-modal" class="modal"><div class="modal-content"><span id="close-description" class="close-btn">&times;</span><h2>アイテム説明</h2><p>{{ item.description|linebreaksbr|default:"説明なし" }}</p></div></div>
+<div id="shipping-modal" class="modal"><div class="modal-content"><span id="close-shipping" class="close-btn">&times;</span><h2>配送について</h2><p>送料：全国一律300円</p></div></div>
 {% endblock %}
 
 {% block extra_js %}
 <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 <script>
     document.addEventListener("DOMContentLoaded", () => {
-        // Swiper初期化
-        new Swiper(".mySwiper", {
-            pagination: { el: ".swiper-pagination" },
-            loop: true,
-        });
-
-        // モーダル制御
-        function setupModal(trigger, modal, close) {
+        new Swiper(".mySwiper", { pagination: { el: ".swiper-pagination" }, loop: true });
+        function setupModal(triggerId, modalId, closeId) {
+            const trigger = document.getElementById(triggerId);
+            const modal = document.getElementById(modalId);
+            const close = document.getElementById(closeId);
             if(!trigger || !modal || !close) return;
-            trigger.addEventListener("click", (e) => { e.preventDefault(); modal.style.display = "block"; });
-            close.addEventListener("click", () => { modal.style.display = "none"; });
+            trigger.onclick = (e) => { e.preventDefault(); modal.style.display = "block"; };
+            close.onclick = () => { modal.style.display = "none"; };
         }
-        setupModal(document.getElementById("open-modal"), document.getElementById("detail-modal"), document.getElementById("close-btn"));
-        setupModal(document.getElementById("open-desc"), document.getElementById("description-modal"), document.getElementById("close-description"));
-        setupModal(document.getElementById("open-ship"), document.getElementById("shipping-modal"), document.getElementById("close-shipping"));
-        
-        // お気に入りボタン処理
-        const heartBtn = document.getElementById('heart-btn');
-        if(heartBtn) {
-            heartBtn.addEventListener('click', function() {
-                fetch(`/item/${this.dataset.id}/favorite/`, {
-                    method: 'POST',
-                    headers: {'X-CSRFToken': '{{ csrf_token }}', 'Content-Type': 'application/json'},
-                })
-                .then(r => r.json())
-                .then(data => {
-                    if(data.status === 'success') {
-                        this.classList.toggle('is-active', data.is_favorite);
-                        this.querySelector('i').className = data.is_favorite ? 'fa-solid fa-heart' : 'fa-regular fa-heart';
-                    }
-                });
-            });
+        setupModal("open-modal", "detail-modal", "close-btn");
+        setupModal("open-desc", "description-modal", "close-description");
+        setupModal("open-ship", "shipping-modal", "close-shipping");
+
+        document.getElementById('heart-btn').addEventListener('click', function() {
+    const itemId = this.dataset.id;
+    fetch(`/item/favorite/${itemId}/`, {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': '{{ csrf_token }}',
+        },
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'added') {
+            this.classList.add('is-active');
+            this.querySelector('i').className = 'fa-solid fa-heart';
+        } else {
+            this.classList.remove('is-active');
+            this.querySelector('i').className = 'fa-regular fa-heart';
         }
     });
+});
+
 </script>
 {% endblock %}
