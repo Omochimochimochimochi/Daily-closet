@@ -41,7 +41,7 @@
     .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 9999; }
     .modal-content {
         background: white; margin: 100px auto; padding: 20px;
-        width: 90%; max-width: 400px;
+        width: 90%; max-width: 320px;
         border-radius: 10px; position: relative; color: black;
     }
     .close-btn { position: absolute; right: 15px; top: 10px; cursor: pointer; font-size: 24px; color: #999; }
@@ -87,7 +87,7 @@
     <a id="open-ship" class="menu-link">配送について ></a>
 </div>
 
-<div id="detail-modal" class="modal"><div class="modal-content"><span id="close-btn" class="close-btn">&times;</span><h2>素材・サイズ詳細</h2><p>素材：{{ item.material|default:"未入力" }}</p><p>サイズ：{{ item.size_details|default:"未入力" }}</p></div></div>
+<div id="detail-modal" class="modal"><div class="modal-content"><span id="close-btn" class="close-btn">&times;</span><h2>素材・サイズ詳細</h2><p>{{ item.details_text|default:"未入力"|linebreaksbr }}</p></div></div>
 <div id="description-modal" class="modal"><div class="modal-content"><span id="close-description" class="close-btn">&times;</span><h2>アイテム説明</h2><p>{{ item.description|linebreaksbr|default:"説明なし" }}</p></div></div>
 <div id="shipping-modal" class="modal"><div class="modal-content"><span id="close-shipping" class="close-btn">&times;</span><h2>配送について</h2><p>送料：全国一律300円</p></div></div>
 {% endblock %}

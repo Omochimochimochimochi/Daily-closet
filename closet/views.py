@@ -286,9 +286,7 @@ def item_edit(request, pk):
 
     print("--- テンプレートをレンダリングします ---")
     
-    if request.method == 'POST':
-        # ... 保存処理 ...
-        return redirect('closet:inventory_manage')
+
 
     if request.method == 'POST':
         try:
