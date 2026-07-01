@@ -49,6 +49,4 @@ urlpatterns = [
     path('item/<int:pk>/edit/', views.item_edit, name='item_edit'),
     path('item/delete-image/<int:image_id>/', views.delete_additional_image, name='delete_additional_image'),
     path('update-username/', views.update_username, name='update_username'),
-    path('item/<int:pk>/edit/', views.item_edit, name='item_edit'),
-    path('item/delete-image/<int:image_id>/', views.delete_additional_image, name='delete_additional_image'),
 ]

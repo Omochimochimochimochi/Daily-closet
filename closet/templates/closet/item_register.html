@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -80,6 +81,13 @@
 
 <div class="app-container">
     <h2>アイテム登録画面</h2>
+    {% if messages %}
+    {% for message in messages %}
+        <p style="color:red;">
+            {{ message }}
+        </p>
+    {% endfor %}
+{% endif %}
     <form id="item-form" method="post" enctype="multipart/form-data" action="">
         {% csrf_token %}
         <div class="form-group-full">

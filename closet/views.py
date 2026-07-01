@@ -48,12 +48,6 @@ def item_detail(request, pk):
     is_favorite = Favorite.objects.filter(user=request.user, item=item).exists() if request.user.is_authenticated else False
     return render(request, 'closet/item_detail.html', {'item': item, 'is_favorite': is_favorite})
 
-# views.py の item_detail 関数内
-def item_detail(request, pk):
-    item = get_object_or_404(Item, pk=pk)
-    print(f"DEBUG: アイテム名={item.item_name}, 素材={item.material}") # ターミナルに出力
-    return render(request, 'closet/item_detail.html', {'item': item})
-
 def search_results(request):
     items = Item.objects.all()
     raw_tag = request.GET.get('tag')
@@ -196,22 +190,40 @@ def purchase_complete(request):
 @staff_member_required
 def item_register(request):
     if request.method == 'POST':
-        try:
-            price = int(request.POST.get('price') or 0)
-        except ValueError:
-            price = 0
+        name = request.POST.get('name')
+        price_text = request.POST.get('price')
+        image = request.FILES.get('image')
 
-        # チェックボックスは複数選択可なので getlist() で受け取り、カンマ区切りの文字列にして保存する
+        if not name:
+            messages.error(request, "商品名を入力してください")
+            return redirect('closet:item_register')
+
+        if not price_text:
+            messages.error(request, "価格を入力してください")
+            return render(request, 'closet/item_register.html')
+
+        if not image:
+            messages.error(request, "商品画像を登録してください")
+            return render(request, 'closet/item_register.html')
+
+        try:
+            price = int(price_text)
+        except ValueError:
+            messages.error(request, "価格は数字で入力してください")
+            return render(request, 'closet/item_register.html')
+
+
+        # ここから通常保存処理
         kokkaku_value = ','.join(request.POST.getlist('kokkaku'))
         personal_color_value = ','.join(request.POST.getlist('personal_color'))
         style_value = ','.join(request.POST.getlist('style'))
 
         item = Item.objects.create(
-            item_name=request.POST.get('name'),
+            item_name=name,
             brand_name=request.POST.get('brand'),
             price=price,
             color=request.POST.get('color'),
-            image=request.FILES.get('image'),
+            image=image,
             description=request.POST.get('description', ''),
             details_text=request.POST.get('details_text', ''),
             detail_image=request.FILES.get('detail_image'),
@@ -221,16 +233,8 @@ def item_register(request):
             style=style_value,
         )
 
-        # 詳細部分（ポケット・裏地など）の画像は何枚でも追加できるので ItemAdditionalImage に保存する
-        for image_file in request.FILES.getlist('additional_images'):
-            ItemAdditionalImage.objects.create(
-                item=item,
-                image=image_file,
-                image_type=1,  # ディテール画像として保存
-            )
+        return redirect('closet:inventory_manage')
 
-        return redirect('closet:inventory_manage') 
-    
     return render(request, 'closet/item_register.html')
 
 @staff_member_required
