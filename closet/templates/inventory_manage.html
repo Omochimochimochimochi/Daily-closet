@@ -77,8 +77,13 @@
             {{ item.style|hashtags }}
             {{ item.free_tags|hashtags }}
         </p>
-        <p>状態：{{ item.is_published|yesno:"公開中,非公開" }}</p>
-        
+        <p>状態：
+        {% if item.is_published %}
+            公開中
+        {% else %}
+        非公開
+        {% endif %}
+    </p>
         <div class="btn-group">
             <button class="btn-status" onclick="openModal({{ item.id }}, '{{ item.is_published|yesno:"公開中,非公開" }}')">公開設定を変更</button>
             <a href="{% url 'closet:item_edit' item.id %}" class="btn-edit">編集</a>

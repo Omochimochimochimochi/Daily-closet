@@ -49,7 +49,7 @@ def item_detail(request, pk):
     return render(request, 'closet/item_detail.html', {'item': item, 'is_favorite': is_favorite})
 
 def search_results(request):
-    items = Item.objects.all()
+    items = Item.objects.filter(is_published=True)
     raw_tag = request.GET.get('tag')
 
     if raw_tag:
@@ -93,7 +93,7 @@ def search_by_tag(request, tag_name=None):
     tag = tag_name or request.GET.get('tag')
     # search_resultsとロジックを統一するため、clean_tag化
     clean_tag = tag.replace('#', '') if tag else ""
-    items = Item.objects.filter(Q(item_name__icontains=clean_tag) | Q(free_tags__icontains=clean_tag)) if clean_tag else Item.objects.none()
+    items = is_published=True (Q(item_name__icontains=clean_tag) | Q(free_tags__icontains=clean_tag)) if clean_tag else Item.objects.none()
     return render(request, 'closet/search_results.html', {'items': items, 'tag': tag})
 @login_required
 def toggle_favorite(request, item_id):
@@ -239,17 +239,28 @@ def item_register(request):
 
 @staff_member_required
 def inventory_manage(request):
-    items = Item.objects.all()
+    items = Item.objects.filter(is_published=True)
     return render(request, 'inventory_manage.html', {'items': items})
 
 @staff_member_required
 def update_publish_status(request, item_id):
     if request.method != 'POST':
         return JsonResponse({'status': 'error'}, status=405)
+
     item = get_object_or_404(Item, id=item_id)
+
     item.is_published = request.POST.get('is_published') == 'true'
+    print("保存する値:", item.is_published)
+
     item.save()
-    return JsonResponse({'status': 'success', 'is_published': item.is_published})
+
+    item.refresh_from_db()
+    print("DBの値:", item.is_published)
+
+    return JsonResponse({
+        'status': 'success',
+        'is_published': item.is_published
+    })
 
 @staff_member_required
 def admin_login(request):
