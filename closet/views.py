@@ -283,54 +283,68 @@ def mypage(request):
     return render(request, 'mypage.html')
 
 
-# views.py の末尾付近にある item_edit を書き換える
 @staff_member_required
 def item_edit(request, pk):
     item = get_object_or_404(Item, pk=pk)
 
-    print("--- テンプレートをレンダリングします ---")
-    
-
-
     if request.method == 'POST':
-        try:
-            price = int(request.POST.get('price') or 0)
-        except ValueError:
-            price = 0
 
-        item.item_name = request.POST.get('name')
+        name = request.POST.get('name')
+        price_text = request.POST.get('price')
+
+        if not name:
+            messages.error(request, "商品名を入力してください")
+            return redirect('closet:item_edit', pk=item.pk)
+
+        if not price_text:
+            messages.error(request, "価格を入力してください")
+            return redirect('closet:item_edit', pk=item.pk)
+
+        try:
+            price = int(price_text)
+        except ValueError:
+            messages.error(request, "価格は数字で入力してください")
+            return redirect('closet:item_edit', pk=item.pk)
+
+
+        item.item_name = name
         item.brand_name = request.POST.get('brand')
         item.price = price
         item.color = request.POST.get('color')
         item.description = request.POST.get('description', '')
         item.details_text = request.POST.get('details_text', '')
 
-        # チェックボックスは複数選択可なので getlist() で受け取り、カンマ区切りの文字列にして保存する
         item.kokkaku = ','.join(request.POST.getlist('kokkaku'))
         item.personal_color = ','.join(request.POST.getlist('personal_color'))
         item.style = ','.join(request.POST.getlist('style'))
         item.free_tags = request.POST.get('free_tags', '')
 
-        # 画像は新しいファイルが送られてきた場合だけ上書きする（送られていなければ既存の画像を維持）
+
         if request.FILES.get('image'):
             item.image = request.FILES.get('image')
+
         if request.FILES.get('detail_image'):
             item.detail_image = request.FILES.get('detail_image')
 
+
         item.save()
 
-        # 詳細部分（ポケット・裏地など）の追加画像は、新たに送られてきたものを追加保存する
+
+        # 詳細画像追加
         for image_file in request.FILES.getlist('additional_images'):
             ItemAdditionalImage.objects.create(
                 item=item,
                 image=image_file,
-                image_type=1,  # ディテール画像として保存
+                image_type=1,
             )
-            
+
 
         return redirect('closet:inventory_manage')
 
+
     return render(request, 'closet/item_edit.html', {'item': item})
+
+
 
 @login_required
 def update_username(request):
