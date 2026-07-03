@@ -50,34 +50,47 @@ def item_detail(request, pk):
 
 def search_results(request):
     items = Item.objects.filter(is_published=True)
-    raw_tag = request.GET.get('tag')
+    raw_tag = request.GET.get("tag")
 
     if raw_tag:
-        tags = raw_tag.replace('　', ' ').split(' ')
+        clean_tag = raw_tag.replace("#", "").strip()
 
-        for tag in tags:
-            if not tag:
-                continue
-            clean_tag = tag.replace('#', '').strip()
-            if not clean_tag:
-                continue
+        items = items.filter(
+            Q(kokkaku__icontains=clean_tag) |
+            Q(personal_color__icontains=clean_tag) |
+            Q(style__icontains=clean_tag) |
+            Q(free_tags__icontains=clean_tag) |
+            Q(item_name__icontains=clean_tag)
+        )
 
-            # 1タグごとに新しいクエリを作り、ここで個別に.filter()して
-            # 「タグごとのfilter()」をループで積み重ねる = タグ間はAND
-            items = items.filter(
-                Q(tags__name__icontains=clean_tag) |
-                Q(kokkaku__icontains=clean_tag) |
-                Q(personal_color__icontains=clean_tag) |
-                Q(style__icontains=clean_tag) |
-                Q(free_tags__icontains=clean_tag) |
-                Q(item_name__icontains=clean_tag)
-            )
+    print("検索文字:", clean_tag)
+    print("検索件数:", items.count())
 
-    items = items.distinct()
+    return render(
+        request,
+        "closet/search_results.html",
+        {
+            "items": items,
+            "tag": raw_tag,
+        },
+    )
+    items = Item.objects.filter(is_published=True)
+    raw_tag = request.GET.get("tag")
 
-    return render(request, 'closet/search_results.html', {
-        'items': items,
-        'tag': raw_tag
+    if raw_tag:
+        clean_tag = raw_tag.replace("#", "").strip()
+
+        items = items.filter(
+            Q(kokkaku__icontains=clean_tag) |
+            Q(personal_color__icontains=clean_tag) |
+            Q(style__icontains=clean_tag) |
+            Q(free_tags__icontains=clean_tag) |
+            Q(item_name__icontains=clean_tag)
+        )
+
+    return render(request, "closet/search_results.html", {
+        "items": items,
+        "tag": raw_tag,
     })
             
 def item_search(request):
