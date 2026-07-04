@@ -50,43 +50,26 @@ def item_detail(request, pk):
 
 def search_results(request):
     items = Item.objects.filter(is_published=True)
+
     raw_tag = request.GET.get("tag")
+    clean_tag = ""
 
     if raw_tag:
         clean_tag = raw_tag.replace("#", "").strip()
 
         items = items.filter(
+            Q(item_name__icontains=clean_tag) |
+            Q(brand_name__icontains=clean_tag) |
+            Q(description__icontains=clean_tag) |
+            Q(details_text__icontains=clean_tag) |
             Q(kokkaku__icontains=clean_tag) |
             Q(personal_color__icontains=clean_tag) |
             Q(style__icontains=clean_tag) |
-            Q(free_tags__icontains=clean_tag) |
-            Q(item_name__icontains=clean_tag)
+            Q(free_tags__icontains=clean_tag)
         )
 
     print("検索文字:", clean_tag)
     print("検索件数:", items.count())
-
-    return render(
-        request,
-        "closet/search_results.html",
-        {
-            "items": items,
-            "tag": raw_tag,
-        },
-    )
-    items = Item.objects.filter(is_published=True)
-    raw_tag = request.GET.get("tag")
-
-    if raw_tag:
-        clean_tag = raw_tag.replace("#", "").strip()
-
-        items = items.filter(
-            Q(kokkaku__icontains=clean_tag) |
-            Q(personal_color__icontains=clean_tag) |
-            Q(style__icontains=clean_tag) |
-            Q(free_tags__icontains=clean_tag) |
-            Q(item_name__icontains=clean_tag)
-        )
 
     return render(request, "closet/search_results.html", {
         "items": items,
@@ -230,6 +213,9 @@ def item_register(request):
         kokkaku_value = ','.join(request.POST.getlist('kokkaku'))
         personal_color_value = ','.join(request.POST.getlist('personal_color'))
         style_value = ','.join(request.POST.getlist('style'))
+        free_tags_value = request.POST.get('free_tags', '')
+
+        print("personal_color =", personal_color_value)
 
         item = Item.objects.create(
             item_name=name,
@@ -240,10 +226,10 @@ def item_register(request):
             description=request.POST.get('description', ''),
             details_text=request.POST.get('details_text', ''),
             detail_image=request.FILES.get('detail_image'),
-            free_tags=request.POST.get('free_tags', ''),
-            kokkaku=kokkaku_value,
+            free_tags=free_tags_value,
             personal_color=personal_color_value,
             style=style_value,
+            kokkaku=kokkaku_value,
         )
 
         return redirect('closet:inventory_manage')
