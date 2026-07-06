@@ -10,6 +10,24 @@ class Tag(models.Model):
 
 # 2. Itemモデル
 class Item(models.Model):
+
+    CATEGORY_CHOICES = [
+        ("tops", "トップス"),
+        ("bottoms", "ボトムス"),
+        ("outer", "アウター"),
+    ]
+
+    brand_name = models.CharField("ブランド名", max_length=100, blank=True)
+    item_name = models.CharField("アイテム名", max_length=100)
+
+    category = models.CharField(
+        "カテゴリ",
+        max_length=20,
+        choices=CATEGORY_CHOICES,
+        blank=True,
+    )
+
+    price = models.IntegerField("金額", default=0)
     brand_name = models.CharField("ブランド名", max_length=100, blank=True)
     item_name = models.CharField("アイテム名", max_length=100)
     price = models.IntegerField("金額", default=0)
@@ -48,7 +66,8 @@ class Item(models.Model):
         if not self.free_tags:
             return []
         return [t.strip() for t in self.free_tags.split(',') if t.strip()]
-   
+    
+ 
 # 3. 追加画像
 class ItemAdditionalImage(models.Model):
     # 画像タイプの選択肢を定義

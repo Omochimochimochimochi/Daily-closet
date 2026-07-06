@@ -49,32 +49,42 @@ def item_detail(request, pk):
     return render(request, 'closet/item_detail.html', {'item': item, 'is_favorite': is_favorite})
 
 def search_results(request):
+    # 最初は公開中の商品を全部取得
     items = Item.objects.filter(is_published=True)
 
-    raw_tag = request.GET.get("tag")
-    clean_tag = ""
+    # 検索文字を取得
+    raw_tag = request.GET.get("tag", "").strip()
+    category = request.GET.get("category", "").strip()
 
+    # キーワード検索
     if raw_tag:
-        clean_tag = raw_tag.replace("#", "").strip()
+        tags = raw_tag.replace("　", " ").split()
 
-        items = items.filter(
-            Q(item_name__icontains=clean_tag) |
-            Q(brand_name__icontains=clean_tag) |
-            Q(description__icontains=clean_tag) |
-            Q(details_text__icontains=clean_tag) |
-            Q(kokkaku__icontains=clean_tag) |
-            Q(personal_color__icontains=clean_tag) |
-            Q(style__icontains=clean_tag) |
-            Q(free_tags__icontains=clean_tag)
-        )
+        for tag in tags:
+            items = items.filter(
+                Q(item_name__icontains=tag) |
+                Q(brand_name__icontains=tag) |
+                Q(description__icontains=tag) |
+                Q(details_text__icontains=tag) |
+                Q(kokkaku__icontains=tag) |
+                Q(personal_color__icontains=tag) |
+                Q(style__icontains=tag) |
+                Q(free_tags__icontains=tag)
+            )
 
-    print("検索文字:", clean_tag)
+    # カテゴリ検索
+    if category:
+        items = items.filter(category=category)
+
+    print("検索文字:", raw_tag)
+    print("カテゴリ:", category)
     print("検索件数:", items.count())
 
     return render(request, "closet/search_results.html", {
         "items": items,
         "tag": raw_tag,
     })
+
             
 def item_search(request):
     context = {
@@ -223,6 +233,7 @@ def item_register(request):
             price=price,
             color=request.POST.get('color'),
             image=image,
+            category=request.POST.get("category"),
             description=request.POST.get('description', ''),
             details_text=request.POST.get('details_text', ''),
             detail_image=request.FILES.get('detail_image'),
@@ -230,6 +241,7 @@ def item_register(request):
             personal_color=personal_color_value,
             style=style_value,
             kokkaku=kokkaku_value,
+            
         )
 
         return redirect('closet:inventory_manage')
