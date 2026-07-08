@@ -83,7 +83,15 @@
     border-radius: 10px;
     margin: 0;                  /* ←100px auto を削除 */
 }
-
+    .form-control{
+    width:100%;
+    padding:12px;
+    border:1px solid #ddd;
+    border-radius:8px;
+    background:#fff;
+    box-sizing:border-box;
+    font-size:15px;
+}
         .modal-content p {
     color: black !important; /* 強制的に黒色にする */
     display: block !important; /* 強制的に表示させる */
@@ -131,13 +139,29 @@
         <div class="form-group-full"><label style="text-align:center">アイテム名</label><input type="text" name="name" value="{{ item.item_name }}" style="text-align:center" placeholder="例：デニムシャツ"></div>
         <div class="form-group-full"><label style="text-align:center">アイテム説明</label><textarea name="description" placeholder="説明を入力してください">{{ item.description }}</textarea></div>
         
-        <label>カテゴリ</label>
-    <select name="category">
-    <option value="">選択してください</option>
-    <option value="tops">トップス</option>
-    <option value="bottoms">ボトムス</option>
-    <option value="outer">アウター</option>
-</select>
+    <div style="margin:20px 0; text-align:center;">
+    <label style="display:block; font-weight:bold; margin-bottom:8px;">
+        カテゴリ
+    </label>
+
+    <select name="category"
+        style="
+            width:80%;
+            max-width:320px;
+            padding:10px 14px;
+            border:1px solid #ccc;
+            border-radius:8px;
+            background:#fff;
+            font-size:15px;
+            color:#333;
+            outline:none;
+        ">
+        <option value="">選択してください</option>
+        <option value="tops" {% if item.category == "tops" %}selected{% endif %}>トップス</option>
+        <option value="bottoms" {% if item.category == "bottoms" %}selected{% endif %}>ボトムス</option>
+        <option value="outer" {% if item.category == "outer" %}selected{% endif %}>アウター</option>
+        </select>
+    </div>
 
         <div class="form-group-full">
             <label style="text-align: center;">アイテム詳細（素材、洗濯表示など）</label>

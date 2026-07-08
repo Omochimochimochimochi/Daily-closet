@@ -49,14 +49,11 @@ def item_detail(request, pk):
     return render(request, 'closet/item_detail.html', {'item': item, 'is_favorite': is_favorite})
 
 def search_results(request):
-    # 最初は公開中の商品を全部取得
     items = Item.objects.filter(is_published=True)
 
-    # 検索文字を取得
     raw_tag = request.GET.get("tag", "").strip()
     category = request.GET.get("category", "").strip()
 
-    # キーワード検索
     if raw_tag:
         tags = raw_tag.replace("　", " ").split()
 
@@ -72,7 +69,6 @@ def search_results(request):
                 Q(free_tags__icontains=tag)
             )
 
-    # カテゴリ検索
     if category:
         items = items.filter(category=category)
 
@@ -244,6 +240,8 @@ def item_register(request):
             
         )
 
+        print("保存カテゴリ:", item.category)
+
         return redirect('closet:inventory_manage')
 
     return render(request, 'closet/item_register.html')
@@ -335,6 +333,7 @@ def item_edit(request, pk):
         item.color = request.POST.get('color')
         item.description = request.POST.get('description', '')
         item.details_text = request.POST.get('details_text', '')
+        item.category = request.POST.get("category")
 
         item.kokkaku = ','.join(request.POST.getlist('kokkaku'))
         item.personal_color = ','.join(request.POST.getlist('personal_color'))

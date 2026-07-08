@@ -30,6 +30,39 @@
     .search-section { margin-bottom: 25px; }
     .section-title { font-size: 0.9rem; color: #666; margin-bottom: 12px; }
 
+    .search-box-container{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-top:20px;
+    margin-bottom:15px;
+}
+
+.search-input{
+    flex:1;
+    padding:12px;
+    border:1px solid #333;
+    border-radius:12px;
+    font-size:16px;
+    box-sizing:border-box;
+    background:#fff;
+}
+
+
+.category-box{
+    margin-left: 34px;   /* ←の幅分だけ右へずらす */
+    margin-bottom: 30px;
+}
+
+.category-select{
+    width:100%;
+    padding:12px;
+    border:1px solid #333;
+    border-radius:12px;
+    font-size:16px;
+    box-sizing:border-box;
+    background:#fff;
+}
 
     .tag-group {
         display: flex;
@@ -68,14 +101,30 @@
 
 {% block content %}
 
-<form action="{% url 'closet:search_results' %}" method="GET" class="search-box-container" style="display: flex; align-items: center; gap: 10px; margin-bottom: 30px;">
-    <span class="back-arrow" onclick="history.back()" style="cursor: pointer;">〈</span>
-    
-    <input type="text" name="tag" class="search-input" placeholder="キーワード、ハッシュタグで検索" 
-           style="flex: 1; padding: 12px; border: 1px solid #333; border-radius: 10px; background-color: #f9f9f9;">
-    
-    <button type="submit" style="display:none;"></button>
+<form action="{% url 'closet:search_results' %}" method="GET">
+
+    <!-- 1行目 -->
+    <div class="search-box-container">
+        <span class="back-arrow" onclick="history.back()">〈</span>
+
+        <input
+            type="text"
+            name="tag"
+            class="search-input"
+            placeholder="キーワード、ハッシュタグ">
+    </div>
+    <div class="category-box">
+     <select name="category" class="category-select">
+        <option value="">カテゴリ</option>
+        <option value="tops">トップス</option>
+        <option value="bottoms">ボトムス</option>
+        <option value="outer">アウター</option>
+
+    </select>
+</div>
+<button type="submit" style="display:none;"></button>
 </form>
+
 <div class="search-section">
     <p class="section-title">トレンドワード</p>
     <div class="tag-group">
