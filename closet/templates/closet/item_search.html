@@ -28,8 +28,12 @@
     }
 
     .search-section { margin-bottom: 25px; }
-    .section-title { font-size: 0.9rem; color: #666; margin-bottom: 12px; }
-
+    .section-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #555;
+    margin-bottom: 15px;
+}
     .search-box-container{
     display:flex;
     align-items:center;
@@ -50,18 +54,20 @@
 
 
 .category-box{
-    margin-left: 34px;   /* ←の幅分だけ右へずらす */
-    margin-bottom: 30px;
+    margin-left:34px;
+    margin-right:0;
+    margin-bottom:30px;
 }
 
+.search-input,
 .category-select{
     width:100%;
     padding:12px;
     border:1px solid #333;
     border-radius:12px;
+    background:#fff;
     font-size:16px;
     box-sizing:border-box;
-    background:#fff;
 }
 
     .tag-group {
@@ -78,7 +84,10 @@
         scrollbar-width: none;      /* Firefox */
         -ms-overflow-style: none;   /* IE, Edge */
     }
-    
+    .tag-btn.active{
+    background:#333;
+    color:#fff;
+}
     /* Chrome, Safari, Opera用 */
     .tag-group::-webkit-scrollbar {
         display: none;
@@ -125,25 +134,58 @@
 <button type="submit" style="display:none;"></button>
 </form>
 
-<div class="search-section">
+    <div class="search-section">
+        <p class="section-title">トレンドワード</p>
+
+        <div class="tag-group">
+            {% for tag in trending_tags %}
+                <button type="button"
+                        class="tag-btn"
+                        data-tag="{{ tag }}">
+                    #{{ tag }}
+                </button>
+            {% endfor %}
+        </div>
+    </div>
+
+</form>
+    <div class="search-section">
+        <p class="section-title">体型・好みで探す</p>
+
+        <div class="tag-group">
+            {% for tag in trending_tags %}
+                <button type="button"
+                        class="tag-btn"
+                        data-tag="{{ tag }}">
+                    #{{ tag }}
+                </button>
+            {% endfor %}
+        </div>
+    </div>
+
+{% endblock %}<div class="search-section">
     <p class="section-title">トレンドワード</p>
+
     <div class="tag-group">
         {% for tag in trending_tags %}
-            <a href="{% url 'closet:search_results' %}?tag={{ tag }}" class="tag-btn">#{{ tag }}</a>
+        <button type="button" class="tag-btn" data-tag="{{ tag }}">
+            #{{ tag }}
+        </button>
         {% endfor %}
     </div>
 </div>
 
 <div class="search-section">
     <p class="section-title">体型・好みで探す</p>
+
     <div class="tag-group">
         {% for tag in category_tags %}
-            <a href="{% url 'closet:search_results' %}?tag={{ tag }}" class="tag-btn">#{{ tag }}</a>
+        <button type="button" class="tag-btn" data-tag="{{ tag }}">
+            #{{ tag }}
+        </button>
         {% endfor %}
     </div>
 </div>
-
-{% endblock %}
 
 {% block extra_js %}
 <script>
@@ -184,6 +226,23 @@
             slider.scrollLeft = scrollLeft - walk;
         });
     });
+// タグの複数選択
+const selected = [];
 
+document.querySelectorAll(".tag-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+        const tag = btn.dataset.tag;
+
+        if (selected.includes(tag)) {
+            selected.splice(selected.indexOf(tag), 1);
+            btn.classList.remove("active");
+        } else {
+            selected.push(tag);
+            btn.classList.add("active");
+        }
+
+        document.getElementById("selected-tags").value = selected.join(" ");
+    });
+});
 </script>
 {% endblock %}

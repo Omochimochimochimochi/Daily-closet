@@ -39,6 +39,14 @@
         z-index: 1000;
         overflow: hidden;   /* はみ出し防止 */
     }
+
+    .no-result-message{
+    text-align: center;
+    color: #777;
+    font-size: 10px;   /* 少し小さく */
+    margin-top: 80px;
+    line-height: 1.6;
+    }
     /* 4. モーダル本体 */
     .modal-overlay { 
         display: none; 
@@ -92,7 +100,7 @@
             </div>
         </a>
     {% empty %}
-        <p style="grid-column: 1 / span 2; text-align: center; padding: 40px 20px; color: #999;">条件に合うアイテムがありません。</p>
+        <p style="grid-column: 1 / span 2; text-align: center; padding: 40px 20px; color: #999;">該当するアイテムが見つかりませんでした。</p>
     {% endfor %}
 </div>
 
