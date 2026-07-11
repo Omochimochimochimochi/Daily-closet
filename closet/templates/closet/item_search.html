@@ -112,9 +112,11 @@
 
 <form action="{% url 'closet:search_results' %}" method="GET">
 
-    <!-- 1行目 -->
+    <!-- 検索フォーム -->
     <div class="search-box-container">
+        <input type="hidden" id="selected-tags" name="tag">
         <span class="back-arrow" onclick="history.back()">〈</span>
+
 
         <input
             type="text"
@@ -122,70 +124,54 @@
             class="search-input"
             placeholder="キーワード、ハッシュタグ">
     </div>
+
+    <!-- カテゴリ -->
     <div class="category-box">
-     <select name="category" class="category-select">
-        <option value="">カテゴリ</option>
-        <option value="tops">トップス</option>
-        <option value="bottoms">ボトムス</option>
-        <option value="outer">アウター</option>
-
-    </select>
-</div>
-<button type="submit" style="display:none;"></button>
-</form>
-
-    <div class="search-section">
-        <p class="section-title">トレンドワード</p>
-
-        <div class="tag-group">
-            {% for tag in trending_tags %}
-                <button type="button"
-                        class="tag-btn"
-                        data-tag="{{ tag }}">
-                    #{{ tag }}
-                </button>
-            {% endfor %}
-        </div>
+        <select name="category" class="category-select">
+            <option value="">カテゴリ</option>
+            <option value="tops">トップス</option>
+            <option value="bottoms">ボトムス</option>
+            <option value="outer">アウター</option>
+        </select>
     </div>
 
+    <button type="submit" style="display:none;"></button>
+
 </form>
-    <div class="search-section">
-        <p class="section-title">体型・好みで探す</p>
 
-        <div class="tag-group">
-            {% for tag in trending_tags %}
-                <button type="button"
-                        class="tag-btn"
-                        data-tag="{{ tag }}">
-                    #{{ tag }}
-                </button>
-            {% endfor %}
-        </div>
-    </div>
-
-{% endblock %}<div class="search-section">
+<!-- トレンドワード -->
+<div class="search-section">
     <p class="section-title">トレンドワード</p>
 
     <div class="tag-group">
         {% for tag in trending_tags %}
-        <button type="button" class="tag-btn" data-tag="{{ tag }}">
+        <button
+            type="button"
+            class="tag-btn"
+            data-tag="{{ tag }}">
             #{{ tag }}
         </button>
         {% endfor %}
     </div>
 </div>
 
+<!-- 体型・好み -->
 <div class="search-section">
     <p class="section-title">体型・好みで探す</p>
 
     <div class="tag-group">
         {% for tag in category_tags %}
-        <button type="button" class="tag-btn" data-tag="{{ tag }}">
+        <button
+            type="button"
+            class="tag-btn"
+            data-tag="{{ tag }}">
             #{{ tag }}
         </button>
         {% endfor %}
     </div>
 </div>
+
+{% endblock %}
 
 {% block extra_js %}
 <script>
@@ -230,19 +216,18 @@
 const selected = [];
 
 document.querySelectorAll(".tag-btn").forEach(btn => {
-    btn.addEventListener("click", () => {
-        const tag = btn.dataset.tag;
 
-        if (selected.includes(tag)) {
-            selected.splice(selected.indexOf(tag), 1);
-            btn.classList.remove("active");
-        } else {
-            selected.push(tag);
-            btn.classList.add("active");
+    btn.addEventListener("click", function(){
+
+        const input = document.querySelector(".search-input");
+
+        if(input.value !== ""){
+            input.value += " ";
         }
 
-        document.getElementById("selected-tags").value = selected.join(" ");
+        input.value += this.dataset.tag;
     });
+
 });
 </script>
 {% endblock %}
