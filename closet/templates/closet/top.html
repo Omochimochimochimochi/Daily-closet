@@ -25,13 +25,20 @@
 {% block content %}
 <div class="app-container"> <h1 style="text-align: center; margin-top: 20px; font-weight: bold;">Daily closet</h1>
     
-<form action="{% url 'closet:search_results' %}" method="get" 
-      style="display: flex; gap: 5px; width: 100%; max-width: 375px; margin: 0 auto; box-sizing: border-box; padding: 0 10px;">
-    
-    <input type="text" name="tag" placeholder="キーワードを入力">
-           style="flex: 1; padding: 10px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box;">
-    
-    <button type="submit" style="padding: 10px 15px; cursor: pointer; background: #eee; border: 1px solid #ccc; border-radius: 5px;">🔍</button>
+<form action="{% url 'closet:search_results' %}" method="get"
+      style="display:flex; gap:5px; width:100%; max-width:375px; margin:0 auto; padding:0 10px; box-sizing:border-box;">
+
+    <input
+        type="text"
+        name="tag"
+        placeholder="キーワードを入力"
+        style="flex:1; padding:10px; border:1px solid #ccc; border-radius:5px; box-sizing:border-box;">
+
+    <button
+        type="submit"
+        style="padding:10px 15px; cursor:pointer; background:#eee; border:1px solid #ccc; border-radius:5px;">
+        🔍
+    </button>
 </form>
 
     <div class="main-visual">
