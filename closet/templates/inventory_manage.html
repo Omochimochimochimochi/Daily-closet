@@ -2,56 +2,168 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>在庫管理 - Daily Closet</title>
     {% load tag_filters %}
     <style>
-        body { font-family: sans-serif; background-color: #f8f9fa; margin: 0; display: flex; justify-content: center; }
-        .app-container { width: 375px; background: white; min-height: 100vh; padding-bottom: 80px; position: relative; border: 1px solid #ddd; text-align: center; }
-        
-        .header { padding: 10px; border-bottom: 1px solid #eee; }
-        .btn-add { display: inline-block; width: 90%; padding: 10px; background-color: #ccc; color: #333; text-decoration: none; border-radius: 5px; margin: 10px 0; font-weight: bold; }
-
-        .item-card { display: flex; padding: 10px; border-bottom: 1px solid #eee; text-align: left; align-items: flex-start; }
-        .item-img { width: 80px; height: 100px; background-color: #f0f0f0; border: 1px solid #ddd; margin-right: 10px; display: flex; align-items: center; justify-content: center; font-size: 10px; color: #999; }
-        .item-info { flex: 1; font-size: 12px; }
-        .item-info p { margin: 2px 0; }
-        
-    
-        .btn-group { margin-top: 10px; display: flex; gap: 5px; }
-        .btn-status { background-color: #ddd; border: none; padding: 5px 10px; border-radius: 5px; font-size: 11px; cursor: pointer; }
-        .btn-edit { background-color: #bbb; border: none; padding: 5px 15px; border-radius: 5px; font-size: 11px; cursor: pointer; text-decoration: none; color: black; }
-
-
-        #modal-overlay {
-            display: none; 
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.5); z-index: 1000;
-        }
-        .modal-content {
-            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            background: white; padding: 20px; width: 250px; border-radius: 10px; text-align: center;
-        }
-        .modal-close { position: absolute; top: 5px; right: 10px; font-size: 20px; cursor: pointer; border: none; background: none; }
-        .btn-save { background-color: #bbb; border: none; padding: 8px 20px; border-radius: 5px; margin-right: 5px; }
-        .btn-cancel { background-color: #ddd; border: none; padding: 8px 20px; border-radius: 5px; }
-/* フッター全体の枠組みと横並びの設定 */
-.footer-nav { 
-    position: fixed; 
-    bottom: 0; 
-    width: 375px; 
-    display: flex; 
-    justify-content: space-around; 
-    padding: 10px 0; 
-    background: #eee; 
-    border-top: 1px solid #ddd; 
+body {
+    font-family: sans-serif;
+    background-color: #f8f9fa;
+    margin: 0;
+    display: flex;
+    justify-content: center;
 }
 
-/* 絵文字の大きさと位置調整 */
-.footer-nav a {
-    font-size: 28px;        /* ここで絵文字の大きさを変更 */
+.app-container {
+    width: 100%;
+    max-width: 375px;
+    min-height: 100vh;
+    background: #fff;
+    position: relative;
+    padding-bottom: 80px;
+    border: 1px solid #ddd;
+    box-sizing: border-box;
+    text-align: center;
+}
+
+.header {
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+.btn-add {
+    display: inline-block;
+    width: 90%;
+    padding: 10px;
+    background-color: #ccc;
+    color: #333;
     text-decoration: none;
-    padding: 5px;           /* リンクのクリック範囲を確保 */
+    border-radius: 5px;
+    margin: 10px 0;
+    font-weight: bold;
 }
+
+.item-card {
+    display: flex;
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+    text-align: left;
+    align-items: flex-start;
+}
+
+.item-img {
+    width: 80px;
+    height: 100px;
+    background-color: #f0f0f0;
+    border: 1px solid #ddd;
+    margin-right: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    color: #999;
+    flex-shrink: 0;
+}
+
+.item-info {
+    flex: 1;
+    font-size: 12px;
+    word-break: break-word;
+}
+
+.item-info p {
+    margin: 2px 0;
+}
+
+.btn-group {
+    margin-top: 10px;
+    display: flex;
+    gap: 5px;
+    flex-wrap: wrap;
+}
+
+.btn-status,
+.btn-edit {
+    background-color: #ddd;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 11px;
+    cursor: pointer;
+    text-decoration: none;
+    color: black;
+}
+
+.btn-edit {
+    background-color: #bbb;
+}
+
+#modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.5);
+    z-index: 1000;
+}
+
+.modal-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 250px;
+    background: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    box-sizing: border-box;
+}
+
+.modal-close {
+    position: absolute;
+    top: 5px;
+    right: 10px;
+    font-size: 20px;
+    cursor: pointer;
+    border: none;
+    background: none;
+}
+
+.btn-save {
+    background: #bbb;
+    border: none;
+    padding: 8px 20px;
+    border-radius: 5px;
+    margin-right: 5px;
+}
+
+.btn-cancel {
+    background: #ddd;
+    border: none;
+    padding: 8px 20px;
+    border-radius: 5px;
+}
+
+.footer-nav {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    max-width: 375px;
+    display: flex;
+    justify-content: space-around;
+    padding: 10px 0;
+    background: #eee;
+    border-top: 1px solid #ddd;
+    box-sizing: border-box;
+}
+
+.footer-nav a {
+    font-size: 28px;
+    text-decoration: none;
+    padding: 5px;
+}
+
+
     </style>
 </head>
 <body>
