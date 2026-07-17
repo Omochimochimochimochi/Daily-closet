@@ -1,3 +1,4 @@
+
 {% extends 'closet/base.html' %}
 {% load static %}
 {% load humanize %}
@@ -5,7 +6,9 @@
 {% block title %}検索結果 - Daily Closet{% endblock %}
 
 {% block extra_css %}
+
 <style>
+
     /* 1. 基本レイアウト */
     .header { padding: 15px; text-align: center; border-bottom: 1px solid #eee; position: relative; }
     .back-btn { position: absolute; left: 15px; top: 18px; font-size: 18px; cursor: pointer; text-decoration: none; color: #333; }
@@ -87,11 +90,20 @@
 <div class="header">
     <a href="javascript:history.back()" class="back-btn">〈</a>
     <div class="search-tag-display">
-        <span>#{{ request.GET.tag|default:"すべて" }}</span>
-        <a href="?" class="close-tag">×</a>
-    </div>
-</div>
+        {% if tags %}
+        {% for tag in tags %}
+            <span>#{{ tag }}</span>
+        {% endfor %}
+    {% else %}
+        <span>すべて</span>
+    {% endif %}
 
+    {% if category %}
+        <span>カテゴリ：{{ category }}</span>
+    {% endif %}
+
+    <a href="?" class="close-tag">×</a>
+</div>
 <div class="item-grid">
     {% for item in items %}
         <a href="{% url 'closet:item_detail' item.pk %}" class="item-card">
@@ -135,12 +147,12 @@
 
     <div style="margin-bottom:30px;">
         <label style="display:block; font-size:14px; font-weight:bold; margin-bottom:8px;">カテゴリー</label>
-        <select name="category" style="width:100%; border:1px solid #ccc; padding:8px; border-radius:4px; background:#fff;">
-            <option value="">すべて</option>
-            <option value="tops">トップス</option>
-            <option value="pants">ボトムス</option>
-            <option value="outer">アウター</option>
-        </select>
+    <select name="category" style="width:100%; border:1px solid #ccc; padding:8px; border-radius:4px; background:#fff;">
+        <option value="" {% if not category %}selected{% endif %}>すべて</option>
+      <option value="tops" {% if category == "tops" %}selected{% endif %}>トップス</option>
+     <option value="bottoms" {% if category == "bottoms" %}selected{% endif %}>ボトムス</option>
+     <option value="outer" {% if category == "outer" %}selected{% endif %}>アウター</option>
+</select>
     </div>
 
     <button type="submit" style="width:100%; background:#333; color:#fff; padding:12px; border:none; border-radius:4px; font-size:16px; cursor:pointer;">検索</button>
@@ -163,4 +175,5 @@
         }
     });
 </script>
+
 {% endblock %}

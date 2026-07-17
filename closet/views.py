@@ -78,7 +78,8 @@ def search_results(request):
 
     return render(request, "closet/search_results.html", {
         "items": items,
-        "tag": raw_tag,
+        "tags": tags if raw_tag else [],
+        "category": category,
     })
 
             
