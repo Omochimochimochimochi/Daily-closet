@@ -50,13 +50,30 @@
 
 {% block content %}
 <div class="detail-container">
+
     <div class="swiper mySwiper">
         <div class="swiper-wrapper">
-            {% if item.image %}<div class="swiper-slide"><img src="{{ item.image.url }}"></div>{% endif %}
+
+            {% if item.image %}
+            <div class="swiper-slide">
+                <img src="{{ item.image.url }}">
+            </div>
+            {% endif %}
+
+            {% if item.detail_image %}
+            <div class="swiper-slide">
+                <img src="{{ item.detail_image.url }}">
+            </div>
+            {% endif %}
+
             {% for extra in item.additional_images.all %}
-                <div class="swiper-slide"><img src="{{ extra.image.url }}"></div>
+            <div class="swiper-slide">
+                <img src="{{ extra.image.url }}">
+            </div>
             {% endfor %}
+
         </div>
+
         <div class="swiper-pagination"></div>
     </div>
 
