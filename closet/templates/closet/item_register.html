@@ -132,9 +132,10 @@
             outline:none;
         ">
         <option value="">選択してください</option>
-        <option value="tops" {% if item.category == "tops" %}selected{% endif %}>トップス</option>
-        <option value="bottoms" {% if item.category == "bottoms" %}selected{% endif %}>ボトムス</option>
-        <option value="outer" {% if item.category == "outer" %}selected{% endif %}>アウター</option>
+            <option value="tops" {% if item.category == "tops" %}selected{% endif %}>トップス</option>
+            <option value="bottoms" {% if item.category == "bottoms" %}selected{% endif %}>ボトムス</option>
+            <option value="onepiece" {% if item.category == "onepiece" %}selected{% endif %}>ワンピース</option>
+            <option value="outer" {% if item.category == "outer" %}selected{% endif %}>アウター</option>
         </select>
     </div>
 
