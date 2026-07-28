@@ -10,7 +10,7 @@ from django.db import transaction
 from django.shortcuts import render, redirect
 from django.contrib.admin.views.decorators import staff_member_required
 from django.views.decorators.http import require_POST
-
+from django.core.paginator import Paginator
 
 # --- 認証・トップ ---
 def top(request):
@@ -54,6 +54,8 @@ def search_results(request):
     raw_tag = request.GET.get("tag", "").strip()
     category = request.GET.get("category", "").strip()
 
+    tags = []
+
     if raw_tag:
         tags = raw_tag.replace("　", " ").split()
 
@@ -72,17 +74,20 @@ def search_results(request):
     if category:
         items = items.filter(category=category)
 
-    print("検索文字:", raw_tag)
-    print("カテゴリ:", category)
-    print("検索件数:", items.count())
+    # 新しい順
+    items = items.order_by("-id")
+
+    # 10件ずつ
+    paginator = Paginator(items, 10)
+    page_number = request.GET.get("page")
+    page_obj = paginator.get_page(page_number)
 
     return render(request, "closet/search_results.html", {
-        "items": items,
-        "tags": tags if raw_tag else [],
+        "items": page_obj,
+        "page_obj": page_obj,
+        "tags": tags,
         "category": category,
-    })
-
-            
+    })            
 def item_search(request):
     context = {
         'trending_tags': ["セール", "アウター", "シャツ", "ワイドパンツ"],
@@ -93,11 +98,25 @@ def item_search(request):
 
 
 def search_by_tag(request, tag_name=None):
-    tag = tag_name or request.GET.get('tag')
-    # search_resultsとロジックを統一するため、clean_tag化
-    clean_tag = tag.replace('#', '') if tag else ""
-    items = is_published=True (Q(item_name__icontains=clean_tag) | Q(free_tags__icontains=clean_tag)) if clean_tag else Item.objects.none()
-    return render(request, 'closet/search_results.html', {'items': items, 'tag': tag})
+    tag = tag_name or request.GET.get("tag", "")
+    clean_tag = tag.replace("#", "").strip()
+
+    items = Item.objects.filter(is_published=True)
+
+    if clean_tag:
+        items = items.filter(
+            Q(item_name__icontains=clean_tag) |
+            Q(free_tags__icontains=clean_tag)
+        )
+    else:
+        items = Item.objects.none()
+
+    return render(request, "closet/search_results.html", {
+        "items": items,
+        "tags": [clean_tag] if clean_tag else [],
+        "category": "",
+    })
+
 @login_required
 def toggle_favorite(request, item_id):
     item = get_object_or_404(Item, id=item_id)
