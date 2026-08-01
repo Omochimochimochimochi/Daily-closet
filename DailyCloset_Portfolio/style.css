@@ -52,13 +52,34 @@ a:hover{
     background:#2f5f9d;
 }
 
-.document-list{
+.document-list a{
 
-    display:flex;
-    gap:20px;
-    justify-content:center;
+    width:180px;
+
+    padding:18px 0;
+
+    text-align:center;
+
+    background:#4F81BD;
+
+    color:#ffffff;
+
+    text-decoration:none;
+
+    border-radius:8px;
+
+    font-weight:bold;
+
+    transition:0.3s;
+
 }
+.document-list a:hover{
 
+    background:#36679a;
+
+    transform:translateY(-3px);
+
+}
 
 .document-list a{
     width:150px;
@@ -69,5 +90,17 @@ a:hover{
     border:1px solid #ddd;
     border-radius:10px;
     text-decoration:none;
+
+}
+
+.document-list a:last-child{
+
+    background:#28a745;
+
+}
+
+.document-list a:last-child:hover{
+
+    background:#218838;
 
 }
