@@ -291,10 +291,28 @@ def update_publish_status(request, item_id):
         'is_published': item.is_published
     })
 
-@staff_member_required
 def admin_login(request):
-    return login_view(request)
+    if request.method == 'POST':
+        u = request.POST.get('username')
+        p = request.POST.get('password')
 
+        user = authenticate(request, username=u, password=p)
+
+        if user is not None and user.is_staff:
+            login(request, user)
+            return redirect('closet:admin_menu')
+
+        messages.error(
+            request,
+            "管理者アカウントでログインしてください。"
+        )
+
+    return render(request, 'closet/admin_login.html')
+
+
+@staff_member_required
+def admin_menu(request):
+    return render(request, 'admin_menu.html')
 @staff_member_required
 def admin_menu(request):
     return render(request, 'admin_menu.html')

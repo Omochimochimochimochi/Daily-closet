@@ -12,7 +12,9 @@
         <div class="button-group">
             <a href="{% url 'closet:admin_item_list' %}" class="btn-admin">アイテム一覧</a>
             <a href="{% url 'closet:inventory_manage' %}" class="btn-admin">在庫管理</a>
-            <a href="#" class="btn-admin-logout">ログアウト</a>
+            <a href="{% url 'closet:logout' %}" class="btn-admin-logout">
+    ログアウト
+</a>
         </div>
 
         <div class="footer-nav">
@@ -22,14 +24,17 @@
         </div>
     </div> <style>
         .app-container {
-            min-height: 100vh;
-            position: relative;
-            padding-bottom: 80px; 
-            box-sizing: border-box;
-            text-align: center;
-            font-family: sans-serif;
-            background-color: #f8f9fa;
-        }
+         width: 100%;
+          max-width: 375px;
+          min-height: 100vh;
+            margin: 0 auto;
+        position: relative;
+        padding-bottom: 80px;
+        box-sizing: border-box;
+        text-align: center;
+        font-family: sans-serif;
+        background-color: #f8f9fa;
+}
 
         .btn-admin {
             display: block;
