@@ -31,7 +31,7 @@
         <p>支払方法：クレジットカード (****-1234)</p>
     </div>
 
-    <form method="post" action="{% url 'closet:purchase_complete' %}" style="margin-top: 20px;">
+   <form method="post" action="{% url 'closet:buy_items' %}" style="margin-top: 20px;">
         {% csrf_token %}
         <button type="submit" 
                 class="purchase-btn" 

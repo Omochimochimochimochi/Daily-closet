@@ -170,9 +170,10 @@ def consideration_list(request):
 @login_required
 def buy_items(request):
     considerations = ConsiderationItem.objects.filter(user=request.user)
+
     if not considerations.exists():
         return redirect('closet:consideration_list')
-    
+
     with transaction.atomic():
         for c_item in considerations:
             PurchaseItem.objects.create(
@@ -180,32 +181,53 @@ def buy_items(request):
                 item=c_item.item,
                 size=c_item.size,
                 color=c_item.color,
-                quantity=c_item.quantity ,
                 price_at_purchase=c_item.item.price
             )
+
         considerations.delete()
-    return redirect('closet:purchase_list')
+
+    return redirect('closet:purchase_complete')
+
 
 @login_required
 def move_to_purchase(request, item_id):
-    c_item = get_object_or_404(ConsiderationItem, id=item_id, user=request.user)
-    PurchaseItem.objects.create(
-        user=c_item.user, 
-        item=c_item.item, 
-        size=c_item.size,
-        color=c_item.color, 
-        quantity=c_item.quantity
+    c_item = get_object_or_404(
+        ConsiderationItem,
+        id=item_id,
+        user=request.user
     )
+
+    PurchaseItem.objects.create(
+        user=c_item.user,
+        item=c_item.item,
+        size=c_item.size,
+        color=c_item.color,
+    
+    )
+
     c_item.delete()
+
     return redirect('closet:purchase_list')
+
 
 @login_required
 def purchase_list(request):
-    items = PurchaseItem.objects.filter(user=request.user).order_by('-id')
-    return render(request, 'closet/purchase_list.html', {'items': items})
+    considerations = ConsiderationItem.objects.filter(
+        user=request.user
+    ).order_by('-id')
+
+    return render(
+        request,
+        'closet/purchase_list.html',
+        {'items': considerations}
+    )
+
 
 @login_required
 def purchase_complete(request):
+    request.session['cart'] = []
+    request.session.modified = True
+
     return render(request, 'closet/purchase_complete.html')
 
 # --- その他 ---
