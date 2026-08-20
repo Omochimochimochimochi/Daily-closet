@@ -7,39 +7,9 @@
 <div style="padding: 20px; text-align: center;">
     <h2>新規会員登録</h2>
     
-    <form method="post" action="{% url 'closet:signup' %}">
-        {% csrf_token %}
-        
-        <div style="margin-bottom: 20px; text-align: left;">
-            <label style="display: block; margin-bottom: 5px; font-weight: bold;">メールアドレス</label>
-            <input type="email" name="email" placeholder="example@mail.com" style="width: 100%; padding: 10px; box-sizing: border-box; border: 1px solid #ccc;" required>
-        </div>
-        
-        <div style="margin-bottom: 20px; text-align: left;">
-            <label style="display: block; margin-bottom: 5px; font-weight: bold;">ユーザー名</label>
-            <input type="text" name="username" style="width: 100%; padding: 10px; box-sizing: border-box; border: 1px solid #ccc;" required>
-        </div>
-        
-        <div class="form-group password-group">
-            <label style="display: block; margin-bottom: 5px; font-weight: bold;">パスワード</label>
-            <div class="input-container">
-                <input type="password" id="password" name="password" placeholder="8文字以上" required>
-                <span onclick="togglePassword('password')" class="toggle-icon">👁️</span>
-            </div>
-        </div>
-
-        <div class="form-group password-group" style="margin-bottom: 20px;">
-            <label style="display: block; margin-bottom: 5px; font-weight: bold;">パスワード再入力</label>
-            <div class="input-container">
-                <input type="password" id="password_confirm" name="password_confirm" required>
-                <span onclick="togglePassword('password_confirm')" class="toggle-icon">👁️</span>
-            </div>
-        </div>
-
-        <button type="submit" style="background-color: #a0c4ff; border: none; padding: 15px; width: 100%; font-size: 16px; cursor: pointer; border-radius: 5px; color: white; margin-top: 20px;">登録</button>
-    </form>
-</div>
-
+   
+    
+    
 <style>
     .password-group { margin-bottom: 20px; text-align: left; }
     .input-container { position: relative; width: 100%; }

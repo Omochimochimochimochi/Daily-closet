@@ -212,14 +212,14 @@ def move_to_purchase(request, item_id):
 
 @login_required
 def purchase_list(request):
-    considerations = ConsiderationItem.objects.filter(
+    items = ConsiderationItem.objects.filter(
         user=request.user
     ).order_by('-id')
 
     return render(
         request,
         'closet/purchase_list.html',
-        {'items': considerations}
+        {'items': items}
     )
 
 
