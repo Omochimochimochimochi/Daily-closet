@@ -7,31 +7,100 @@
     <h1>メールアドレス変更 💌</h1>
 </div>
 
-<div class="form-group">
+<form method="post">
+    {% csrf_token %}
+
     <div class="input-wrapper">
-        <label class="label-text">メールアドレス</label>
-        <input type="email" class="input-field" placeholder="example@mail.com" value="{{ user.email }}">
+        <label class="label-text">現在のメールアドレス</label>
+        <input type="email"
+               class="input-field"
+               value="{{ user.email }}"
+               readonly>
     </div>
 
     <div class="input-wrapper">
         <label class="label-text">新しいメールアドレス</label>
-        <input type="email" class="input-field" placeholder="新しいメールアドレスを入力">
+        <input type="email"
+               name="new_email"
+               class="input-field"
+               placeholder="新しいメールアドレスを入力"
+               required>
     </div>
 
-    <button class="btn-update">更新する 🔄</button>
-</div>
+    <button type="submit" class="btn-update">
+        更新する 🔄
+    </button>
+</form>
 {% endblock %}
 
 {% block extra_css %}
 <style>
-    /* このページ専用のスタイルだけを書く */
-    .header { width: 100%; padding: 20px 0; border-bottom: 1px solid #333; text-align: center; margin-bottom: 40px; }
-    h1 { font-size: 1.5rem; color: #333; margin: 0; }
-    .form-group { width: 100%; padding: 0 40px; box-sizing: border-box; display: flex; flex-direction: column; gap: 25px; align-items: center; }
-    .input-wrapper { width: 100%; display: flex; flex-direction: column; align-items: center; }
-    .label-text { font-size: 1rem; color: #333; margin-bottom: 10px; }
-    .input-field { width: 100%; max-width: 300px; padding: 15px; border: 1px solid #333; border-radius: 8px; font-size: 1rem; box-sizing: border-box; text-align: center; }
-    .btn-update { display: block; width: 70%; max-width: 250px; padding: 15px; background-color: #d1e3ff; color: #1e40af; border: 1px solid #4a90e2; border-radius: 15px; font-weight: bold; font-size: 1.2rem; text-align: center; cursor: pointer; margin-top: 30px; }
-    .btn-update:hover { background-color: #7ab3ff; }
+    .header {
+        width: 100%;
+        padding: 20px 0;
+        border-bottom: 1px solid #333;
+        text-align: center;
+        margin-bottom: 40px;
+    }
+
+    h1 {
+        font-size: 1.5rem;
+        color: #333;
+        margin: 0;
+    }
+
+    form {
+        width: 100%;
+        padding: 0 40px;
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 25px;
+    }
+
+    .input-wrapper {
+        width: 100%;
+        max-width: 300px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .label-text {
+        font-size: 1rem;
+        color: #333;
+        margin-bottom: 10px;
+    }
+
+    .input-field {
+        width: 100%;
+        padding: 15px;
+        border: 1px solid #333;
+        border-radius: 8px;
+        font-size: 1rem;
+        box-sizing: border-box;
+        text-align: center;
+    }
+
+    .btn-update {
+        display: block;
+        width: 70%;
+        max-width: 250px;
+        padding: 15px;
+        background-color: #d1e3ff;
+        color: #1e40af;
+        border: 1px solid #4a90e2;
+        border-radius: 15px;
+        font-weight: bold;
+        font-size: 1.2rem;
+        text-align: center;
+        cursor: pointer;
+        margin-top: 5px;
+    }
+
+    .btn-update:hover {
+        background-color: #7ab3ff;
+    }
 </style>
 {% endblock %}

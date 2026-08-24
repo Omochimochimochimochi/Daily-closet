@@ -356,8 +356,24 @@ def password_change(request):
 
 @login_required
 def email_change(request):
-    return render(request, 'email_change.html')
+    if request.method == 'POST':
+        new_email = request.POST.get('new_email', '').strip()
 
+        if not new_email:
+            messages.error(request, '新しいメールアドレスを入力してください。')
+            return redirect('closet:email_change')
+
+        if User.objects.filter(email=new_email).exclude(pk=request.user.pk).exists():
+            messages.error(request, 'このメールアドレスはすでに使用されています。')
+            return redirect('closet:email_change')
+
+        request.user.email = new_email
+        request.user.save()
+
+        messages.success(request, 'メールアドレスを変更しました。')
+        return redirect('closet:mypage')
+
+    return render(request, 'email_change.html')
 @login_required
 def mypage(request):
     return render(request, 'mypage.html')
