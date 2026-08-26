@@ -41,7 +41,6 @@ urlpatterns = [
     path('signup/', views.signup, name='signup'),
     path('logout/', views.logout_view, name='logout'),
     path('admin-menu/', views.admin_menu, name='admin_menu'),
-    path('', views.top, name='top'),
     path('admin-inventory/', views.inventory_manage, name='inventory_manage'),
     path('admin-inventory/add/', views.item_register, name='item_register'),
     path('admin-inventory/<int:item_id>/publish/',views.update_publish_status,name='update_publish_status'),

@@ -14,15 +14,22 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-
 from django.contrib import admin
 from django.urls import path, include
-from django.conf import settings # ★インポートが必要
-from django.conf.urls.static import static # ★インポートが必要
+from django.conf import settings
+from django.conf.urls.static import static
+from . import views
+
 
 urlpatterns = [
+    # ポートフォリオ
+    path('', views.portfolio, name='portfolio'),
+
+    # Django管理画面
     path('admin/', admin.site.urls),
-    path('', include('closet.urls')),
+
+    # Daily Closet本体
+    path('DailyCloset/', include('closet.urls')),
 ]
 
 if settings.DEBUG:
