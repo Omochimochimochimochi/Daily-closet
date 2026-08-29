@@ -290,7 +290,7 @@ def item_register(request):
 
 @staff_member_required
 def inventory_manage(request):
-    items = Item.objects.filter(is_published=True)
+    items = Item.objects.all()
     return render(request, 'inventory_manage.html', {'items': items})
 
 @staff_member_required
