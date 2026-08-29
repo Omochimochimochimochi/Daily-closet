@@ -248,7 +248,7 @@ body {
         const select = document.getElementById('publish-status-select');
         const isPublished = select.value === '公開中';
 
-        fetch(`/admin-inventory/${currentItemId}/publish/`, {
+        fetch(`/DailyCloset/admin-inventory/${currentItemId}/publish/`, {
             method: 'POST',
             headers: {
                 'X-CSRFToken': getCsrfToken(),
