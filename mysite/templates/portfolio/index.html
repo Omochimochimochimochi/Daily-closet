@@ -1,10 +1,13 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="ja">
 
 <head>
     <meta charset="UTF-8">
     <title>Daily Closet | Portfolio</title>
-    <link rel="stylesheet" href="style.css">User.objects.all()User.objects.all()
+    <link rel="stylesheet" href="{% static 'portfolio/style.css' %}">
+</head>
+
     
 
 <body>
@@ -17,9 +20,8 @@
 <main>
 
 <section>
-    <img src="images/daily_closet.png" alt="Daily Closet">
+    <img src="{% static 'portfolio/images/daily_closet.png' %}" alt="Daily Closet">
 </section>
-
 
 <section>
 
@@ -54,15 +56,15 @@
 
     <div class="document-list">
 
-        <a href="documents/planning.pdf">
+        <a href="{% static 'portfolio/documents/planning.pdf' %}">
             📄 企画書
         </a>
 
-        <a href="documents/ER図.png">
+        <a href="{% static 'portfolio/documents/ER図.png' %}">
             🗄 ER図
         </a>
 
-        <a href="documents/画面遷移図.png">
+        <a href="{% static 'portfolio/documents/画面遷移図.png' %}">
             🔀 画面遷移図
         </a>
 
