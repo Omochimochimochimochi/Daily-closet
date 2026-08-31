@@ -335,9 +335,6 @@ def admin_login(request):
 @staff_member_required
 def admin_menu(request):
     return render(request, 'admin_menu.html')
-@staff_member_required
-def admin_menu(request):
-    return render(request, 'admin_menu.html')
 
 @staff_member_required
 @require_POST  # POST通信のみ許可
