@@ -53,7 +53,8 @@
         <label>パスワード</label>
         <div style="position: relative; width: 100%;">
             <input type="password" name="password" required>
-            <span style="position: absolute; right: 10px; top: 12px; cursor: pointer;">👁️</span>
+            <span id="toggle-password"style="position: absolute; right: 10px; top: 12px; cursor: pointer;"> 👁️
+</span>
         </div>
     </div>
 
@@ -68,4 +69,21 @@
 
 </form>
 
+</form>
+
+<script>
+    const passwordInput = document.querySelector('input[name="password"]');
+    const togglePassword = document.getElementById('toggle-password');
+
+    togglePassword.addEventListener('click', function () {
+        if (passwordInput.type === 'password') {
+            passwordInput.type = 'text';
+        } else {
+            passwordInput.type = 'password';
+        }
+    });
+</script>
+
+
 {% endblock %}
+
