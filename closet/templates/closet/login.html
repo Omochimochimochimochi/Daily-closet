@@ -19,6 +19,18 @@
     
     .checkbox-group { text-align: left; margin-bottom: 25px; font-size: 14px; display: flex; align-items: center; justify-content: center; }
     .btn-login { background-color: #a0c4ff; border: none; padding: 12px; width: 80%; font-size: 18px; border-radius: 10px; cursor: pointer; margin-bottom: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .admin-links {
+        margin-top: 10px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        font-size: 14px;
+    }
+
+    .admin-links a {
+        color: #aaa;
+        text-decoration: underline;
+    }
 </style>
 {% endblock %}
 
@@ -55,8 +67,17 @@
         </div>
 
         <button type="submit" class="btn-login">ログイン</button>
+
+        <div class="admin-links">
+            <a href="{% url 'closet:admin_login' %}">
+                ★ 管理者ログイン
+            </a>
+
+            <a href="#">
+                ★ ゲスト管理者ログイン
+            </a>
+        </div>
     </form>
-</div>
 
 
 <script>
