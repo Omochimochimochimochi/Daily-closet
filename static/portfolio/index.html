@@ -1,12 +1,11 @@
-{% load static %}
 <!DOCTYPE html>
 <html lang="ja">
 
 <head>
     <meta charset="UTF-8">
     <title>Daily Closet | Portfolio</title>
-    <link rel="stylesheet" href="{% static 'portfolio/style.css' %}">
-</head>
+    <link rel="stylesheet" href="style.css">
+    
 
 <body>
 
@@ -14,11 +13,13 @@
     <h1>Daily Closet</h1>
 </header>
 
+
 <main>
 
 <section>
-    <img src="{% static 'portfolio/images/daily_closet.png' %}" alt="Daily Closet">
+    <img src="images/daily_closet.png" alt="Daily Closet">
 </section>
+
 
 <section>
 
@@ -53,28 +54,37 @@
 
     <div class="document-list">
 
-        <a href="{% static 'portfolio/documents/planning.pdf' %}">
-            📄 企画書
-        </a>
+<div class="document-list">
 
-        <a href="{% static 'portfolio/documents/ER図.png' %}">
-            🗄 ER図
-        </a>
+    <a href="documents/planning.pdf">
+        📄 企画書
+    </a>
 
-        <a href="{% static 'portfolio/documents/画面遷移図.png' %}">
-            🔀 画面遷移図
-        </a>
+    <a href="documents/ER図.png">
+        🗄 ER図
+    </a>
 
-        <a href="/DailyCloset/">
-            ▶ アプリを見る
-        </a>
+    <a href="documents/画面遷移図.png">
+        🔀 画面遷移図
+    </a>
+
+    <a href="documents/画面設計図.pdf">
+        🖥️ 画面設計図
+    </a>
+
+    <a href="/DailyCloset/">
+        ▶ アプリを見る
+    </a>
+
+</div>
 
     </div>
 
 </section>
 
+
 </main>
 
 </body>
 
-</html>
+</html>」

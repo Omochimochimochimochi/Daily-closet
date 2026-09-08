@@ -37,70 +37,38 @@ img{
     margin:0 auto;
     border:1px solid #ccc;
 }
-/* ボタン */
-a{
-    display:inline-block;
-    margin-top:20px;
-    padding:15px 35px;
-    background:#4F81BD;
-    color:white;
-    text-decoration:none;
-    border-radius:5px;
+/* 資料ボタン */
+.document-list {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 10px;
+    justify-content: center;
 }
 
-a:hover{
-    background:#2f5f9d;
+.document-list a {
+    width: 130px;
+    padding: 12px 5px;
+    text-align: center;
+    background: #ffffff;
+    color: #333;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 14px;
+    transition: 0.3s;
 }
 
-.document-list a{
-
-    width:180px;
-
-    padding:18px 0;
-
-    text-align:center;
-
-    background:#4F81BD;
-
-    color:#ffffff;
-
-    text-decoration:none;
-
-    border-radius:8px;
-
-    font-weight:bold;
-
-    transition:0.3s;
-
-}
-.document-list a:hover{
-
-    background:#36679a;
-
-    transform:translateY(-3px);
-
+.document-list a:hover {
+    background: #f5f5f5;
+    transform: translateY(-3px);
 }
 
-.document-list a{
-    width:150px;
-    padding:20px;
-    text-align:center;
-    background:#ffffff;
-    color:#333;
-    border:1px solid #ddd;
-    border-radius:10px;
-    text-decoration:none;
-
+.document-list a:last-child {
+    background: #28a745;
+    color: #ffffff;
 }
 
-.document-list a:last-child{
-
-    background:#28a745;
-
-}
-
-.document-list a:last-child:hover{
-
-    background:#218838;
-
+.document-list a:last-child:hover {
+    background: #218838;
 }
