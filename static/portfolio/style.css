@@ -40,13 +40,13 @@ img{
 /* 資料ボタン */
 .document-list {
     display: flex;
-    flex-wrap: nowrap;
-    gap: 10px;
     justify-content: center;
+    gap: 10px;
 }
 
 .document-list a {
-    width: 120px;
+    width: 130px;
+    margin-top: 0;
     padding: 12px 5px;
     text-align: center;
     background: #ffffff;
@@ -55,20 +55,25 @@ img{
     border-radius: 8px;
     text-decoration: none;
     font-weight: bold;
-    font-size: 14px;
-    transition: 0.3s;
+    font-size: 13px;
+    box-sizing: border-box;
 }
 
-.document-list a:hover {
-    background: #f5f5f5;
-    transform: translateY(-3px);
+.app-button {
+    text-align: center;
+    margin-top: 15px;
 }
 
-.document-list a:last-child {
+.app-button a {
+    display: inline-block;
+    width: 130px;
+    margin-top: 0;
+    padding: 12px 5px;
     background: #28a745;
     color: #ffffff;
-}
-
-.document-list a:last-child:hover {
-    background: #218838;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 13px;
+    box-sizing: border-box;
 }
