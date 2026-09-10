@@ -38,6 +38,29 @@ def signup(request):
             return redirect('closet:login')
     return render(request, 'signup.html')
 
+def signup(request):
+    if request.method == 'POST':
+        email = request.POST.get('email')
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        password_confirm = request.POST.get('password_confirm')
+        if username and email and password and password_confirm:
+
+            if password != password_confirm:
+                return render(
+                    request,
+                    'signup.html',
+                    {'error': 'パスワードが一致しません。'}
+                )
+            User.objects.create_user(
+                username=username,
+                email=email,
+                password=password
+            )
+            return redirect('closet:login')
+
+    return render(request, 'signup.html')
+
 def logout_view(request):
     logout(request)
     return redirect('closet:top')
