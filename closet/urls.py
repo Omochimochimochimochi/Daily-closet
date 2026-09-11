@@ -1,5 +1,6 @@
 from django.conf import settings  
 from django.conf.urls.static import static  
+from django.contrib.auth import views as auth_views
 from django.urls import path
 from . import views
 from django.contrib import admin
@@ -30,25 +31,37 @@ urlpatterns = [
     
 
     # ユーザー用：購入フロー
-    path('purchase/', views.purchase_list, name='purchase_list'),
-    path('move-to-purchase/<int:item_id>/', views.move_to_purchase, name='move_to_purchase'),
-    path('buy/', views.buy_items, name='buy_items'),
-    path('purchase/complete/', views.purchase_complete, name='purchase_complete'),
-
-    # 管理用・ユーザーアカウント関連
+        # 管理用・ユーザーアカウント関連
     path('admin-login/', views.admin_login, name='admin_login'),
     path('login/', views.login_view, name='login'),
+
+    # パスワードリセット
+    path(
+        'password-reset/',
+        auth_views.PasswordResetView.as_view(
+            template_name='closet/password_reset.html'
+        ),
+        name='password_reset'
+    ),
+
     path('signup/', views.signup, name='signup'),
     path('logout/', views.logout_view, name='logout'),
     path('admin-menu/', views.admin_menu, name='admin_menu'),
     path('admin-inventory/', views.inventory_manage, name='inventory_manage'),
     path('admin-inventory/add/', views.item_register, name='item_register'),
-    path('admin-inventory/<int:item_id>/publish/',views.update_publish_status,name='update_publish_status'),
+    path(
+        'admin-inventory/<int:item_id>/publish/',
+        views.update_publish_status,
+        name='update_publish_status'
+    ),
     path('admin-items/', views.admin_item_list, name='admin_item_list'),
     path('mypage/', views.mypage, name='mypage'),
     path('email-change/', views.email_change, name='email_change'),
     path('password-change/', views.password_change, name='password_change'),
     path('item/<int:pk>/edit/', views.item_edit, name='item_edit'),
-    path('item/delete-image/<int:image_id>/', views.delete_additional_image, name='delete_additional_image'),
-    path('update-username/', views.update_username, name='update_username'),
-]
+    path(
+        'item/delete-image/<int:image_id>/',
+        views.delete_additional_image,
+        name='delete_additional_image'
+    ),
+    path('update-username/', views.update_username, name='update_username'),]

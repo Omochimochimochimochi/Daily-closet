@@ -68,13 +68,29 @@
 
         <button type="submit" class="btn-login">ログイン</button>
 
+
+        
         <div class="admin-links">
             <a href="{% url 'closet:admin_login' %}">
                 ★ 管理者ログイン
             </a>
 
             <a href="#">
-                ★ ゲスト管理者ログイン
+                ★ ゲスト管理者ログイン<button type="submit" class="btn-login">ログイン</button>
+
+<a href="{% url 'closet:password_reset' %}">
+    ＞ パスワードをお忘れの方はこちら
+</a>
+
+<div class="admin-links">
+    <a href="{% url 'closet:admin_login' %}">
+        ★ 管理者ログイン
+    </a>
+
+    <a href="#">
+        ★ ゲスト管理者ログイン
+    </a>
+</div>
             </a>
         </div>
     </form>
