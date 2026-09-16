@@ -24,11 +24,17 @@ urlpatterns = [
     path('consideration/', views.consideration_list, name='consideration_list'),
     path('consideration/add/<int:item_id>/', views.add_to_consideration, name='add_to_consideration'),
     path('consideration/remove/<int:item_id>/', views.remove_from_consideration, name='remove_from_consideration'),
-    # お気に入り用
-    path('favorites/', views.favorite_list, name='favorite_list'), 
+# お気に入り用
+    path('favorites/', views.favorite_list, name='favorite_list'),
     path('item/<int:item_id>/favorite/', views.toggle_favorite, name='toggle_favorite'),
     path('favorite/remove/<int:item_id>/', views.remove_favorite, name='remove_favorite'),
-    
+    path('item/<int:item_id>/purchase/', views.favorite_to_purchase, name='favorite_to_purchase'),
+
+# 購入用
+    path('purchase/', views.purchase_list, name='purchase_list'),
+    path('purchase/buy/', views.buy_items, name='buy_items'),
+    path('purchase/complete/', views.purchase_complete, name='purchase_complete'),
+
 
     # ユーザー用：購入フロー
         # 管理用・ユーザーアカウント関連
@@ -36,14 +42,23 @@ urlpatterns = [
     path('login/', views.login_view, name='login'),
 
     # パスワードリセット
-    path(
-        'password-reset/',
-        auth_views.PasswordResetView.as_view(
-            template_name='closet/password_reset.html'
-        ),
-        name='password_reset'
-    ),
 
+    path(
+    'password-reset/',
+    auth_views.PasswordResetView.as_view(
+        template_name='closet/password_reset.html',
+        success_url='/DailyCloset/password-reset/done/'
+    ),
+    name='password_reset'
+),
+
+    path(
+    'password-reset/done/',
+    auth_views.PasswordResetDoneView.as_view(
+        template_name='closet/password_reset_done.html'
+    ),
+    name='password_reset_done'
+),
     path('signup/', views.signup, name='signup'),
     path('logout/', views.logout_view, name='logout'),
     path('admin-menu/', views.admin_menu, name='admin_menu'),

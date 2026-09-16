@@ -161,6 +161,8 @@ def remove_favorite(request, item_id):
     Favorite.objects.filter(user=request.user, item_id=item_id).delete()
     return redirect('closet:favorite_list')
 
+
+
 # --- 検討リスト ---
 @login_required
 def add_to_consideration(request, item_id):
@@ -177,6 +179,24 @@ def add_to_consideration(request, item_id):
             quantity=quantity
         )
     return redirect('closet:consideration_list')
+
+@login_required
+def favorite_to_purchase(request, item_id):
+    favorite = get_object_or_404(
+        Favorite,
+        user=request.user,
+        item_id=item_id
+    )
+
+    ConsiderationItem.objects.create(
+        user=request.user,
+        item=favorite.item,
+        size='未選択',
+        color=favorite.item.color or '未選択',
+        quantity=1
+    )
+
+    return redirect('closet:purchase_list')
 
 @login_required
 def remove_from_consideration(request, item_id):
