@@ -3,23 +3,61 @@
 
 {% block extra_css %}
 <style>
-    .login-box { background: white; padding: 40px; border: 1px solid #333; width: 350px; text-align: center; margin: 50px auto; box-sizing: border-box; }
-    .field { margin-bottom: 20px; text-align: left; width: 100%; }
-    label { display: block; margin-bottom: 8px; color: #555; text-align: center; font-size: 18px; }
-    
-  
-    .field input { 
-        width: 100% !important; 
-        padding: 12px !important; 
-        border: 1px solid #333 !important; 
-        box-sizing: border-box !important; 
+    .login-box {
+        background: white;
+        padding: 40px;
+        border: 1px solid #333;
+        width: 350px;
+        text-align: center;
+        margin: 50px auto;
+        box-sizing: border-box;
+    }
+
+    .field {
+        margin-bottom: 20px;
+        text-align: left;
+        width: 100%;
+    }
+
+    label {
+        display: block;
+        margin-bottom: 8px;
+        color: #555;
+        text-align: center;
+        font-size: 18px;
+    }
+
+    .field input {
+        width: 100% !important;
+        padding: 12px !important;
+        border: 1px solid #333 !important;
+        box-sizing: border-box !important;
         display: block !important;
         font-size: 16px;
     }
-    
-    .checkbox-group { text-align: left; margin-bottom: 25px; font-size: 14px; display: flex; align-items: center; justify-content: center; }
-    .btn-login { background-color: #a0c4ff; border: none; padding: 12px; width: 80%; font-size: 18px; border-radius: 10px; cursor: pointer; margin-bottom: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-        .admin-links {
+
+    .checkbox-group {
+        text-align: left;
+        margin-bottom: 25px;
+        font-size: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .btn-login {
+        background-color: #a0c4ff;
+        border: none;
+        padding: 12px;
+        width: 80%;
+        font-size: 18px;
+        border-radius: 10px;
+        cursor: pointer;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .login-links {
         margin-top: 10px;
         display: flex;
         flex-direction: column;
@@ -27,74 +65,89 @@
         font-size: 14px;
     }
 
-    .admin-links a {
+    .login-links a {
         color: #aaa;
         text-decoration: underline;
+    }
+
+    .admin-link {
+        margin-top: 15px;
     }
 </style>
 {% endblock %}
 
 {% block content %}
 <div class="login-box">
+
     <form method="post">
         {% csrf_token %}
-        
+
         {% if messages %}
             <div style="color: red; margin-bottom: 20px; font-size: 14px;">
-                {% for m in messages %}{{ m }}{% endfor %}
+                {% for m in messages %}
+                    {{ m }}
+                {% endfor %}
             </div>
         {% endif %}
 
         <div class="field">
-            <label>ユーザー名</label>
-            <input type="text" name="username" placeholder="admin2" required>
+            <label>メールアドレス</label>
+            <input
+                type="email"
+                name="email"
+                placeholder="example@example.com"
+                required>
         </div>
 
         <div class="field">
             <label>パスワード</label>
+
             <div style="position: relative; width: 100%;">
-                <input type="password" name="password" required>
-                <span id="toggle-password"
-      style="position: absolute; right: 10px; top: 12px; cursor: pointer;">
-    👁️
-</span>
+                <input
+                    type="password"
+                    name="password"
+                    required>
+
+                <span
+                    id="toggle-password"
+                    style="position: absolute; right: 10px; top: 12px; cursor: pointer;">
+                    👁️
+                </span>
             </div>
         </div>
 
         <div class="checkbox-group">
             <input type="checkbox" id="auto-login">
-            <label for="auto-login" style="font-size: 14px; margin: 0 0 0 5px;">次回から自動ログイン</label>
+            <label
+                for="auto-login"
+                style="font-size: 14px; margin: 0 0 0 5px;">
+                次回から自動ログイン
+            </label>
         </div>
 
-        <button type="submit" class="btn-login">ログイン</button>
+        <button type="submit" class="btn-login">
+            ログイン
+        </button>
 
+        <div class="login-links">
 
-        
-        <div class="admin-links">
-            <a href="{% url 'closet:admin_login' %}">
+            <a href="{% url 'closet:signup' %}">
+                ＞ 新規アカウント登録
+            </a>
+
+            <a href="{% url 'closet:password_reset' %}">
+                ＞ パスワードをお忘れの方はこちら
+            </a>
+
+            <a href="{% url 'closet:admin_login' %}" class="admin-link">
                 ★ 管理者ログイン
             </a>
 
-            <a href="#">
-                ★ ゲスト管理者ログイン<button type="submit" class="btn-login">ログイン</button>
-
-<a href="{% url 'closet:password_reset' %}">
-    ＞ パスワードをお忘れの方はこちら
-</a>
-
-<div class="admin-links">
-    <a href="{% url 'closet:admin_login' %}">
-        ★ 管理者ログイン
-    </a>
-
-    <a href="#">
-        ★ ゲスト管理者ログイン
-    </a>
-</div>
-            </a>
         </div>
+
     </form>
 
+</div>
 
 <script>
     const passwordInput = document.querySelector('input[name="password"]');

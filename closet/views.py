@@ -19,24 +19,21 @@ def top(request):
     return render(request, 'closet/top.html')
 
 def login_view(request):
+
     if request.method == 'POST':
-        u = request.POST.get('username')
-        p = request.POST.get('password')
-        user = authenticate(request, username=u, password=p)
-        if user is not None:
+
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+
+        user = User.objects.filter(email=email).first()
+
+        if user is not None and user.check_password(password):
             login(request, user)
             return redirect('closet:top')
-        messages.error(request, "ログイン失敗")
-    return render(request, 'closet/login.html')
 
-def signup(request):
-    if request.method == 'POST':
-        username = request.POST.get('username')
-        password = request.POST.get('password')
-        if username and password:
-            User.objects.create_user(username=username, password=password)
-            return redirect('closet:login')
-    return render(request, 'signup.html')
+        messages.error(request, "メールアドレスまたはパスワードが正しくありません。")
+
+    return render(request, 'closet/login.html')
 
 def signup(request):
     if request.method == 'POST':
@@ -44,6 +41,7 @@ def signup(request):
         username = request.POST.get('username')
         password = request.POST.get('password')
         password_confirm = request.POST.get('password_confirm')
+
         if username and email and password and password_confirm:
 
             if password != password_confirm:
@@ -52,14 +50,19 @@ def signup(request):
                     'signup.html',
                     {'error': 'パスワードが一致しません。'}
                 )
+
             User.objects.create_user(
                 username=username,
                 email=email,
                 password=password
             )
-            return redirect('closet:login')
+
+            return redirect('closet:signup_complete')
 
     return render(request, 'signup.html')
+
+def signup_complete(request):
+    return render(request, 'closet/signup_complete.html')
 
 def logout_view(request):
     logout(request)
@@ -392,6 +395,39 @@ def admin_item_list(request):
 
 @login_required
 def password_change(request):
+    if request.method == 'POST':
+        current_password = request.POST.get('current_password')
+        new_password = request.POST.get('new_password')
+        new_password_confirm = request.POST.get('new_password_confirm')
+
+        if not request.user.check_password(current_password):
+            return render(
+                request,
+                'password_change.html',
+                {'error': '現在のパスワードが正しくありません。'}
+            )
+
+        if new_password != new_password_confirm:
+            return render(
+                request,
+                'password_change.html',
+                {'error': '新しいパスワードが一致しません。'}
+            )
+
+        if not new_password:
+            return render(
+                request,
+                'password_change.html',
+                {'error': '新しいパスワードを入力してください。'}
+            )
+
+        request.user.set_password(new_password)
+        request.user.save()
+
+        login(request, request.user)
+
+        return redirect('closet:mypage')
+
     return render(request, 'password_change.html')
 
 @login_required
