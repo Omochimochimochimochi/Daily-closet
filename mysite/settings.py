@@ -24,10 +24,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-mcd5uxsvnkn%=g)p%qis+cyfs=qa$em%@ffek@a5lf1som!0n_'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = [
+    'dailycloset.pythonanywhere.com',
+    '127.0.0.1',
+    'localhost',
+]
 
 # Application definition
 
