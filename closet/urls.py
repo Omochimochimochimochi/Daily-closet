@@ -60,6 +60,7 @@ urlpatterns = [
     name='password_reset_done'
 ),
     path('signup/', views.signup, name='signup'),
+    path('signup/complete/', views.signup_complete, name='signup_complete'),
     path('logout/', views.logout_view, name='logout'),
     path('admin-menu/', views.admin_menu, name='admin_menu'),
     path('admin-inventory/', views.inventory_manage, name='inventory_manage'),
