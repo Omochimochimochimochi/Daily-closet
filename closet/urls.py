@@ -71,6 +71,14 @@ path(
     ),
     name='password_reset_complete'
 ),
+    path(
+    'password-reset/confirm/<uidb64>/<token>/',
+    auth_views.PasswordResetConfirmView.as_view(
+        template_name='closet/password_reset_confirm.html'
+    ),
+    name='password_reset_confirm'
+),
+
 
     path('signup/', views.signup, name='signup'),
     path('signup/complete/', views.signup_complete, name='signup_complete'),
