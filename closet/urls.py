@@ -43,10 +43,11 @@ urlpatterns = [
 
     # パスワードリセット
 
-   path(
+    path(
     'password-reset/',
     auth_views.PasswordResetView.as_view(
         template_name='closet/password_reset.html',
+        email_template_name='closet/password_reset_email.html',
         success_url='/DailyCloset/password-reset/done/'
     ),
     name='password_reset'
