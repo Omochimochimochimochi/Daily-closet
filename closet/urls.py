@@ -64,7 +64,8 @@ path(
 path(
     'password-reset/confirm/<uidb64>/<token>/',
     auth_views.PasswordResetConfirmView.as_view(
-        template_name='closet/password_reset_confirm.html'
+        template_name='closet/password_reset_confirm.html',
+        post_reset_redirect='closet:password_reset_complete'
     ),
     name='password_reset_confirm'
 ),
