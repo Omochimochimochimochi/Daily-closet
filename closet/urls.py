@@ -42,8 +42,9 @@ urlpatterns = [
     path('login/', views.login_view, name='login'),
 
     # パスワードリセット
+# パスワードリセット
 
-    path(
+path(
     'password-reset/',
     auth_views.PasswordResetView.as_view(
         template_name='closet/password_reset.html',
@@ -61,9 +62,6 @@ path(
     name='password_reset_done'
 ),
 
-auth_views.PasswordResetConfirmView.as_view(
-    template_name='closet/password_reset_confirm.html'
-),
 path(
     'password-reset/complete/',
     auth_views.PasswordResetCompleteView.as_view(
@@ -71,14 +69,14 @@ path(
     ),
     name='password_reset_complete'
 ),
-    path(
+
+path(
     'password-reset/confirm/<uidb64>/<token>/',
     auth_views.PasswordResetConfirmView.as_view(
         template_name='closet/password_reset_confirm.html'
     ),
     name='password_reset_confirm'
 ),
-
 
     path('signup/', views.signup, name='signup'),
     path('signup/complete/', views.signup_complete, name='signup_complete'),
