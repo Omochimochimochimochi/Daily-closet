@@ -14,8 +14,12 @@ from django.core.paginator import Paginator
 
 # --- 認証・トップ ---
 def top(request):
+    if request.user.is_staff:
+        return redirect('closet:admin_menu')
+
     if request.user.is_authenticated:
         return render(request, 'closet/top_logged_in.html')
+
     return render(request, 'closet/top.html')
 
 def login_view(request):
@@ -391,7 +395,16 @@ def item_delete(request, item_id):
 
 @staff_member_required
 def admin_item_list(request):
-    return render(request, 'admin_item_list.html', {'items': Item.objects.all()})
+    items = Item.objects.all()
+    paginator = Paginator(items, 10)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    return render(request, 'admin_item_list.html', {
+        'items': page_obj,
+        'page_obj': page_obj,
+        'item_count': items.count(),
+    })
 
 @login_required
 def password_change(request):
