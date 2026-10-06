@@ -7,10 +7,21 @@ from django.contrib import messages
 from django.http import JsonResponse
 from .models import Item, ConsiderationItem, Favorite, PurchaseItem, ItemAdditionalImage
 from django.db import transaction
-from django.shortcuts import render, redirect
 from django.contrib.admin.views.decorators import staff_member_required
 from django.views.decorators.http import require_POST
 from django.core.paginator import Paginator
+from functools import wraps
+
+
+# --- 一般ユーザー専用 ---
+def user_only(view_func):
+    @wraps(view_func)
+    def wrapper(request, *args, **kwargs):
+        if request.user.is_staff:
+            return redirect('closet:admin_menu')
+        return view_func(request, *args, **kwargs)
+    return wrapper
+
 
 # --- 認証・トップ ---
 def top(request):
@@ -21,6 +32,7 @@ def top(request):
         return render(request, 'closet/top_logged_in.html')
 
     return render(request, 'closet/top.html')
+
 
 def login_view(request):
 
@@ -38,6 +50,7 @@ def login_view(request):
         messages.error(request, "メールアドレスまたはパスワードが正しくありません。")
 
     return render(request, 'closet/login.html')
+
 
 def signup(request):
     if request.method == 'POST':
@@ -65,18 +78,33 @@ def signup(request):
 
     return render(request, 'signup.html')
 
+
 def signup_complete(request):
     return render(request, 'closet/signup_complete.html')
+
 
 def logout_view(request):
     logout(request)
     return redirect('closet:top')
 
+
 # --- 詳細・検索・お気に入り ---
 def item_detail(request, pk):
     item = get_object_or_404(Item, pk=pk)
-    is_favorite = Favorite.objects.filter(user=request.user, item=item).exists() if request.user.is_authenticated else False
-    return render(request, 'closet/item_detail.html', {'item': item, 'is_favorite': is_favorite})
+    is_favorite = Favorite.objects.filter(
+        user=request.user,
+        item=item
+    ).exists() if request.user.is_authenticated else False
+
+    return render(
+        request,
+        'closet/item_detail.html',
+        {
+            'item': item,
+            'is_favorite': is_favorite
+        }
+    )
+
 
 def search_results(request):
     items = Item.objects.filter(is_published=True)
@@ -117,14 +145,16 @@ def search_results(request):
         "page_obj": page_obj,
         "tags": tags,
         "category": category,
-    })            
+    })
+
+
 def item_search(request):
     context = {
         'trending_tags': ["セール", "アウター", "シャツ", "ワイドパンツ"],
         'category_tags': ["洗濯可", "ブルベ", "ミニ丈", "2026SS"]
     }
-    return render(request, 'closet/item_search.html', context)
 
+    return render(request, 'closet/item_search.html', context)
 
 
 def search_by_tag(request, tag_name=None):
@@ -147,37 +177,63 @@ def search_by_tag(request, tag_name=None):
         "category": "",
     })
 
+
 @login_required
+@user_only
 def toggle_favorite(request, item_id):
     item = get_object_or_404(Item, id=item_id)
-    favorite, created = Favorite.objects.get_or_create(user=request.user, item=item)
+
+    favorite, created = Favorite.objects.get_or_create(
+        user=request.user,
+        item=item
+    )
+
     if not created:
         favorite.delete()
         is_favorite = False
     else:
         is_favorite = True
-    return JsonResponse({'status': 'success', 'is_favorite': is_favorite})
+
+    return JsonResponse({
+        'status': 'success',
+        'is_favorite': is_favorite
+    })
+
 
 @login_required
+@user_only
 def favorite_list(request):
     favorites = Favorite.objects.filter(user=request.user)
-    return render(request, 'closet/favorite_list.html', {'favorites': favorites})
+
+    return render(
+        request,
+        'closet/favorite_list.html',
+        {'favorites': favorites}
+    )
+
 
 @login_required
+@user_only
 def remove_favorite(request, item_id):
-    Favorite.objects.filter(user=request.user, item_id=item_id).delete()
-    return redirect('closet:favorite_list')
+    Favorite.objects.filter(
+        user=request.user,
+        item_id=item_id
+    ).delete()
 
+    return redirect('closet:favorite_list')
 
 
 # --- 検討リスト ---
 @login_required
+@user_only
 def add_to_consideration(request, item_id):
     if request.method == 'POST':
         item = get_object_or_404(Item, id=item_id)
+
         size = request.POST.get('size') or '未選択'
         color = request.POST.get('color') or '未選択'
         quantity = request.POST.get('quantity') or 1
+
         ConsiderationItem.objects.create(
             user=request.user,
             item=item,
@@ -185,9 +241,12 @@ def add_to_consideration(request, item_id):
             color=color,
             quantity=quantity
         )
+
     return redirect('closet:consideration_list')
 
+
 @login_required
+@user_only
 def favorite_to_purchase(request, item_id):
     favorite = get_object_or_404(
         Favorite,
@@ -205,21 +264,47 @@ def favorite_to_purchase(request, item_id):
 
     return redirect('closet:purchase_list')
 
-@login_required
-def remove_from_consideration(request, item_id):
-    ConsiderationItem.objects.filter(item_id=item_id, user=request.user).delete()
-    return redirect('closet:consideration_list')
 
 @login_required
+@user_only
+def remove_from_consideration(request, item_id):
+    ConsiderationItem.objects.filter(
+        item_id=item_id,
+        user=request.user
+    ).delete()
+
+    return redirect('closet:consideration_list')
+
+
+@login_required
+@user_only
 def consideration_list(request):
-    considerations = ConsiderationItem.objects.filter(user=request.user).order_by('-id')
-    total_price = sum(c.item.price * int(c.quantity) for c in considerations)
-    return render(request, 'closet/consideration_list.html', {'considerations': considerations, 'total_price': total_price})
+    considerations = ConsiderationItem.objects.filter(
+        user=request.user
+    ).order_by('-id')
+
+    total_price = sum(
+        c.item.price * int(c.quantity)
+        for c in considerations
+    )
+
+    return render(
+        request,
+        'closet/consideration_list.html',
+        {
+            'considerations': considerations,
+            'total_price': total_price
+        }
+    )
+
 
 # --- 購入処理 ---
 @login_required
+@user_only
 def buy_items(request):
-    considerations = ConsiderationItem.objects.filter(user=request.user)
+    considerations = ConsiderationItem.objects.filter(
+        user=request.user
+    )
 
     if not considerations.exists():
         return redirect('closet:consideration_list')
@@ -240,6 +325,7 @@ def buy_items(request):
 
 
 @login_required
+@user_only
 def move_to_purchase(request, item_id):
     c_item = get_object_or_404(
         ConsiderationItem,
@@ -252,7 +338,6 @@ def move_to_purchase(request, item_id):
         item=c_item.item,
         size=c_item.size,
         color=c_item.color,
-    
     )
 
     c_item.delete()
@@ -261,6 +346,7 @@ def move_to_purchase(request, item_id):
 
 
 @login_required
+@user_only
 def purchase_list(request):
     items = ConsiderationItem.objects.filter(
         user=request.user
@@ -274,13 +360,18 @@ def purchase_list(request):
 
 
 @login_required
+@user_only
 def purchase_complete(request):
     request.session['cart'] = []
     request.session.modified = True
 
-    return render(request, 'closet/purchase_complete.html')
+    return render(
+        request,
+        'closet/purchase_complete.html'
+    )
 
-# --- その他 ---
+
+# --- その他：管理者機能 ---
 @staff_member_required
 def item_register(request):
     if request.method == 'POST':
@@ -306,10 +397,11 @@ def item_register(request):
             messages.error(request, "価格は数字で入力してください")
             return render(request, 'closet/item_register.html')
 
-
         # ここから通常保存処理
         kokkaku_value = ','.join(request.POST.getlist('kokkaku'))
-        personal_color_value = ','.join(request.POST.getlist('personal_color'))
+        personal_color_value = ','.join(
+            request.POST.getlist('personal_color')
+        )
         style_value = ','.join(request.POST.getlist('style'))
         free_tags_value = request.POST.get('free_tags', '')
 
@@ -329,7 +421,6 @@ def item_register(request):
             personal_color=personal_color_value,
             style=style_value,
             kokkaku=kokkaku_value,
-            
         )
 
         print("保存カテゴリ:", item.category)
@@ -338,15 +429,25 @@ def item_register(request):
 
     return render(request, 'closet/item_register.html')
 
+
 @staff_member_required
 def inventory_manage(request):
     items = Item.objects.all()
-    return render(request, 'inventory_manage.html', {'items': items})
+
+    return render(
+        request,
+        'inventory_manage.html',
+        {'items': items}
+    )
+
 
 @staff_member_required
 def update_publish_status(request, item_id):
     if request.method != 'POST':
-        return JsonResponse({'status': 'error'}, status=405)
+        return JsonResponse(
+            {'status': 'error'},
+            status=405
+        )
 
     item = get_object_or_404(Item, id=item_id)
 
@@ -363,12 +464,17 @@ def update_publish_status(request, item_id):
         'is_published': item.is_published
     })
 
+
 def admin_login(request):
     if request.method == 'POST':
         u = request.POST.get('username')
         p = request.POST.get('password')
 
-        user = authenticate(request, username=u, password=p)
+        user = authenticate(
+            request,
+            username=u,
+            password=p
+        )
 
         if user is not None and user.is_staff:
             login(request, user)
@@ -379,34 +485,49 @@ def admin_login(request):
             "管理者アカウントでログインしてください。"
         )
 
-    return render(request, 'closet/admin_login.html')
+    return render(
+        request,
+        'closet/admin_login.html'
+    )
 
 
 @staff_member_required
 def admin_menu(request):
     return render(request, 'admin_menu.html')
 
+
 @staff_member_required
-@require_POST  # POST通信のみ許可
+@require_POST
 def item_delete(request, item_id):
     item = get_object_or_404(Item, id=item_id)
     item.delete()
-    return JsonResponse({'status': 'success'})
+
+    return JsonResponse({
+        'status': 'success'
+    })
+
 
 @staff_member_required
 def admin_item_list(request):
     items = Item.objects.all()
+
     paginator = Paginator(items, 10)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
-    return render(request, 'admin_item_list.html', {
-        'items': page_obj,
-        'page_obj': page_obj,
-        'item_count': items.count(),
-    })
+    return render(
+        request,
+        'admin_item_list.html',
+        {
+            'items': page_obj,
+            'page_obj': page_obj,
+            'item_count': items.count(),
+        }
+    )
+
 
 @login_required
+@user_only
 def password_change(request):
     if request.method == 'POST':
         current_password = request.POST.get('current_password')
@@ -441,36 +562,70 @@ def password_change(request):
 
         return redirect('closet:mypage')
 
-    return render(request, 'password_change.html')
+    return render(
+        request,
+        'password_change.html'
+    )
+
 
 @login_required
+@user_only
 def email_change(request):
     if request.method == 'POST':
-        new_email = request.POST.get('new_email', '').strip()
+        new_email = request.POST.get(
+            'new_email',
+            ''
+        ).strip()
 
         if not new_email:
-            messages.error(request, '新しいメールアドレスを入力してください。')
+            messages.error(
+                request,
+                '新しいメールアドレスを入力してください。'
+            )
             return redirect('closet:email_change')
 
-        if User.objects.filter(email=new_email).exclude(pk=request.user.pk).exists():
-            messages.error(request, 'このメールアドレスはすでに使用されています。')
+        if User.objects.filter(
+            email=new_email
+        ).exclude(
+            pk=request.user.pk
+        ).exists():
+            messages.error(
+                request,
+                'このメールアドレスはすでに使用されています。'
+            )
             return redirect('closet:email_change')
 
         request.user.email = new_email
         request.user.save()
 
-        messages.success(request, 'メールアドレスを変更しました。')
+        messages.success(
+            request,
+            'メールアドレスを変更しました。'
+        )
+
         return redirect('closet:mypage')
 
-    return render(request, 'email_change.html')
+    return render(
+        request,
+        'email_change.html'
+    )
+
+
 @login_required
+@user_only
 def mypage(request):
-    return render(request, 'mypage.html')
+    return render(
+        request,
+        'mypage.html'
+    )
 
 
 @staff_member_required
 def item_edit(request, pk):
-    item = get_object_or_404(Item, pk=pk)
+    item = get_object_or_404(
+        Item,
+        pk=pk
+    )
 
     if request.method == 'POST':
 
@@ -478,19 +633,36 @@ def item_edit(request, pk):
         price_text = request.POST.get('price')
 
         if not name:
-            messages.error(request, "商品名を入力してください")
-            return redirect('closet:item_edit', pk=item.pk)
+            messages.error(
+                request,
+                "商品名を入力してください"
+            )
+            return redirect(
+                'closet:item_edit',
+                pk=item.pk
+            )
 
         if not price_text:
-            messages.error(request, "価格を入力してください")
-            return redirect('closet:item_edit', pk=item.pk)
+            messages.error(
+                request,
+                "価格を入力してください"
+            )
+            return redirect(
+                'closet:item_edit',
+                pk=item.pk
+            )
 
         try:
             price = int(price_text)
         except ValueError:
-            messages.error(request, "価格は数字で入力してください")
-            return redirect('closet:item_edit', pk=item.pk)
-
+            messages.error(
+                request,
+                "価格は数字で入力してください"
+            )
+            return redirect(
+                'closet:item_edit',
+                pk=item.pk
+            )
 
         item.item_name = name
         item.brand_name = request.POST.get('brand')
@@ -500,57 +672,88 @@ def item_edit(request, pk):
         item.details_text = request.POST.get('details_text', '')
         item.category = request.POST.get("category")
 
-        item.kokkaku = ','.join(request.POST.getlist('kokkaku'))
-        item.personal_color = ','.join(request.POST.getlist('personal_color'))
-        item.style = ','.join(request.POST.getlist('style'))
-        item.free_tags = request.POST.get('free_tags', '')
-
+        item.kokkaku = ','.join(
+            request.POST.getlist('kokkaku')
+        )
+        item.personal_color = ','.join(
+            request.POST.getlist('personal_color')
+        )
+        item.style = ','.join(
+            request.POST.getlist('style')
+        )
+        item.free_tags = request.POST.get(
+            'free_tags',
+            ''
+        )
 
         if request.FILES.get('image'):
             item.image = request.FILES.get('image')
 
         if request.FILES.get('detail_image'):
-            item.detail_image = request.FILES.get('detail_image')
-
+            item.detail_image = request.FILES.get(
+                'detail_image'
+            )
 
         item.save()
 
-
         # 詳細画像追加
-        for image_file in request.FILES.getlist('additional_images'):
+        for image_file in request.FILES.getlist(
+            'additional_images'
+        ):
             ItemAdditionalImage.objects.create(
                 item=item,
                 image=image_file,
                 image_type=1,
             )
 
+        return redirect(
+            'closet:inventory_manage'
+        )
 
-        return redirect('closet:inventory_manage')
-
-
-    return render(request, 'closet/item_edit.html', {'item': item})
-
+    return render(
+        request,
+        'closet/item_edit.html',
+        {'item': item}
+    )
 
 
 @login_required
+@user_only
 def update_username(request):
     if request.method == 'POST':
         new_name = request.POST.get('new_username')
+
         request.user.username = new_name
         request.user.save()
+
         return redirect('closet:mypage')
+
 
 @staff_member_required
 @require_POST
 def delete_additional_image(request, image_id):
-    image = get_object_or_404(ItemAdditionalImage, id=image_id)
-    image.delete()
-    return JsonResponse({'status': 'success'})
+    image = get_object_or_404(
+        ItemAdditionalImage,
+        id=image_id
+    )
 
-# views.py に追加
+    image.delete()
+
+    return JsonResponse({
+        'status': 'success'
+    })
+
+
 @staff_member_required
 @require_POST
 def delete_item_image(request, image_id):
-    image = get_object_or_404(ItemAdditionalImage, pk=image_id)
+    image = get_object_or_404(
+        ItemAdditionalImage,
+        pk=image_id
+    )
+
     image.delete()
-    return JsonResponse({'status': 'success'})
+
+    return JsonResponse({
+        'status': 'success'
+    })
