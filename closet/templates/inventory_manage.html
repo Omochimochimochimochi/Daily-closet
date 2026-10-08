@@ -244,31 +244,30 @@ body {
         return document.querySelector('[name=csrfmiddlewaretoken]').value;
     }
 
-    function savePublishStatus() {
-        const select = document.getElementById('publish-status-select');
-        const isPublished = select.value === '公開中';
+ function savePublishStatus() {
+    const select = document.getElementById('publish-status-select');
+    const isPublished = select.value === '公開中';
 
-        fetch(`/DailyCloset/admin-inventory/${currentItemId}/publish/`, {
-            method: 'POST',
-            headers: {
-                'X-CSRFToken': getCsrfToken(),
-                'Content-Type': 'application/x-www-form-urlencoded',
-            },
-            body: `is_published=${isPublished}`,
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.status === 'success') {
-                location.reload(); // 一覧の表示を最新状態に更新
-            } else {
-                alert('更新に失敗しました');
-            }
-        })
-        .catch(() => alert('通信エラーが発生しました'));
+    fetch(`/DailyCloset/admin-inventory/${currentItemId}/publish/`, {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': getCsrfToken(),
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: `is_published=${isPublished}`,
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            alert(data.message);
+            location.reload();
+        } else {
+            alert('更新に失敗しました');
+        }
+    })
+    .catch(() => alert('通信エラーが発生しました'));
 
-        closeModal();
-    }
+    closeModal();
+}
+
 </script>
-
-</body>
-</html>

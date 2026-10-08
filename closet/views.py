@@ -460,9 +460,10 @@ def update_publish_status(request, item_id):
     print("DBの値:", item.is_published)
 
     return JsonResponse({
-        'status': 'success',
-        'is_published': item.is_published
-    })
+    'status': 'success',
+    'is_published': item.is_published,
+    'message': '公開設定を変更しました。'
+})
 
 
 def admin_login(request):
