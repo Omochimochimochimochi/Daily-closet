@@ -4,6 +4,8 @@ from django.contrib.auth import views as auth_views
 from django.urls import path
 from . import views
 from django.contrib import admin
+from closet.forms import CustomSetPasswordForm
+
 
 
 
@@ -42,7 +44,7 @@ urlpatterns = [
     path('login/', views.login_view, name='login'),
 
     # パスワードリセット
-# パスワードリセット
+
 
 path(
     'password-reset/',
@@ -74,10 +76,13 @@ path(
     'password-reset/confirm/<uidb64>/<token>/',
     auth_views.PasswordResetConfirmView.as_view(
         template_name='closet/password_reset_confirm.html',
-        success_url='/DailyCloset/password-reset/complete/'
+        form_class=CustomSetPasswordForm,
+        success_url='/DailyCloset/password-reset/complete/',
+        post_reset_login=False,
     ),
     name='password_reset_confirm'
 ),
+
 
     path('signup/', views.signup, name='signup'),
     path('signup/complete/', views.signup_complete, name='signup_complete'),

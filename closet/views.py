@@ -1,3 +1,5 @@
+from django.contrib.auth.password_validation import validate_password
+from django.core.exceptions import ValidationError
 from django.shortcuts import render, redirect, get_object_or_404
 from django.db.models import Q
 from django.contrib.auth.decorators import login_required
@@ -68,11 +70,25 @@ def signup(request):
                     {'error': 'パスワードが一致しません。'}
                 )
 
+            
+            try:
+                validate_password(
+                    password,
+                    user=User(username=username, email=email)
+                )
+            except ValidationError as e:
+                return render(
+                    request,
+                    'signup.html',
+                    {'error': ' '.join(e.messages)}
+                )
+
             User.objects.create_user(
                 username=username,
                 email=email,
                 password=password
             )
+
 
             return redirect('closet:signup_complete')
 
@@ -527,6 +543,7 @@ def admin_item_list(request):
     )
 
 
+
 @login_required
 @user_only
 def password_change(request):
@@ -556,6 +573,15 @@ def password_change(request):
                 {'error': '新しいパスワードを入力してください。'}
             )
 
+        try:
+            validate_password(new_password, user=request.user)
+        except ValidationError as e:
+            return render(
+                request,
+                'password_change.html',
+                {'error': ' '.join(e.messages)}
+            )
+
         request.user.set_password(new_password)
         request.user.save()
 
@@ -567,7 +593,6 @@ def password_change(request):
         request,
         'password_change.html'
     )
-
 
 @login_required
 @user_only
