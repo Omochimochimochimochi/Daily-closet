@@ -2,6 +2,7 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>管理メニュー - Daily Closet</title>
 </head>
 <body>
@@ -20,21 +21,29 @@
         <div class="footer-nav">
             <a href="{% url 'closet:top' %}" class="nav-item">🏠</a>
             <a href="{% url 'closet:inventory_manage' %}" class="nav-item">👗</a>
-            <a href="{% url 'closet:admin_menu' %}" class="nav-item">📋</a>
+            <a href="{% url 'closet:admin_item_list' %}" class="nav-item">📋</a>
         </div>
     </div> <style>
-        .app-container {
-         width: 100%;
-          max-width: 375px;
-        
-            margin: 0 auto;
-        position: relative;
-        padding-bottom: 80px;
-        box-sizing: border-box;
-        text-align: center;
-        font-family: sans-serif;
-        background-color: #f8f9fa;
+
+html, body {
+    margin: 0;
+    min-height: 100%;
+    background-color: #f8f9fa;
 }
+
+.app-container {
+    width: 100%;
+    max-width: 375px;
+    min-height: 100vh;
+    margin: 0 auto;
+    position: relative;
+    padding-bottom: 80px;
+    box-sizing: border-box;
+    text-align: center;
+    font-family: sans-serif;
+    background-color: #f8f9fa;
+}
+
 
         .btn-admin {
             display: block;
