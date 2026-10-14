@@ -1,96 +1,246 @@
-/* ページ全体 */
-body{
-    margin:0;
-    padding:0;
-    font-family:"Yu Gothic","Meiryo",sans-serif;
-    background:#f5f5f5;
-}
-
-/* 全体の幅 */
-main{
-    width:900px;
-    margin:50px auto;
-    background:#ffffff;
-    padding:40px;
-    border:1px solid #ddd;
-}
-
-/* タイトル */
-header{
-    text-align:center;
-}
-
-h1{
-    font-size:42px;
-}
-
-h2{
-    border-left:6px solid #4F81BD;
-    padding-left:10px;
-}
-
-/* 画像 */
-img{
-    width:300px;
-    height:auto;
-    display:block;
-    margin:0 auto;
-    border:1px solid #ccc;
-}
-/* 資料ボタン */
-
-.document-list {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-}
-.document-list {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-}
-
-.document-list a {
-    width: 130px;
-    margin-top: 0;
-    padding: 12px 5px;
-    text-align: center;
-    background: #ffffff;
-    color: #333;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    text-decoration: none;
-    font-weight: bold;
-    font-size: 13px;
+/* ==========================
+   ページ全体
+========================== */
+* {
     box-sizing: border-box;
 }
 
-.document-list a:hover {
+body {
+    margin: 0;
+    padding: 0;
+    font-family: "Yu Gothic", "Meiryo", sans-serif;
     background: #f5f5f5;
-    transform: translateY(-3px);
+    color: #222;
+    font-size: 17px;
+    line-height: 1.9;
 }
 
-
-
-.app-button {
+/* ==========================
+   ヘッダー
+========================== */
+header {
     text-align: center;
-    margin-top: 20px;
+    padding: 12px 20px;
+}
+
+h1 {
+    margin: 20px 0;
+    font-size: 42px;
+    line-height: 1.4;
+}
+
+/* ==========================
+   メインコンテンツ
+========================== */
+main {
+    width: 100%;
+    max-width: 1060px;
+    margin: 30px auto;
+    padding: 40px;
+    background: #fff;
+    border: 1px solid #ddd;
+}
+
+/* セクション間の余白 */
+section {
+    margin-bottom: 30px;
+}
+
+/* ==========================
+   見出し
+========================== */
+h2 {
+    margin: 26px 0 18px;
+    padding-left: 12px;
+    border-left: 6px solid #4F81BD;
+    font-size: 26px;
+    line-height: 1.5;
+}
+
+/* ==========================
+   メイン画像
+========================== */
+img {
+    display: block;
+    width: 450px;
+    max-width: 100%;
+    height: auto;
+    margin: 0 auto 30px;
+    border: 1px solid #ccc;
+}
+
+/* ==========================
+   本文
+========================== */
+p {
+    margin: 16px 0 24px;
+    font-size: 17px;
+    line-height: 2;
+}
+
+ul {
+    margin-top: 14px;
+    padding-left: 30px;
+}
+
+li {
+    margin-bottom: 6px;
+    font-size: 17px;
+    line-height: 1.9;
+}
+
+/* ==========================
+   資料ボタン
+========================== */
+.document-list {
+    display: flex;
+    justify-content: center;
+    align-items: stretch;
+    flex-wrap: wrap;
+    gap: 14px;
+    margin-top: 24px;
+}
+
+.document-list a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 160px;
+    min-height: 58px;
+    padding: 14px 10px;
+    background: #fff;
+    color: #333;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    text-align: center;
+    text-decoration: none;
+    font-size: 16px;
+    font-weight: bold;
+    line-height: 1.6;
+    transition: background 0.2s, transform 0.2s;
+}
+
+.document-list a:hover {
+    background: #f0f4f8;
+    transform: translateY(-2px);
+}
+
+/* ==========================
+   アプリを見るボタン
+========================== */
+.app-button {
+    margin-top: 24px;
+    text-align: center;
 }
 
 .app-button a {
     display: inline-block;
-    width: 130px;
-    margin-top: 0;
-    padding: 12px 5px;
-    background: #4F81BD;
-    color: #ffffff;
+    min-width: 190px;
+    min-height: 58px;
+    padding: 15px 24px;
+    background: #28a745;
+    color: #fff;
     border-radius: 8px;
+    text-align: center;
     text-decoration: none;
+    font-size: 18px;
     font-weight: bold;
-    font-size: 13px;
-    box-sizing: border-box;
+    line-height: 1.6;
+    transition: background 0.2s;
 }
 
 .app-button a:hover {
-    background: #2f5f9d;
+    background: #218838;
+}
+
+/* ==========================
+   スマートフォン対応
+========================== */
+@media (max-width: 600px) {
+
+    body {
+        font-size: 17px;
+        line-height: 1.9;
+    }
+
+    header {
+        padding: 10px 12px;
+    }
+
+    h1 {
+        margin: 14px 0;
+        font-size: 34px;
+    }
+
+    main {
+        width: auto;
+        max-width: none;
+        margin: 12px;
+        padding: 22px 18px;
+    }
+
+    section {
+        margin-bottom: 26px;
+    }
+
+    h2 {
+        margin-top: 22px;
+        margin-bottom: 16px;
+        padding-left: 10px;
+        border-left-width: 5px;
+        font-size: 24px;
+    }
+
+    img {
+        width: 100%;
+        max-width: 450px;
+        margin-bottom: 26px;
+    }
+
+    p {
+        margin: 14px 0 22px;
+        font-size: 17px;
+        line-height: 1.9;
+        overflow-wrap: anywhere;
+    }
+
+    ul {
+        padding-left: 25px;
+    }
+
+    li {
+        margin-bottom: 8px;
+        font-size: 16px;
+        line-height: 1.9;
+        overflow-wrap: anywhere;
+    }
+
+    /* 資料ボタンを2列で大きく表示 */
+    .document-list {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+        margin-top: 20px;
+    }
+
+    .document-list a {
+        width: 100%;
+        min-height: 58px;
+        padding: 12px 6px;
+        font-size: 16px;
+        line-height: 1.5;
+        overflow-wrap: anywhere;
+    }
+
+    /* アプリを見るボタン */
+    .app-button {
+        margin-top: 24px;
+    }
+
+    .app-button a {
+        min-width: 200px;
+        min-height: 58px;
+        padding: 15px 20px;
+        font-size: 18px;
+    }
 }
