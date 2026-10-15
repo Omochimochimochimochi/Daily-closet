@@ -5,11 +5,12 @@
 
 {% block extra_css %}
 <style>
-    .main-visual img {
-        width: 100% !important;
-        height: auto !important;
-        display: block;
-    }
+.main-visual img {
+    width: 85% !important;
+    height: auto !important;
+    display: block;
+    margin: 0 auto;
+}
     .welcome-msg {
         text-align: center; 
         margin: 15px 0 5px 0;
@@ -23,9 +24,9 @@
 <div class="app-container"> <h1 style="text-align: center; margin-top: 20px; font-weight: bold;">Daily closet</h1>
     
 <form action="{% url 'closet:search_results' %}" method="get" 
-      style="display: flex; gap: 5px; width: 100%; max-width: 375px; margin: 0 auto 15px; box-sizing: border-box; padding: 0 10px;">
+     style="display:flex; gap:5px; width:100%; max-width:375px; margin:0 auto 10px; padding:0 10px; box-sizing:border-box;"
 
-    <input
+    <input 
         type="text"
         name="tag"
         placeholder="キーワードを入力"

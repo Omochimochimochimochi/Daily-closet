@@ -1,3 +1,4 @@
+
 {% extends 'closet/base.html' %}
 {% load static %}
 
@@ -8,9 +9,10 @@
 <div class="signup-container">
 
     <h2>新規会員登録</h2>
+
     {% if error %}
-    <p style="color: red;">{{ error }}</p>
-{% endif %}
+        <p style="color: red;">{{ error }}</p>
+    {% endif %}
 
     <form method="post">
         {% csrf_token %}
@@ -50,10 +52,15 @@
                     required
                 >
 
-                <span
-                    class="toggle-icon"
-                    onclick="togglePassword('password')"
-                >👁</span>
+                <button
+                    type="button"
+                    class="toggle-icon is-hidden"
+                    onclick="togglePassword('password', this)"
+                    aria-label="パスワードを表示"
+                    aria-pressed="false"
+                >
+                    <span class="eye-icon"></span>
+                </button>
             </div>
 
             <p class="password-note">
@@ -74,10 +81,15 @@
                     required
                 >
 
-                <span
-                    class="toggle-icon"
-                    onclick="togglePassword('password_confirm')"
-                >👁</span>
+                <button
+                    type="button"
+                    class="toggle-icon is-hidden"
+                    onclick="togglePassword('password_confirm', this)"
+                    aria-label="パスワードを表示"
+                    aria-pressed="false"
+                >
+                    <span class="eye-icon"></span>
+                </button>
             </div>
         </div>
 
@@ -129,15 +141,59 @@
         padding-right: 40px;
     }
 
-    .toggle-icon {
-        position: absolute;
-        right: 10px;
-        top: 50%;
-        transform: translateY(-50%);
-        cursor: pointer;
-        font-size: 16px;
-        user-select: none;
-    }
+    
+/* 目のアイコンボタン */
+.toggle-icon {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+}
+
+/* 自然な目の形 */
+.eye-icon {
+    position: relative;
+    width: 17px;
+    height: 12px;
+    border: 1.5px solid #666;
+    border-radius: 50% 50% 50% 50% / 60% 60% 60% 60%;
+    box-sizing: border-box;
+}
+
+/* 黒目 */
+.eye-icon::after {
+    content: "";
+    position: absolute;
+    width: 5px;
+    height: 5px;
+    border: 1.5px solid #666;
+    border-radius: 50%;
+    top: 2px;
+    left: 4.5px;
+    box-sizing: border-box;
+}
+
+/* 非表示のときだけ斜線 */
+.toggle-icon.is-hidden .eye-icon::before {
+    content: "";
+    position: absolute;
+    width: 22px;
+    height: 1.5px;
+    background: #666;
+    top: 4px;
+    left: -4px;
+    transform: rotate(-35deg);
+    z-index: 1;
+}
 
     .password-note {
         margin: 5px 0 0;
@@ -159,14 +215,18 @@
 </style>
 
 <script>
-    function togglePassword(inputId) {
+    function togglePassword(inputId, button) {
         const input = document.getElementById(inputId);
+        const isHidden = input.type === "password";
 
-        if (input.type === "password") {
-            input.type = "text";
-        } else {
-            input.type = "password";
-        }
+        input.type = isHidden ? "text" : "password";
+
+        button.classList.toggle("is-hidden", !isHidden);
+        button.setAttribute("aria-pressed", String(isHidden));
+        button.setAttribute(
+            "aria-label",
+            isHidden ? "パスワードを隠す" : "パスワードを表示"
+        );
     }
 </script>
 

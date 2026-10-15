@@ -5,12 +5,12 @@
 
 {% block extra_css %}
 <style>
-    /* 画像が app-container (375px) からはみ出さないように固定 */
-    .main-visual img {
-        width: 100% !important;
-        height: auto !important;
-        display: block;
-    }
+.main-visual img {
+    width: 85% !important;
+    height: auto !important;
+    display: block;
+    margin: 0 auto;
+}
     
     /* 検索バーの微調整 */
     .search-container {
@@ -25,21 +25,24 @@
 {% block content %}
 <div class="app-container"> <h1 style="text-align: center; margin-top: 20px; font-weight: bold;">Daily closet</h1>
     
+
+
 <form action="{% url 'closet:search_results' %}" method="get"
-      style="display:flex; gap:5px; width:100%; max-width:375px; margin:0 auto 15px; padding:0 10px; box-sizing:border-box;">
+      style="display:flex; align-items:center; gap:5px; width:100%; max-width:375px; margin:0 auto 15px; padding:0 10px; box-sizing:border-box;">
 
     <input
         type="text"
         name="tag"
         placeholder="キーワードを入力"
-        style="flex:1; padding:10px; border:1px solid #ccc; border-radius:5px; box-sizing:border-box;">
+        style="display:block; width:0; min-width:0; flex:1 1 0%; padding:10px; border:1px solid #ccc; border-radius:5px; box-sizing:border-box;">
 
     <button
         type="submit"
-        style="padding:10px 15px; cursor:pointer; background:#eee; border:1px solid #ccc; border-radius:5px;">
+        style="flex-shrink:0; padding:10px 15px; cursor:pointer; background:#eee; border:1px solid #ccc; border-radius:5px;">
         🔍
     </button>
 </form>
+
 
     <div class="main-visual">
         <img src="{% static 'images/main_visual.jpg' %}" alt="メイン画像">
