@@ -1,3 +1,4 @@
+
 {% extends 'closet/base.html' %}
 {% load static %}
 
@@ -8,7 +9,7 @@
         padding: 20px 15px;
         min-height: 100vh;
         position: relative;
-        padding-bottom: 80px; /* フッター用の余白 */
+        padding-bottom: 80px;
     }
 
     .search-box-container {
@@ -16,60 +17,48 @@
         align-items: center;
         gap: 10px;
         margin-top: 20px;
-        margin-bottom: 30px;
+        margin-bottom: 15px;
     }
 
     .search-input {
         flex: 1;
+        min-width: 0;
         padding: 12px;
         border: 1px solid #333;
-        border-radius: 10px;
-        background-color: #f9f9f9;
+        border-radius: 12px;
+        font-size: 16px;
+        box-sizing: border-box;
+        background: #fff;
     }
 
-    .search-section { margin-bottom: 25px; }
+    .search-section {
+        margin-bottom: 25px;
+    }
+
     .section-title {
-    font-size: 16px;
-    font-weight: 600;
-    color: #555;
-    margin-bottom: 15px;
-}
-    .search-box-container{
-    display:flex;
-    align-items:center;
-    gap:10px;
-    margin-top:20px;
-    margin-bottom:15px;
-}
+        font-size: 16px;
+        font-weight: 600;
+        color: #555;
+        margin-bottom: 15px;
+    }
 
-.search-input{
-    flex:1;
-    padding:12px;
-    border:1px solid #333;
-    border-radius:12px;
-    font-size:16px;
-    box-sizing:border-box;
-    background:#fff;
-}
+    .category-box {
+        margin-left: 34px;
+        margin-right: 0;
+        margin-bottom: 30px;
+    }
 
+    .category-select {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #333;
+        border-radius: 12px;
+        background: #fff;
+        font-size: 16px;
+        box-sizing: border-box;
+    }
 
-.category-box{
-    margin-left:34px;
-    margin-right:0;
-    margin-bottom:30px;
-}
-
-.search-input,
-.category-select{
-    width:100%;
-    padding:12px;
-    border:1px solid #333;
-    border-radius:12px;
-    background:#fff;
-    font-size:16px;
-    box-sizing:border-box;
-}
-
+    /* タグ一覧 */
     .tag-group {
         display: flex;
         flex-wrap: nowrap;
@@ -79,32 +68,47 @@
         -webkit-overflow-scrolling: touch;
         width: 100%;
         max-width: 345px;
-        
-        /* スクロールバーを消すための設定 */
-        scrollbar-width: none;      /* Firefox */
-        -ms-overflow-style: none;   /* IE, Edge */
+        scrollbar-width: none;
+        -ms-overflow-style: none;
     }
-    .tag-btn.active{
-    background:#333;
-    color:#fff;
-}
-    /* Chrome, Safari, Opera用 */
+
     .tag-group::-webkit-scrollbar {
         display: none;
     }
 
-    /* ボタン交互配色 */
+    /* タグボタン */
     .tag-btn {
         display: inline-flex;
+        align-items: center;
         padding: 10px 18px;
         border-radius: 8px;
         text-decoration: none;
         color: #333;
         font-size: 0.85rem;
         white-space: nowrap;
+        cursor: pointer;
+        background-color: #fff;
+        border: 1px solid #999;
+        flex-shrink: 0;
     }
-    .tag-btn:nth-child(odd) { background-color: #fff; border: 1px solid #999; }
-    .tag-btn:nth-child(even) { background-color: #e0e0e0; border: 1px solid #ccc; }
+
+    .tag-btn:nth-child(even) {
+        background-color: #e0e0e0;
+        border: 1px solid #ccc;
+    }
+
+    /* 選択中のタグ */
+    .tag-btn.active,
+    .tag-btn.active:nth-child(even) {
+        background: #333;
+        color: #fff;
+        border: 1px solid #333;
+    }
+
+    .back-arrow {
+        cursor: pointer;
+        flex-shrink: 0;
+    }
 </style>
 {% endblock %}
 
@@ -114,14 +118,13 @@
 
     <!-- 検索フォーム -->
     <div class="search-box-container">
-        <input type="hidden" id="selected-tags" name="tag">
-        <span class="back-arrow" onclick="history.back()">〈</span>
-
+       
 
         <input
             type="text"
             name="tag"
             class="search-input"
+            id="search-input"
             placeholder="キーワード、ハッシュタグ">
     </div>
 
@@ -175,59 +178,113 @@
 
 {% block extra_js %}
 <script>
-    // 1. Enterキーでの検索実行
-    const searchInput = document.querySelector('.search-input');
-    searchInput.addEventListener('keypress', function(e) {
-        if (e.key === 'Enter') {
-            this.form.submit();
+document.addEventListener("DOMContentLoaded", function() {
+    const searchInput = document.getElementById("search-input");
+    const tagButtons = document.querySelectorAll(".tag-btn");
+
+    // 選択中のタグを管理
+    const selectedTags = new Set();
+
+    // タグのクリック処理
+    tagButtons.forEach(function(btn) {
+        btn.addEventListener("click", function() {
+            const tag = this.dataset.tag;
+
+            if (selectedTags.has(tag)) {
+                // 選択済みなら解除
+                selectedTags.delete(tag);
+                this.classList.remove("active");
+            } else {
+                // 未選択なら追加
+                selectedTags.add(tag);
+                this.classList.add("active");
+            }
+
+            // 選択中のタグと手入力のキーワードを検索欄に反映
+            updateSearchInput();
+        });
+    });
+
+    function updateSearchInput() {
+        const manualWords = searchInput.dataset.manualWords || "";
+
+        const words = manualWords
+            .trim()
+            .split(/\s+/)
+            .filter(function(word) {
+                return word && !selectedTags.has(word);
+            });
+
+        searchInput.value = [
+            ...selectedTags,
+            ...words
+        ].join(" ");
+    }
+
+    // 手入力したキーワードも保持
+    searchInput.addEventListener("input", function() {
+        const currentWords = this.value.trim().split(/\s+/);
+
+        selectedTags.forEach(function(tag) {
+            const button = Array.from(tagButtons).find(function(btn) {
+                return btn.dataset.tag === tag;
+            });
+
+            if (button && !currentWords.includes(tag)) {
+                selectedTags.delete(tag);
+                button.classList.remove("active");
+            }
+        });
+
+        searchInput.dataset.manualWords = currentWords
+            .filter(function(word) {
+                return word && !selectedTags.has(word);
+            })
+            .join(" ");
+    });
+
+    // Enterキーで検索
+    searchInput.addEventListener("keydown", function(e) {
+        if (e.key === "Enter") {
+            e.preventDefault();
+            this.form.requestSubmit();
         }
     });
 
-    // 2. サジェスト表示の準備（まずはコンソール出力で確認）
-    searchInput.addEventListener('input', function() {
-        console.log("入力中:", this.value);
-        // ここに候補を表示するUI処理を後から追加できます
-    });
+    // マウスドラッグでタグ一覧を横スクロール
+    const sliders = document.querySelectorAll(".tag-group");
 
-// 3. マウスドラッグでのスクロール機能を追加
-    const sliders = document.querySelectorAll('.tag-group');
-    let isDown = false;
-    let startX;
-    let scrollLeft;
+    sliders.forEach(function(slider) {
+        let isDown = false;
+        let startX;
+        let scrollLeft;
 
-    sliders.forEach(slider => {
-        slider.addEventListener('mousedown', (e) => {
+        slider.addEventListener("mousedown", function(e) {
             isDown = true;
-            slider.classList.add('active'); // 必要ならCSSでcursor: grabbingなどを設定
-            startX = e.pageX - slider.offsetLeft;
+            startX = e.pageX - slider.getBoundingClientRect().left;
             scrollLeft = slider.scrollLeft;
         });
-        slider.addEventListener('mouseleave', () => isDown = false);
-        slider.addEventListener('mouseup', () => isDown = false);
-        slider.addEventListener('mousemove', (e) => {
+
+        slider.addEventListener("mouseleave", function() {
+            isDown = false;
+        });
+
+        slider.addEventListener("mouseup", function() {
+            isDown = false;
+        });
+
+        slider.addEventListener("mousemove", function(e) {
             if (!isDown) return;
+            if (e.buttons !== 1) {
+                isDown = false;
+                return;
+            }
+
             e.preventDefault();
-            const x = e.pageX - slider.offsetLeft;
-            const walk = (x - startX) * 2; // スクロール速度の調整
-            slider.scrollLeft = scrollLeft - walk;
+            const x = e.pageX - slider.getBoundingClientRect().left;
+            slider.scrollLeft = scrollLeft - (x - startX) * 2;
         });
     });
-// タグの複数選択
-const selected = [];
-
-document.querySelectorAll(".tag-btn").forEach(btn => {
-
-    btn.addEventListener("click", function(){
-
-        const input = document.querySelector(".search-input");
-
-        if(input.value !== ""){
-            input.value += " ";
-        }
-
-        input.value += this.dataset.tag;
-    });
-
 });
 </script>
 {% endblock %}
