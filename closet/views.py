@@ -36,67 +36,98 @@ def top(request):
     return render(request, 'closet/top.html')
 
 
+
+
 def login_view(request):
-
     if request.method == 'POST':
+        email = request.POST.get('email', '').strip()
+        password = request.POST.get('password', '')
 
-        email = request.POST.get('email')
-        password = request.POST.get('password')
+        users = User.objects.filter(email__iexact=email).order_by('id')
+        user = next(
+            (u for u in users if u.check_password(password)),
+            None
+        )
 
-        user = User.objects.filter(email=email).first()
-
-        if user is not None and user.check_password(password):
+        if user is not None:
             login(request, user)
             return redirect('closet:top')
 
-        messages.error(request, "メールアドレスまたはパスワードが正しくありません。")
+        messages.error(
+            request,
+            "メールアドレスまたはパスワードが正しくありません。"
+        )
 
     return render(request, 'closet/login.html')
 
 
 def signup(request):
     if request.method == 'POST':
-        email = request.POST.get('email')
-        username = request.POST.get('username')
-        password = request.POST.get('password')
-        password_confirm = request.POST.get('password_confirm')
+        email = request.POST.get('email', '').strip()
+        username = request.POST.get('username', '').strip()
+        password = request.POST.get('password', '')
+        password_confirm = request.POST.get('password_confirm', '')
 
-        if username and email and password and password_confirm:
-
-            if password != password_confirm:
-                return render(
-                    request,
-                    'signup.html',
-                    {'error': 'パスワードが一致しません。'}
-                )
-
-            
-            try:
-                validate_password(
-                    password,
-                    user=User(username=username, email=email)
-                )
-            except ValidationError as e:
-                return render(
-                    request,
-                    'signup.html',
-                    {'error': ' '.join(e.messages)}
-                )
-
-            User.objects.create_user(
-                username=username,
-                email=email,
-                password=password
+        # 必須項目の確認
+        if not email or not username or not password or not password_confirm:
+            return render(
+                request,
+                'signup.html',
+                {'error': 'すべての項目を入力してください。'}
             )
 
+        # メールアドレスの重複確認
+        if User.objects.filter(email__iexact=email).exists():
+            return render(
+                request,
+                'signup.html',
+                {'error': 'このメールアドレスはすでに登録されています。'}
+            )
 
-            return redirect('closet:signup_complete')
+        # ユーザー名の重複確認
+        if User.objects.filter(username=username).exists():
+            return render(
+                request,
+                'signup.html',
+                {'error': 'このユーザー名はすでに使用されています。'}
+            )
+
+        # パスワードの一致確認
+        if password != password_confirm:
+            return render(
+                request,
+                'signup.html',
+                {'error': 'パスワードが一致しません。'}
+            )
+
+        # Djangoのパスワード要件を確認
+        try:
+            validate_password(
+                password,
+                user=User(username=username, email=email)
+            )
+        except ValidationError as e:
+            return render(
+                request,
+                'signup.html',
+                {'error': ' '.join(e.messages)}
+            )
+
+        # ユーザーを作成
+        User.objects.create_user(
+            username=username,
+            email=email,
+            password=password
+        )
+
+        return redirect('closet:signup_complete')
 
     return render(request, 'signup.html')
 
 
 def signup_complete(request):
     return render(request, 'closet/signup_complete.html')
+
 
 
 def logout_view(request):

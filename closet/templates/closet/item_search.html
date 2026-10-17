@@ -2,288 +2,260 @@
 {% extends 'closet/base.html' %}
 {% load static %}
 
+{% block title %}商品検索 - Daily Closet{% endblock %}
+
 {% block extra_css %}
 <style>
-    /* 全体レイアウト */
-    .app-container {
-        padding: 20px 15px;
-        min-height: 100vh;
-        position: relative;
-        padding-bottom: 80px;
-    }
+.app-container {
+    padding: 20px 15px 100px;
+    min-height: 100vh;
+    box-sizing: border-box;
+}
 
-    .search-box-container {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        margin-top: 20px;
-        margin-bottom: 15px;
-    }
+.search-title {
+    margin: 0 0 20px;
+    font-size: 22px;
+    font-weight: 600;
+    color: #333;
+    text-align: center;
+}
 
-    .search-input {
-        flex: 1;
-        min-width: 0;
-        padding: 12px;
-        border: 1px solid #333;
-        border-radius: 12px;
-        font-size: 16px;
-        box-sizing: border-box;
-        background: #fff;
-    }
+.search-box-container {
+    margin-bottom: 15px;
+}
 
-    .search-section {
-        margin-bottom: 25px;
-    }
+.search-input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #333;
+    border-radius: 12px;
+    font-size: 16px;
+    box-sizing: border-box;
+    background: #fff;
+}
 
-    .section-title {
-        font-size: 16px;
-        font-weight: 600;
-        color: #555;
-        margin-bottom: 15px;
-    }
+.category-box {
+    margin-bottom: 25px;
+}
 
-    .category-box {
-        margin-left: 34px;
-        margin-right: 0;
-        margin-bottom: 30px;
-    }
+.category-select {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #333;
+    border-radius: 12px;
+    background: #fff;
+    font-size: 16px;
+    box-sizing: border-box;
+}
 
-    .category-select {
-        width: 100%;
-        padding: 12px;
-        border: 1px solid #333;
-        border-radius: 12px;
-        background: #fff;
-        font-size: 16px;
-        box-sizing: border-box;
-    }
+.search-section {
+    margin-bottom: 25px;
+}
 
-    /* タグ一覧 */
-    .tag-group {
-        display: flex;
-        flex-wrap: nowrap;
-        overflow-x: auto;
-        gap: 10px;
-        padding: 10px 0;
-        -webkit-overflow-scrolling: touch;
-        width: 100%;
-        max-width: 345px;
-        scrollbar-width: none;
-        -ms-overflow-style: none;
-    }
+.section-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #555;
+    margin: 0 0 12px;
+}
 
-    .tag-group::-webkit-scrollbar {
-        display: none;
-    }
+.tag-group {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    gap: 10px;
+    padding: 8px 0 12px;
+    width: 100%;
+    box-sizing: border-box;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+    scrollbar-color: #bbb #f5f5f5;
+}
 
-    /* タグボタン */
-    .tag-btn {
-        display: inline-flex;
-        align-items: center;
-        padding: 10px 18px;
-        border-radius: 8px;
-        text-decoration: none;
-        color: #333;
-        font-size: 0.85rem;
-        white-space: nowrap;
-        cursor: pointer;
-        background-color: #fff;
-        border: 1px solid #999;
-        flex-shrink: 0;
-    }
+.tag-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    padding: 10px 16px;
+    border-radius: 8px;
+    color: #333;
+    font-size: 14px;
+    white-space: nowrap;
+    cursor: pointer;
+    background: #fff;
+    border: 1px solid #999;
+}
 
-    .tag-btn:nth-child(even) {
-        background-color: #e0e0e0;
-        border: 1px solid #ccc;
-    }
+.tag-btn.active {
+    background: #333;
+    color: #fff;
+    border-color: #333;
+    font-weight: 600;
+}
 
-    /* 選択中のタグ */
-    .tag-btn.active,
-    .tag-btn.active:nth-child(even) {
-        background: #333;
-        color: #fff;
-        border: 1px solid #333;
-    }
+.tag-btn:focus-visible,
+.search-submit:focus-visible {
+    outline: 3px solid #888;
+    outline-offset: 3px;
+}
 
-    .back-arrow {
-        cursor: pointer;
-        flex-shrink: 0;
-    }
+.scroll-hint {
+    margin: 0;
+    color: #777;
+    font-size: 12px;
+    text-align: right;
+}
+
+.search-submit {
+    display: block;
+    width: 100%;
+    margin-top: 30px;
+    padding: 14px;
+    border: none;
+    border-radius: 8px;
+    background: #333;
+    color: #fff;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.search-submit:hover {
+    background: #555;
+}
 </style>
 {% endblock %}
 
 {% block content %}
+<div class="app-container">
 
-<form action="{% url 'closet:search_results' %}" method="GET">
+    <h1 class="search-title">商品検索</h1>
 
-    <!-- 検索フォーム -->
-    <div class="search-box-container">
-       
+    <form action="{% url 'closet:search_results' %}"
+          method="get" id="search-form">
 
-        <input
-            type="text"
-            name="tag"
-            class="search-input"
-            id="search-input"
-            placeholder="キーワード、ハッシュタグ">
-    </div>
+        <div class="search-box-container">
+            <input
+                type="text"
+                name="tag"
+                class="search-input"
+                id="search-input"
+                placeholder="キーワード、ハッシュタグ"
+                aria-label="検索キーワード"
+                autocomplete="off">
+        </div>
 
-    <!-- カテゴリ -->
-    <div class="category-box">
-        <select name="category" class="category-select">
-            <option value="">カテゴリ</option>
-            <option value="tops">トップス</option>
-            <option value="bottoms">ボトムス</option>
-            <option value="outer">アウター</option>
-        </select>
-    </div>
+        <div class="category-box">
+            <select name="category"
+                    class="category-select"
+                    aria-label="カテゴリー">
+                <option value="">カテゴリ（すべて）</option>
+                <option value="tops">トップス</option>
+                <option value="bottoms">ボトムス</option>
+                <option value="outer">アウター</option>
+            </select>
+        </div>
 
-    <button type="submit" style="display:none;"></button>
+        <section class="search-section">
+            <h2 class="section-title">トレンドワード</h2>
 
-</form>
+            <div class="tag-group">
+                {% for tag in trending_tags %}
+                <button type="button"
+                        class="tag-btn"
+                        data-tag="{{ tag }}"
+                        aria-pressed="false">
+                    #{{ tag }}
+                </button>
+                {% endfor %}
+            </div>
 
-<!-- トレンドワード -->
-<div class="search-section">
-    <p class="section-title">トレンドワード</p>
+        </section>
 
-    <div class="tag-group">
-        {% for tag in trending_tags %}
-        <button
-            type="button"
-            class="tag-btn"
-            data-tag="{{ tag }}">
-            #{{ tag }}
+        <section class="search-section">
+            <h2 class="section-title">体型・好みで探す</h2>
+
+            <div class="tag-group">
+                {% for tag in category_tags %}
+                <button type="button"
+                        class="tag-btn"
+                        data-tag="{{ tag }}"
+                        aria-pressed="false">
+                    #{{ tag }}
+                </button>
+                {% endfor %}
+            </div>
+
+
+        </section>
+
+        <button type="submit" class="search-submit">
+            検索する
         </button>
-        {% endfor %}
-    </div>
+
+    </form>
 </div>
-
-<!-- 体型・好み -->
-<div class="search-section">
-    <p class="section-title">体型・好みで探す</p>
-
-    <div class="tag-group">
-        {% for tag in category_tags %}
-        <button
-            type="button"
-            class="tag-btn"
-            data-tag="{{ tag }}">
-            #{{ tag }}
-        </button>
-        {% endfor %}
-    </div>
-</div>
-
 {% endblock %}
 
 {% block extra_js %}
 <script>
 document.addEventListener("DOMContentLoaded", function() {
+    const form = document.getElementById("search-form");
     const searchInput = document.getElementById("search-input");
     const tagButtons = document.querySelectorAll(".tag-btn");
 
-    // 選択中のタグを管理
     const selectedTags = new Set();
+    let manualWords = [];
 
-    // タグのクリック処理
-    tagButtons.forEach(function(btn) {
-        btn.addEventListener("click", function() {
+    function uniqueWords(words) {
+        return [...new Set(words.filter(Boolean))];
+    }
+
+    function updateSearchInput() {
+        searchInput.value = uniqueWords([
+            ...selectedTags,
+            ...manualWords
+        ]).join(" ");
+    }
+
+    tagButtons.forEach(function(button) {
+        button.addEventListener("click", function() {
             const tag = this.dataset.tag;
 
             if (selectedTags.has(tag)) {
-                // 選択済みなら解除
                 selectedTags.delete(tag);
                 this.classList.remove("active");
+                this.setAttribute("aria-pressed", "false");
             } else {
-                // 未選択なら追加
                 selectedTags.add(tag);
                 this.classList.add("active");
+                this.setAttribute("aria-pressed", "true");
             }
 
-            // 選択中のタグと手入力のキーワードを検索欄に反映
             updateSearchInput();
         });
     });
 
-    function updateSearchInput() {
-        const manualWords = searchInput.dataset.manualWords || "";
-
-        const words = manualWords
-            .trim()
-            .split(/\s+/)
-            .filter(function(word) {
-                return word && !selectedTags.has(word);
-            });
-
-        searchInput.value = [
-            ...selectedTags,
-            ...words
-        ].join(" ");
-    }
-
-    // 手入力したキーワードも保持
     searchInput.addEventListener("input", function() {
-        const currentWords = this.value.trim().split(/\s+/);
+        const words = this.value.trim().split(/\s+/).filter(Boolean);
 
-        selectedTags.forEach(function(tag) {
-            const button = Array.from(tagButtons).find(function(btn) {
-                return btn.dataset.tag === tag;
-            });
-
-            if (button && !currentWords.includes(tag)) {
-                selectedTags.delete(tag);
-                button.classList.remove("active");
-            }
-        });
-
-        searchInput.dataset.manualWords = currentWords
-            .filter(function(word) {
-                return word && !selectedTags.has(word);
+        manualWords = uniqueWords(
+            words.filter(function(word) {
+                return !selectedTags.has(word);
             })
-            .join(" ");
+        );
     });
 
-    // Enterキーで検索
-    searchInput.addEventListener("keydown", function(e) {
-        if (e.key === "Enter") {
-            e.preventDefault();
-            this.form.requestSubmit();
+    searchInput.addEventListener("keydown", function(event) {
+        if (event.key === "Enter") {
+            event.preventDefault();
+            form.requestSubmit();
         }
     });
 
-    // マウスドラッグでタグ一覧を横スクロール
-    const sliders = document.querySelectorAll(".tag-group");
-
-    sliders.forEach(function(slider) {
-        let isDown = false;
-        let startX;
-        let scrollLeft;
-
-        slider.addEventListener("mousedown", function(e) {
-            isDown = true;
-            startX = e.pageX - slider.getBoundingClientRect().left;
-            scrollLeft = slider.scrollLeft;
-        });
-
-        slider.addEventListener("mouseleave", function() {
-            isDown = false;
-        });
-
-        slider.addEventListener("mouseup", function() {
-            isDown = false;
-        });
-
-        slider.addEventListener("mousemove", function(e) {
-            if (!isDown) return;
-            if (e.buttons !== 1) {
-                isDown = false;
-                return;
-            }
-
-            e.preventDefault();
-            const x = e.pageX - slider.getBoundingClientRect().left;
-            slider.scrollLeft = scrollLeft - (x - startX) * 2;
-        });
+    form.addEventListener("submit", function() {
+        updateSearchInput();
     });
 });
 </script>
