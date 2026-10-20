@@ -776,15 +776,33 @@ def item_edit(request, pk):
 
 @login_required
 @user_only
+def username_edit(request):
+    return render(request, 'username_edit.html')
+
+
+@login_required
+@user_only
 def update_username(request):
-    if request.method == 'POST':
-        new_name = request.POST.get('new_username')
-
-        request.user.username = new_name
-        request.user.save()
-
+    if request.method != 'POST':
         return redirect('closet:mypage')
 
+    new_name = request.POST.get('new_username', '').strip()
+
+    if not new_name:
+        messages.error(request, 'ユーザー名を入力してください。')
+        return redirect('closet:username_edit')
+
+    if User.objects.filter(username=new_name).exclude(
+        pk=request.user.pk
+    ).exists():
+        messages.error(request, 'このユーザー名はすでに使用されています。')
+        return redirect('closet:username_edit')
+
+    request.user.username = new_name
+    request.user.save()
+
+    messages.success(request, 'ユーザー名を変更しました。')
+    return redirect('closet:mypage')
 
 @staff_member_required
 @require_POST

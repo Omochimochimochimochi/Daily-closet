@@ -97,6 +97,7 @@ path(
     ),
     path('admin-items/', views.admin_item_list, name='admin_item_list'),
     path('mypage/', views.mypage, name='mypage'),
+    path('username/edit/',views.username_edit,name='username_edit'),
     path('email-change/', views.email_change, name='email_change'),
     path('password-change/', views.password_change, name='password_change'),
     path('item/<int:pk>/edit/', views.item_edit, name='item_edit'),

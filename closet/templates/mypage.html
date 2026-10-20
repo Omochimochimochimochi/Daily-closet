@@ -1,111 +1,214 @@
+
 <!DOCTYPE html>
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>マイページ - Daily Closet</title>
+
     <style>
         /* 基本レイアウト */
-        body { margin: 0; min-height: 100vh; display: flex; justify-content: center; background-color: #f8f9fa; font-family: sans-serif; }
-        .app-container { 
-            background: white; width: 375px; min-height: 100vh; 
-            display: flex; flex-direction: column; box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            background-color: #f8f9fa;
+            font-family: sans-serif;
         }
-        
+
+        .app-container {
+            background: white;
+            width: 375px;
+            max-width: 100%;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            box-sizing: border-box;
+            padding-bottom: 65px;
+        }
+
         /* コンテンツエリア */
-        .content-wrapper { flex: 1; padding: 20px; display: flex; flex-direction: column; align-items: center; }
-        
-        .header { width: 100%; padding: 20px 0; border-bottom: 1px solid #333; text-align: center; margin-bottom: 20px; }
-        h1 { font-size: 1.5rem; margin: 0; }
-        .user-display { margin-bottom: 30px; font-weight: bold; font-size: 1.1rem; }
-        .button-group { width: 100%; display: flex; flex-direction: column; gap: 15px; }
-        .btn { 
-            display: block; width: 100%; padding: 18px; background-color: #e0e0e0; 
-            color: #333; border: 2px solid #555; border-radius: 12px; 
-            text-align: center; text-decoration: none; font-weight: bold; box-sizing: border-box;
+        .content-wrapper {
+            flex: 1;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
+        .header {
+            width: 100%;
+            padding: 20px 0;
+            border-bottom: 1px solid #333;
+            text-align: center;
+            margin-bottom: 20px;
+        }
 
+        h1 {
+            font-size: 1.5rem;
+            margin: 0;
+        }
+
+        .user-display {
+            margin-bottom: 30px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            text-align: center;
+            overflow-wrap: anywhere;
+        }
+
+        /* 成功・エラーメッセージ */
+        .message {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 12px;
+            margin: 0 0 20px;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 14px;
+            overflow-wrap: anywhere;
+        }
+
+        .message.success {
+            color: #176b35;
+            background-color: #e8f5e9;
+        }
+
+        .message.error {
+            color: #b42318;
+            background-color: #fdecea;
+        }
+
+        .button-group {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 18px;
+            background-color: #e0e0e0;
+            color: #333;
+            border: 2px solid #555;
+            border-radius: 12px;
+            text-align: center;
+            text-decoration: none;
+            font-weight: bold;
+            box-sizing: border-box;
+        }
+
+        .btn:hover {
+            background-color: #d5d5d5;
+        }
+
+        /* 下部ナビゲーション */
         .bottom-nav {
-             position: fixed;
+            position: fixed;
             bottom: 0;
             width: 375px;
+            max-width: 100%;
             height: 65px;
             background-color: #d3d3d3;
             display: flex;
             justify-content: space-around;
             align-items: center;
-           border-top: 1px solid #bbb;
-        z-index: 1000;
-}      
-
-/* アイコンを囲む箱のサイズを固定し、中身を中央寄せにする */
-         .nav-item {
-             text-decoration: none;
-             width: 50px;      /* 枠の幅を固定 */
-               height: 50px;     /* 枠の高さを固定 */
-             display: flex;
-             justify-content: center;
-             align-items: center;
+            border-top: 1px solid #bbb;
+            box-sizing: border-box;
+            z-index: 1000;
         }
 
-/* アイコンのサイズを統一 */
-         .nav-icon {
-            font-size: 24px;  
-        display: block;
-        }   
-
-        /* モーダル */
-        .modal-overlay {
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background-color: rgba(0, 0, 0, 0.6); z-index: 1000; justify-content: center; align-items: center;
+        .nav-item {
+            text-decoration: none;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
-        .modal-content { background: white; width: 85%; max-width: 300px; padding: 25px; border-radius: 15px; text-align: center; }
-        .modal-input { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box; }
-        .btn-update-modal { width: 100%; padding: 12px; background-color: #333; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; }
+
+        .nav-icon {
+            font-size: 24px;
+            display: block;
+        }
+
+        @media (max-width: 375px) {
+            .app-container,
+            .bottom-nav {
+                width: 100%;
+            }
+        }
     </style>
 </head>
+
 <body>
-
     <div class="app-container">
-        <div class="content-wrapper">
-            <div class="header"><h1>マイページ</h1></div>
-            <div class="user-display">ユーザー：{{ request.user.username }} 様</div>
 
-<div class="button-group"> 
-    <a href="{% url 'closet:favorite_list' %}" class="btn">お気に入りアイテム一覧 💗</a> 
-    <a href="javascript:void(0)" class="btn" onclick="document.getElementById('usernameModal').style.display='flex'">ユーザー名変更 👤</a> 
-    <a href="{% url 'closet:email_change' %}" class="btn">メールアドレス変更 💌</a> 
-    <a href="{% url 'closet:password_change' %}" class="btn">パスワード変更 🔑</a>
-    <a href="{% url 'closet:logout' %}" class="btn">ログアウト 🚪</a>
-</div>
-      
+        <div class="content-wrapper">
+
+            <div class="header">
+                <h1>マイページ</h1>
+            </div>
+
+            <div class="user-display">
+                ユーザー：{{ request.user.username }} 様
+            </div>
+
+            {% if messages %}
+                {% for message in messages %}
+                    <p class="message {% if 'success' in message.tags %}success{% elif 'error' in message.tags %}error{% endif %}">
+                        {{ message }}
+                    </p>
+                {% endfor %}
+            {% endif %}
+
+            <div class="button-group">
+
+                <a href="{% url 'closet:favorite_list' %}" class="btn">
+                    お気に入りアイテム一覧 💗
+                </a>
+
+                <a href="{% url 'closet:username_edit' %}" class="btn">
+                    ユーザー名変更 👤
+                </a>
+
+                <a href="{% url 'closet:email_change' %}" class="btn">
+                    メールアドレス変更 💌
+                </a>
+
+                <a href="{% url 'closet:password_change' %}" class="btn">
+                    パスワード変更 🔑
+                </a>
+
+                <a href="{% url 'closet:logout' %}" class="btn">
+                    ログアウト 🚪
+                </a>
+
+            </div>
+        </div>
 
         <div class="bottom-nav">
-            <a href="{% url 'closet:top' %}" class="nav-item"><span class="nav-icon">🏠</span></a>
-            <a href="{% url 'closet:search_results' %}" class="nav-item"><span class="nav-icon">🔍</span></a>
-            <a href="{% url 'closet:consideration_list' %}" class="nav-item"><span class="nav-icon">🛒</span></a>
-            <a href="{% url 'closet:mypage' %}" class="nav-item"><span class="nav-icon">👤</span></a>
+            <a href="{% url 'closet:top' %}" class="nav-item">
+                <span class="nav-icon">🏠</span>
+            </a>
+
+            <a href="{% url 'closet:search_results' %}" class="nav-item">
+                <span class="nav-icon">🔍</span>
+            </a>
+
+            <a href="{% url 'closet:consideration_list' %}" class="nav-item">
+                <span class="nav-icon">🛒</span>
+            </a>
+
+            <a href="{% url 'closet:mypage' %}" class="nav-item">
+                <span class="nav-icon">👤</span>
+            </a>
         </div>
-    </div>
 
-<div id="usernameModal" class="modal-overlay">
-    <div class="modal-content">
-        <h2 style="font-size: 1.2rem; margin-bottom: 20px;">ユーザー名編集</h2>
-        
-        <form method="POST" action="{% url 'closet:update_username' %}">
-            {% csrf_token %}
-            
-            <input type="text" class="modal-input" value="{{ request.user.username }}" readonly style="margin-bottom: 10px;">
-            
-            <input type="text" name="new_username" class="modal-input" placeholder="新しいユーザー名を入力" required style="margin-bottom: 20px;">
-            
-            <button type="submit" class="btn-update-modal">更新する</button>
-        </form>
-        
-        <p onclick="document.getElementById('usernameModal').style.display='none'" style="cursor:pointer; color:gray; margin-top:15px;">キャンセル</p>
     </div>
-</div>
-
 </body>
 </html>
