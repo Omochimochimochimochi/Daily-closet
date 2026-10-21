@@ -7,9 +7,13 @@
 {% block extra_css %}
 <style>
 .app-container {
-    padding: 20px 15px 100px;
+    width: 375px !important;
+    max-width: 100% !important;
+    margin: 0 auto !important;
+    padding: 20px 15px 100px !important;
     min-height: 100vh;
     box-sizing: border-box;
+    background: #fff;
 }
 
 .search-title {
@@ -20,12 +24,23 @@
     text-align: center;
 }
 
+.search-box-container,
+.category-box,
+.search-section {
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+}
+
 .search-box-container {
     margin-bottom: 15px;
 }
 
 .search-input {
+    display: block;
     width: 100%;
+    max-width: 100%;
+    min-width: 0;
     padding: 12px;
     border: 1px solid #333;
     border-radius: 12px;
@@ -39,7 +54,9 @@
 }
 
 .category-select {
+    display: block;
     width: 100%;
+    max-width: 100%;
     padding: 12px;
     border: 1px solid #333;
     border-radius: 12px;
@@ -66,6 +83,7 @@
     gap: 10px;
     padding: 8px 0 12px;
     width: 100%;
+    max-width: 100%;
     box-sizing: border-box;
     -webkit-overflow-scrolling: touch;
     scrollbar-width: thin;
@@ -100,16 +118,11 @@
     outline-offset: 3px;
 }
 
-.scroll-hint {
-    margin: 0;
-    color: #777;
-    font-size: 12px;
-    text-align: right;
-}
-
 .search-submit {
     display: block;
     width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
     margin-top: 30px;
     padding: 14px;
     border: none;
@@ -123,6 +136,14 @@
 
 .search-submit:hover {
     background: #555;
+}
+
+@media (max-width: 375px) {
+    .app-container {
+        width: 100% !important;
+        max-width: 375px !important;
+        padding: 20px 15px 100px !important;
+    }
 }
 </style>
 {% endblock %}
@@ -162,15 +183,15 @@
 
             <div class="tag-group">
                 {% for tag in trending_tags %}
-                <button type="button"
-                        class="tag-btn"
-                        data-tag="{{ tag }}"
-                        aria-pressed="false">
+                <button
+                    type="button"
+                    class="tag-btn"
+                    data-tag="{{ tag }}"
+                    aria-pressed="false">
                     #{{ tag }}
                 </button>
                 {% endfor %}
             </div>
-
         </section>
 
         <section class="search-section">
@@ -178,16 +199,15 @@
 
             <div class="tag-group">
                 {% for tag in category_tags %}
-                <button type="button"
-                        class="tag-btn"
-                        data-tag="{{ tag }}"
-                        aria-pressed="false">
+                <button
+                    type="button"
+                    class="tag-btn"
+                    data-tag="{{ tag }}"
+                    aria-pressed="false">
                     #{{ tag }}
                 </button>
                 {% endfor %}
             </div>
-
-
         </section>
 
         <button type="submit" class="search-submit">
