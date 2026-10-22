@@ -16,9 +16,8 @@ urlpatterns = [
     path('', views.top, name='top'),
     
     # 検索関連：整理しました
-    path('search/', views.item_search, name='item_search'),              # 検索画面（フォーム）
+    path('search/', views.item_search, name='item_search'),
     path('search_results/', views.search_results, name='search_results'), # 検索結果一覧
-    path('search/tag/<str:tag_name>/', views.search_by_tag, name='search_by_tag'), # タグ用
 
     path('item/<int:pk>/', views.item_detail, name='item_detail'),
 

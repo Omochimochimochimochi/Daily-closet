@@ -134,6 +134,28 @@ def logout_view(request):
     logout(request)
     return redirect('closet:top')
 
+def item_search(request):
+    trending_tags = [
+        '骨格ウェーブ',
+        '骨格ストレート',
+        '骨格ナチュラル',
+        'イエベ',
+        'ブルベ',
+    ]
+
+    category_tags = [
+        'ウエストゴム',
+        '体型カバー',
+        '着回し',
+        'カジュアル',
+        'きれいめ',
+    ]
+
+    return render(request, 'closet/item_search.html', {
+        'trending_tags': trending_tags,
+        'category_tags': category_tags,
+    })
+
 
 # --- 詳細・検索・お気に入り ---
 def item_detail(request, pk):
@@ -153,36 +175,37 @@ def item_detail(request, pk):
     )
 
 
+
 def search_results(request):
     items = Item.objects.filter(is_published=True)
 
-    raw_tag = request.GET.get("tag", "").strip()
+    # チェックされたタグをすべて取得
+    tags = request.GET.getlist("tag")
+    tags = [tag.strip() for tag in tags if tag.strip()]
+
     category = request.GET.get("category", "").strip()
 
-    tags = []
+    # 選択されたタグに一致する商品を検索
+    for tag in tags:
+        items = items.filter(
+            Q(item_name__icontains=tag) |
+            Q(brand_name__icontains=tag) |
+            Q(description__icontains=tag) |
+            Q(details_text__icontains=tag) |
+            Q(kokkaku__icontains=tag) |
+            Q(personal_color__icontains=tag) |
+            Q(style__icontains=tag) |
+            Q(free_tags__icontains=tag)
+        )
 
-    if raw_tag:
-        tags = raw_tag.replace("　", " ").split()
-
-        for tag in tags:
-            items = items.filter(
-                Q(item_name__icontains=tag) |
-                Q(brand_name__icontains=tag) |
-                Q(description__icontains=tag) |
-                Q(details_text__icontains=tag) |
-                Q(kokkaku__icontains=tag) |
-                Q(personal_color__icontains=tag) |
-                Q(style__icontains=tag) |
-                Q(free_tags__icontains=tag)
-            )
-
+    # カテゴリーで絞り込み
     if category:
         items = items.filter(category=category)
 
     # 新しい順
     items = items.order_by("-id")
 
-    # 10件ずつ
+    # 10件ずつ表示
     paginator = Paginator(items, 10)
     page_number = request.GET.get("page")
     page_obj = paginator.get_page(page_number)
@@ -192,36 +215,6 @@ def search_results(request):
         "page_obj": page_obj,
         "tags": tags,
         "category": category,
-    })
-
-
-def item_search(request):
-    context = {
-        'trending_tags': ["セール", "アウター", "シャツ", "ワイドパンツ"],
-        'category_tags': ["洗濯可", "ブルベ", "ミニ丈", "2026SS"]
-    }
-
-    return render(request, 'closet/item_search.html', context)
-
-
-def search_by_tag(request, tag_name=None):
-    tag = tag_name or request.GET.get("tag", "")
-    clean_tag = tag.replace("#", "").strip()
-
-    items = Item.objects.filter(is_published=True)
-
-    if clean_tag:
-        items = items.filter(
-            Q(item_name__icontains=clean_tag) |
-            Q(free_tags__icontains=clean_tag)
-        )
-    else:
-        items = Item.objects.none()
-
-    return render(request, "closet/search_results.html", {
-        "items": items,
-        "tags": [clean_tag] if clean_tag else [],
-        "category": "",
     })
 
 
