@@ -44,7 +44,12 @@
                 {% endif %}
 
                 <div class="item-details">
-                    <div style="font-weight: bold; margin-bottom: 5px;">{{ c_item.item.item_name }}</div>
+                   <div style="font-weight: bold; margin-bottom: 5px;">
+    <a href="{% url 'closet:item_detail' c_item.item.pk %}"
+       style="text-decoration: none; color: #333;">
+        {{ c_item.item.item_name }}
+    </a>
+</div>
                     <div style="font-size: 0.85rem; color: #555;">
                         カラー: {{ c_item.color|default:"未選択" }} / サイズ: {{ c_item.size|default:"未選択" }}
                     </div>
