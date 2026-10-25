@@ -42,21 +42,25 @@
 </div>
 
 <style>
-    .purchase-btn {
-        background-color: #6c7b94fd;
-        padding: 15px;
-        width: 100%;
-        color: white;
-        /* border: none; を以下のように変更します */
-        border: 3px solid #555;  /* 3pxの太さで、濃いグレーの線 */
-        border-radius: 5px;
-        font-size: 16px;
-        cursor: pointer;
-    }
-    
-    /* ホバー（マウスを乗せた）時の動きも変えたい場合 */
-    .purchase-btn:hover {
-        border-color: #333; /* マウスを乗せると少し濃くなる */
-    }
+.purchase-btn {
+    display: block;
+    background-color: #6c7b94fd;
+    padding: 15px;
+    width: 70%;
+    max-width: 250px;
+    margin: 20px auto 0;
+    box-sizing: border-box;
+    color: white;
+    border: 3px solid #555;
+    border-radius: 15px;
+    font-size: 16px;
+    font-weight: bold;
+    text-align: center;
+    cursor: pointer;
+}
+
+.purchase-btn:hover {
+    border-color: #333;
+}
 </style>
 {% endblock %}
