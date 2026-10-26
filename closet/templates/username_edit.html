@@ -1,53 +1,53 @@
 
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ユーザー名変更 - Daily Closet</title>
+{% extends 'closet/base.html' %}
 
-    <style>
-        body {
-            margin: 0;
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            background: #f8f9fa;
-            font-family: sans-serif;
-        }
+{% block title %}ユーザー名変更 - Daily Closet{% endblock %}
 
-        .app-container {
-            background: white;
-            width: 375px;
-            max-width: 100%;
-            min-height: 100vh;
-            box-sizing: border-box;
-            padding: 20px;
-        }
+{% block extra_css %}
+<style>
+.username-container {
+    width: 100%;
+    max-width: 375px;
+    margin: 0 auto;
+    padding: 20px;
+    box-sizing: border-box;
+    background: white;
+    min-height: 60vh;
+}
 
-        h1 {
-            text-align: center;
-            font-size: 1.5rem;
-            margin: 20px 0 30px;
-        }
+.username-container h1 {
+    text-align: center;
+    font-size: 1.5rem;
+    margin: 20px 0 30px;
+}
 
-        label {
-            display: block;
-            font-weight: bold;
-            margin-bottom: 8px;
-        }
+/* 入力フォームを中央に配置 */
+.username-container form {
+    width: 100%;
+    max-width: 300px;
+    margin: 0 auto;
+}
 
-        input {
-            width: 100%;
-            padding: 12px;
-            box-sizing: border-box;
-            border: 1px solid #ccc;
-            border-radius: 10px;
-            font-size: 16px;
-        }
+.username-container label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 8px;
+    text-align: center;
+}
 
-        button,
-.back-link {
+.username-container input {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    font-size: 16px;
+}
+
+/* ボタン共通設定 */
+.username-container button,
+.username-container .back-link {
     display: block;
     width: 70%;
     max-width: 250px;
@@ -63,71 +63,73 @@
     cursor: pointer;
 }
 
-button {
+/* 変更するボタン */
+.username-container button {
     background-color: #d1e3ff;
     color: #1e40af;
 }
 
-button:hover {
+.username-container button:hover {
     background-color: #7ab3ff;
 }
 
-.back-link {
+/* マイページに戻るボタン */
+.username-container .back-link {
     background-color: #e0e0e0;
     color: #333;
     border-color: #ccc;
 }
 
-.back-link:hover {
+.username-container .back-link:hover {
     background-color: #d0d0d0;
 }
 
-.message {
+/* メッセージ */
+.username-container .message {
     text-align: center;
     margin-bottom: 20px;
     color: #b42318;
 }
-    </style>
-</head>
+</style>
+{% endblock %}
 
-<body>
-    <div class="app-container">
+{% block content %}
+<div class="username-container">
 
-        <h1>ユーザー名変更 👤</h1>
+    <h1>ユーザー名変更 👤</h1>
 
-        {% if messages %}
-            {% for message in messages %}
-                <p class="message">{{ message }}</p>
-            {% endfor %}
-        {% endif %}
+    {% if messages %}
+        {% for message in messages %}
+            <p class="message">{{ message }}</p>
+        {% endfor %}
+    {% endif %}
 
-        <form method="POST"
-              action="{% url 'closet:update_username' %}">
-            {% csrf_token %}
+    <form method="POST"
+          action="{% url 'closet:update_username' %}">
+        {% csrf_token %}
 
-            <label for="new_username">
-                新しいユーザー名
-            </label>
+        <label for="new_username">
+            新しいユーザー名
+        </label>
 
-            <input
-                type="text"
-                id="new_username"
-                name="new_username"
-                value="{{ request.user.username }}"
-                maxlength="150"
-                required
-            >
+        <input
+            type="text"
+            id="new_username"
+            name="new_username"
+            value="{{ request.user.username }}"
+            maxlength="150"
+            required
+        >
 
-            <button type="submit">
-                変更する
-            </button>
-        </form>
+        <button type="submit">
+            変更する
+        </button>
+    </form>
 
-        <a href="{% url 'closet:mypage' %}"
-           class="back-link">
-            マイページに戻る
-        </a>
+    <a href="{% url 'closet:mypage' %}"
+       class="back-link">
+        マイページに戻る
+    </a>
 
-    </div>
-</body>
-</html>
+</div>
+{% endblock %}

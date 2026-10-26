@@ -1,5 +1,8 @@
+
 {% extends 'closet/base.html' %}
 {% load humanize %}
+
+{% block title %}お気に入り - Daily Closet{% endblock %}
 
 {% block extra_css %}
 <style>
@@ -9,64 +12,98 @@
     max-width: 250px;
     margin: 20px auto 0;
     padding: 15px;
-    background-color: #eee;
+    background-color: #e0e0e0;
     color: #333;
-    border: none;
+    border: 1px solid #ccc;
     border-radius: 15px;
     box-sizing: border-box;
     text-align: center;
     text-decoration: none;
-    font-size: 13px;
+    font-size: 14px;
+    font-weight: bold;
     cursor: pointer;
+    transition: background-color 0.2s;
 }
 
 .favorite-purchase-btn:hover {
-    background-color: #e0e0e0;
+    background-color: #d0d0d0;
+}h2 {
+    text-align: center;
 }
 </style>
 {% endblock %}
 
 {% block content %}
 <div style="padding: 20px; max-width: 400px; margin: 0 auto;">
+
     <h2>お気に入り</h2>
     <p>お気に入り登録アイテム：{{ favorites|length }}点</p>
 
     <div style="display: flex; flex-direction: column; gap: 15px;">
+
         {% for fav in favorites %}
+
             <div style="display: flex; gap: 10px; border-bottom: 1px solid #eee; padding-bottom: 10px;">
-                <div style="width: 80px; height: 80px; background: #eee;">
-                    {% if fav.item.image %}<img src="{{ fav.item.image.url }}" style="width: 100%; height: 100%; object-fit: cover;">{% endif %}
+
+                <div style="width: 80px; height: 80px; background: #eee; flex-shrink: 0;">
+                    {% if fav.item.image %}
+                        <img src="{{ fav.item.image.url }}"
+                             alt="{{ fav.item.item_name }}"
+                             style="width: 100%; height: 100%; object-fit: cover;">
+                    {% endif %}
                 </div>
-                
-<div style="flex-grow: 1; font-size: 14px;">
-    <a href="{% url 'closet:item_detail' fav.item.pk %}" style="text-decoration: none; color: #333; font-weight: bold;">
-        {{ fav.item.item_name }}
-    </a>
-    
-    <div style="color: #666; font-size: 12px;">
-        カラー: 
-        {% if fav.item.color %}{{ fav.item.color }}{% else %}未設定{% endif %}
-        / サイズ: 
-        {% if fav.item.size %}{{ fav.item.size }}{% else %}未設定{% endif %}
-    </div>
-    
-    <div style="font-weight: bold;">¥{{ fav.item.price|intcomma }} (税込)</div>
-</div>
-            <form method="post" action="{% url 'closet:remove_favorite' fav.item.pk %}">
-            {% csrf_token %}
-            <button type="submit" 
-            style="background: none; border: none; cursor: pointer; font-size: 20px;"
-            onclick="return confirm('本当に削除してもよろしいですか？');">
-          🗑️
-    </button>
-</form>
+
+                <div style="flex-grow: 1; min-width: 0; font-size: 14px;">
+
+                    <a href="{% url 'closet:item_detail' fav.item.pk %}"
+                       style="text-decoration: none; color: #333; font-weight: bold;">
+                        {{ fav.item.item_name }}
+                    </a>
+
+                    <div style="color: #666; font-size: 12px;">
+                        カラー：
+                        {% if fav.item.color %}
+                            {{ fav.item.color }}
+                        {% else %}
+                            未設定
+                        {% endif %}
+                        / サイズ：
+                        {% if fav.item.size %}
+                            {{ fav.item.size }}
+                        {% else %}
+                            未設定
+                        {% endif %}
+                    </div>
+
+                    <div style="font-weight: bold;">
+                        ¥{{ fav.item.price|intcomma }} (税込)
+                    </div>
+
+                </div>
+
+                <form method="post"
+                      action="{% url 'closet:remove_favorite' fav.item.pk %}">
+                    {% csrf_token %}
+                    <button type="submit"
+                            style="background: none; border: none; cursor: pointer; font-size: 20px;"
+                            onclick="return confirm('本当に削除してもよろしいですか？');">
+                        🗑️
+                    </button>
+                </form>
+
             </div>
-            
-           <a href="{% url 'closet:favorite_to_purchase' fav.item.pk %}"
-   class="favorite-purchase-btn">
-    擬似購入へ進む
-</a>
+
+            <a href="{% url 'closet:favorite_to_purchase' fav.item.pk %}"
+               class="favorite-purchase-btn">
+                擬似購入へ進む
+            </a>
+
+        {% empty %}
+
+            <p>お気に入り登録された商品はありません。</p>
+
         {% endfor %}
+
     </div>
 </div>
 {% endblock %}
