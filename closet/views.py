@@ -114,13 +114,18 @@ def signup(request):
             )
 
         # ユーザーを作成
-        User.objects.create_user(
+        user = User.objects.create_user(
             username=username,
             email=email,
             password=password
         )
 
+        # 登録したユーザーを自動ログインさせる
+        login(request, user)
+
         return redirect('closet:signup_complete')
+
+
 
     return render(request, 'signup.html')
 
