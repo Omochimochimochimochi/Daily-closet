@@ -184,13 +184,18 @@ def item_detail(request, pk):
 def search_results(request):
     items = Item.objects.filter(is_published=True)
 
-    # チェックされたタグをすべて取得
+    # チェックされたタグを取得して、空白や + で分割
     tags = request.GET.getlist("tag")
-    tags = [tag.strip() for tag in tags if tag.strip()]
+    tags = [
+        word.strip()
+        for tag in tags
+        for word in tag.replace("+", " ").split()
+        if word.strip()
+    ]
 
     category = request.GET.get("category", "").strip()
 
-    # 選択されたタグに一致する商品を検索
+    # 選択されたタグを1つずつ検索（すべての条件に一致）
     for tag in tags:
         items = items.filter(
             Q(item_name__icontains=tag) |
@@ -221,7 +226,6 @@ def search_results(request):
         "tags": tags,
         "category": category,
     })
-
 
 @login_required
 @user_only
