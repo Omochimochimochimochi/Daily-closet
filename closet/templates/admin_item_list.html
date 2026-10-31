@@ -1,7 +1,9 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
+<head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>アイテム一覧(管理) - Daily Closet</title>
     <style>
     body{
@@ -47,23 +49,23 @@
 }
 
 .item-name {
-    font-size: 14px;
+    font-size: 16px;
     font-weight: bold;
     color: #333;
-    margin: 0 0 4px 0;
+    margin: 0 0 6px 0;
 }
 
 .item-spec {
-    font-size: 12px;
+    font-size: 14px;
     color: #666;
-    margin: 2px 0;
+    margin: 3px 0;
 }
 
 .item-price {
-    font-size: 13px;
+    font-size: 15px;
     font-weight: bold;
     color: #d9534f;
-    margin: 4px 0 0 0;
+    margin: 5px 0 0 0;
 }
 
         
@@ -131,11 +133,11 @@
 </div>
 {% endif %}
 
-    <div class="footer-nav">
-        <a href="{% url 'closet:top' %}" class="nav-item">🏡</a>
-        <a href="{% url 'closet:admin_item_list' %}" class="nav-item">👕</a>
-        <a href="{% url 'closet:admin_menu' %}" class="nav-item">📋</a>
-    </div>
+<div class="footer-nav">
+    <a href="{% url 'closet:admin_menu' %}" class="nav-item">🏠</a>
+    <a href="{% url 'closet:inventory_manage' %}" class="nav-item">👗</a>
+    <a href="{% url 'closet:admin_item_list' %}" class="nav-item">📋</a>
+</div>
 </div>
 
 </body>

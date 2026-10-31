@@ -219,12 +219,13 @@ body {
         </div>
     </div>
 
-    <div class="footer-nav">
-        <a href="{% url 'closet:top' %}" style="text-decoration:none">🏡</a>
-        <a href="{% url 'closet:inventory_manage' %}" style="text-decoration:none">👕</a>
-        <a href="{% url 'closet:admin_menu' %}" style="text-decoration:none">📋</a>
-    </div>
+<div class="footer-nav">
+    <a href="{% url 'closet:admin_menu' %}" class="nav-item">🏠</a>
+    <a href="{% url 'closet:inventory_manage' %}" class="nav-item">👗</a>
+    <a href="{% url 'closet:admin_item_list' %}" class="nav-item">📋</a>
 </div>
+
+
 
 <script>
     let currentItemId = null;
