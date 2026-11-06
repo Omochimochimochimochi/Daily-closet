@@ -15,23 +15,29 @@
             display: flex;
             justify-content: center;
         }
+.bottom-nav {
+    position: fixed !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    margin: 0 auto !important;
+    transform: none !important;
 
-        .bottom-nav {
-            position: fixed !important;
-            bottom: 0 !important;
-            left: 50% !important;
-            transform: translateX(-50%) !important;
-            width: 100% !important;
-            max-width: 375px !important;
-            box-sizing: border-box;
-            height: 65px !important;
-            background-color: #d3d3d3 !important;
-            z-index: 9999 !important;
-            border-top: 1px solid #bbb !important;
-            display: flex !important;
-            justify-content: space-around !important;
-            align-items: center !important;
-        }
+    width: 100% !important;
+    max-width: 375px !important;
+    box-sizing: border-box;
+
+    height: calc(65px + env(safe-area-inset-bottom, 0px)) !important;
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+
+    background-color: #d3d3d3 !important;
+    z-index: 9999 !important;
+    border-top: 1px solid #bbb !important;
+
+    display: flex !important;
+    justify-content: space-around !important;
+    align-items: center !important;
+}
 
         .app-container {
             width: 375px !important;

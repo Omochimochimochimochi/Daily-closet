@@ -157,16 +157,17 @@
           method="get" id="search-form">
 
         <div class="search-box-container">
-            <input
-                type="text"
-                name="tag"
-                class="search-input"
-                id="search-input"
-                placeholder="キーワード、ハッシュタグ"
-                aria-label="検索キーワード"
-                autocomplete="off">
-        </div>
+    <input
+        type="text"
+        name="tag"
+        class="search-input"
+        id="search-input"
+        placeholder="キーワード、ハッシュタグ"
+        aria-label="検索キーワード"
+        autocomplete="off">
 
+    <div id="selected-tag-inputs"></div>
+</div>
         <div class="category-box">
             <select name="category"
                     class="category-select"
@@ -222,21 +223,23 @@
 <script>
 document.addEventListener("DOMContentLoaded", function() {
     const form = document.getElementById("search-form");
-    const searchInput = document.getElementById("search-input");
     const tagButtons = document.querySelectorAll(".tag-btn");
+    const selectedTagInputs = document.getElementById("selected-tag-inputs");
 
     const selectedTags = new Set();
-    let manualWords = [];
 
-    function uniqueWords(words) {
-        return [...new Set(words.filter(Boolean))];
-    }
+    function updateSelectedTagInputs() {
+        selectedTagInputs.innerHTML = "";
 
-    function updateSearchInput() {
-        searchInput.value = uniqueWords([
-            ...selectedTags,
-            ...manualWords
-        ]).join(" ");
+        selectedTags.forEach(function(tag) {
+            const hiddenInput = document.createElement("input");
+
+            hiddenInput.type = "hidden";
+            hiddenInput.name = "tag";
+            hiddenInput.value = tag;
+
+            selectedTagInputs.appendChild(hiddenInput);
+        });
     }
 
     tagButtons.forEach(function(button) {
@@ -253,29 +256,8 @@ document.addEventListener("DOMContentLoaded", function() {
                 this.setAttribute("aria-pressed", "true");
             }
 
-            updateSearchInput();
+            updateSelectedTagInputs();
         });
-    });
-
-    searchInput.addEventListener("input", function() {
-        const words = this.value.trim().split(/\s+/).filter(Boolean);
-
-        manualWords = uniqueWords(
-            words.filter(function(word) {
-                return !selectedTags.has(word);
-            })
-        );
-    });
-
-    searchInput.addEventListener("keydown", function(event) {
-        if (event.key === "Enter") {
-            event.preventDefault();
-            form.requestSubmit();
-        }
-    });
-
-    form.addEventListener("submit", function() {
-        updateSearchInput();
     });
 });
 </script>
