@@ -121,6 +121,18 @@
         box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     }
 
+    .back-link {
+    display: block;
+    margin-top: 5px;
+    color: #4a90e2;
+    font-size: 14px;
+    text-decoration: none;
+}
+
+.back-link:hover {
+    text-decoration: underline;
+}
+
     @media (max-width: 400px) {
         .login-box {
             width: calc(100% - 24px);
@@ -188,9 +200,15 @@
             </label>
         </div>
 
-        <button type="submit" class="btn-login">
+                <button type="submit" class="btn-login">
             管理者ログイン
         </button>
+
+    </form>
+
+    <a href="{% url 'closet:login' %}" class="back-link">
+        ログイン画面へ戻る
+    </a>
 
     </form>
 

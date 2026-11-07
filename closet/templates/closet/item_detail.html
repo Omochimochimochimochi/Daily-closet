@@ -1,3 +1,4 @@
+
 {% extends 'closet/base.html' %}
 {% load static %}
 {% load humanize %}
@@ -304,35 +305,26 @@ document.addEventListener("DOMContentLoaded", () => {
     let scrollPosition = 0;
 
     function openModal(modal) {
-
-        // 現在のスクロール位置を保存
         scrollPosition = window.scrollY;
 
-        // 背景スクロールを禁止
         document.body.classList.add("modal-open");
         document.body.style.top = `-${scrollPosition}px`;
 
-        // モーダルを表示
         modal.style.display = "block";
     }
 
 
     function closeModal(modal) {
-
-        // モーダルを閉じる
         modal.style.display = "none";
 
-        // 背景スクロール禁止を解除
         document.body.classList.remove("modal-open");
         document.body.style.top = "";
 
-        // 元のスクロール位置に戻す
         window.scrollTo(0, scrollPosition);
     }
 
 
     function setupModal(triggerId, modalId, closeId) {
-
         const trigger = document.getElementById(triggerId);
         const modal = document.getElementById(modalId);
         const close = document.getElementById(closeId);
@@ -369,7 +361,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const heartBtn = document.getElementById("heart-btn");
 
     if (heartBtn) {
-
         heartBtn.addEventListener("click", function () {
 
             const csrfToken =
@@ -391,7 +382,6 @@ document.addEventListener("DOMContentLoaded", () => {
             })
 
             .then(data => {
-
                 if (data.is_favorite) {
                     this.classList.add("is-active");
                     this.querySelector("i").className = "fa-solid fa-heart";
@@ -399,7 +389,6 @@ document.addEventListener("DOMContentLoaded", () => {
                     this.classList.remove("is-active");
                     this.querySelector("i").className = "fa-regular fa-heart";
                 }
-
             })
 
             .catch(error => {
@@ -407,9 +396,15 @@ document.addEventListener("DOMContentLoaded", () => {
             });
 
         });
-
     }
 
 });
 </script>
+{% endblock %}
+
+
+{% block bottom_nav %}
+    {% if not user.is_staff %}
+        {{ block.super }}
+    {% endif %}
 {% endblock %}
