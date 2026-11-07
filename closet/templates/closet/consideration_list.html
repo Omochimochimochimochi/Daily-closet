@@ -1,20 +1,115 @@
+
 {% extends 'closet/base.html' %}
 {% load static %}
 {% load humanize %}
 
 {% block extra_css %}
 <style>
-    /* （スタイルは今のままでOKです） */
-    .item-img { width: 120px; height: 120px; object-fit: cover; border-radius: 5px; flex-shrink: 0; }
-    .item-card { display: flex; align-items: flex-start; padding: 10px 0; }
-    .item-details { margin-left: 15px; flex-grow: 1; }
-    .buy-button { display: block; padding: 10px; background: #888; color: white; text-align: center; border-radius: 5px; text-decoration: none; font-size: 0.9rem; font-weight: bold; }
+    .item-img {
+        width: 120px;
+        height: 120px;
+        object-fit: cover;
+        border-radius: 5px;
+        flex-shrink: 0;
+    }
+
+    .item-card {
+        display: flex;
+        align-items: flex-start;
+        padding: 10px 0;
+    }
+
+    .item-details {
+        margin-left: 15px;
+        flex-grow: 1;
+        min-width: 0;
+    }
+
+    .buy-button {
+        display: block;
+        padding: 10px;
+        background: #888;
+        color: white;
+        text-align: center;
+        border-radius: 5px;
+        text-decoration: none;
+        font-size: 0.9rem;
+        font-weight: bold;
+    }
+
+    /* 削除確認モーダル */
+    .delete-modal {
+        display: none;
+        position: fixed;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 10000;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+        box-sizing: border-box;
+    }
+
+    .delete-modal-content {
+        width: 100%;
+        max-width: 320px;
+        background: #fff;
+        border-radius: 12px;
+        padding: 25px 20px;
+        box-sizing: border-box;
+        text-align: center;
+    }
+
+    .delete-modal-content h3 {
+        margin: 0 0 15px;
+        font-size: 18px;
+        color: #333;
+    }
+
+    .delete-modal-content p {
+        margin-bottom: 25px;
+        font-size: 14px;
+        color: #555;
+    }
+
+    .delete-modal-buttons {
+        display: flex;
+        justify-content: center;
+        gap: 12px;
+    }
+
+    .delete-cancel-btn,
+    .delete-confirm-btn {
+        flex: 1;
+        padding: 12px 5px;
+        border: none;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+    .delete-cancel-btn {
+        background: #e0e0e0;
+        color: #333;
+    }
+
+    .delete-confirm-btn {
+        background: #dc5555;
+        color: white;
+    }
+
+    body.delete-modal-open {
+        overflow: hidden;
+    }
 </style>
 {% endblock %}
 
 {% block content %}
 <div style="padding: 20px; max-width: 600px; margin: 0 auto;">
-    
+
     {% if messages %}
         <div style="margin-bottom: 20px;">
             {% for message in messages %}
@@ -26,51 +121,133 @@
     {% endif %}
 
     <h2 style="text-align: center; font-size: 1.2rem;">検討リスト</h2>
-    
 
-    
     <p style="text-align: center; color: #666; font-size: 0.9rem; margin-bottom: 20px;">
         登録アイテム：{{ considerations|length }}点
     </p>
 
     {% for c_item in considerations %}
         <div style="border: 1px solid #eee; border-radius: 10px; padding: 15px; margin-bottom: 20px; background: #fff;">
-            
+
             <div class="item-card">
                 {% if c_item.item.image %}
-                    <img src="{{ c_item.item.image.url }}" class="item-img">
+                    <img src="{{ c_item.item.image.url }}" class="item-img" alt="{{ c_item.item.item_name }}">
                 {% else %}
                     <div class="item-img" style="background:#eee; display:flex; align-items:center; justify-content:center;">No Image</div>
                 {% endif %}
 
                 <div class="item-details">
-                   <div style="font-weight: bold; margin-bottom: 5px;">
-    <a href="{% url 'closet:item_detail' c_item.item.pk %}"
-       style="text-decoration: none; color: #333;">
-        {{ c_item.item.item_name }}
-    </a>
-</div>
+                    <div style="font-weight: bold; margin-bottom: 5px;">
+                        <a href="{% url 'closet:item_detail' c_item.item.pk %}"
+                           style="text-decoration: none; color: #333;">
+                            {{ c_item.item.item_name }}
+                        </a>
+                    </div>
+
                     <div style="font-size: 0.85rem; color: #555;">
                         カラー: {{ c_item.color|default:"未選択" }} / サイズ: {{ c_item.size|default:"未選択" }}
                     </div>
+
                     <div style="margin-top: 5px; font-weight: bold;">
-                        ¥{{ c_item.item.price|intcomma }} <span style="font-size: 0.8rem; font-weight: normal;">(税込)</span>
+                        ¥{{ c_item.item.price|intcomma }}
+                        <span style="font-size: 0.8rem; font-weight: normal;">(税込)</span>
                     </div>
                 </div>
 
-                <form action="{% url 'closet:remove_from_consideration' c_item.item.id %}" method="POST" style="margin-left: 10px;">
+                <form action="{% url 'closet:remove_from_consideration' c_item.item.id %}"
+                      method="POST"
+                      class="delete-form"
+                      style="margin-left: 10px;">
                     {% csrf_token %}
-                    <button type="submit" style="background:none; border:none; cursor:pointer; font-size: 1.2rem; color: #ccc;">🗑️</button>
+                    <button type="button"
+                            class="open-delete-modal"
+                            style="background:none; border:none; cursor:pointer; font-size: 1.2rem; color: #ccc;">
+                        🗑️
+                    </button>
                 </form>
             </div>
 
-
             <div style="display: flex; justify-content: flex-end;">
-                <a href="{% url 'closet:purchase_list' %}"class="buy-button" style="width: 150px;">擬似購入へ進む</a>
+                <a href="{% url 'closet:purchase_list' %}"
+                   class="buy-button"
+                   style="width: 150px;">
+                    擬似購入へ進む
+                </a>
             </div>
         </div>
+
     {% empty %}
-        <p style="text-align:center; color:#999; margin-top:50px;">アイテムはありません。</p>
+        <p style="text-align:center; color:#999; margin-top:50px;">
+            アイテムはありません。
+        </p>
     {% endfor %}
+
+</div>
+
+<!-- 削除確認モーダル -->
+<div id="delete-modal" class="delete-modal">
+    <div class="delete-modal-content">
+        <h3>検討リストから削除</h3>
+        <p>このアイテムを削除してもよろしいですか？</p>
+
+        <div class="delete-modal-buttons">
+            <button type="button" id="cancel-delete"
+                    class="delete-cancel-btn">
+                キャンセル
+            </button>
+
+            <button type="button" id="confirm-delete"
+                    class="delete-confirm-btn">
+                削除する
+            </button>
+        </div>
     </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const modal = document.getElementById('delete-modal');
+    const cancelButton = document.getElementById('cancel-delete');
+    const confirmButton = document.getElementById('confirm-delete');
+
+    let targetForm = null;
+
+    // 削除ボタンを押したとき
+    document.querySelectorAll('.open-delete-modal').forEach(function (button) {
+        button.addEventListener('click', function () {
+            targetForm = this.closest('form');
+
+            modal.style.display = 'flex';
+            document.body.classList.add('delete-modal-open');
+        });
+    });
+
+    // モーダルを閉じる
+    function closeModal() {
+        modal.style.display = 'none';
+        document.body.classList.remove('delete-modal-open');
+        targetForm = null;
+    }
+
+    // キャンセル
+    cancelButton.addEventListener('click', function () {
+        closeModal();
+    });
+
+    // 削除を確定
+    confirmButton.addEventListener('click', function () {
+        if (targetForm) {
+            targetForm.submit();
+        }
+    });
+
+    // モーダルの外側を押して閉じる
+    modal.addEventListener('click', function (event) {
+        if (event.target === modal) {
+            closeModal();
+        }
+    });
+});
+</script>
+
 {% endblock %}

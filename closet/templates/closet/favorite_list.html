@@ -1,4 +1,3 @@
-
 {% extends 'closet/base.html' %}
 {% load humanize %}
 
@@ -27,8 +26,74 @@
 
 .favorite-purchase-btn:hover {
     background-color: #d0d0d0;
-}h2 {
+}
+
+h2 {
     text-align: center;
+}
+
+/* 削除確認モーダル */
+.delete-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 10000;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.delete-modal-content {
+    background: white;
+    width: 100%;
+    max-width: 320px;
+    padding: 25px 20px;
+    border-radius: 12px;
+    box-sizing: border-box;
+    text-align: center;
+}
+
+.delete-modal-content p {
+    color: #444;
+    margin: 15px 0 25px;
+    font-size: 15px;
+}
+
+.delete-modal-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+}
+
+.delete-modal-buttons button {
+    flex: 1;
+    padding: 12px 8px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.cancel-delete-btn {
+    background: #eee;
+    color: #333;
+    border: 1px solid #ccc;
+}
+
+.confirm-delete-btn {
+    background: #dc5555;
+    color: white;
+    border: 1px solid #dc5555;
+}
+
+/* モーダル表示中の背景スクロール防止 */
+body.delete-modal-open {
+    overflow: hidden;
 }
 </style>
 {% endblock %}
@@ -82,11 +147,13 @@
                 </div>
 
                 <form method="post"
-                      action="{% url 'closet:remove_favorite' fav.item.pk %}">
+                      action="{% url 'closet:remove_favorite' fav.item.pk %}"
+                      class="delete-favorite-form">
                     {% csrf_token %}
-                    <button type="submit"
-                            style="background: none; border: none; cursor: pointer; font-size: 20px;"
-                            onclick="return confirm('本当に削除してもよろしいですか？');">
+
+                    <button type="button"
+                            class="open-delete-modal"
+                            style="background: none; border: none; cursor: pointer; font-size: 20px;">
                         🗑️
                     </button>
                 </form>
@@ -106,4 +173,90 @@
 
     </div>
 </div>
+
+<!-- 削除確認モーダル -->
+<div id="delete-modal" class="delete-modal">
+    <div class="delete-modal-content">
+
+        <h3>お気に入り削除</h3>
+
+        <p>この商品をお気に入りから削除しますか？</p>
+
+        <div class="delete-modal-buttons">
+
+            <button type="button"
+                    id="cancel-delete"
+                    class="cancel-delete-btn">
+                キャンセル
+            </button>
+
+            <button type="button"
+                    id="confirm-delete"
+                    class="confirm-delete-btn">
+                削除する
+            </button>
+
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const modal = document.getElementById("delete-modal");
+    const cancelButton = document.getElementById("cancel-delete");
+    const confirmButton = document.getElementById("confirm-delete");
+
+    let targetForm = null;
+
+    // ゴミ箱を押したとき
+    document.querySelectorAll(".open-delete-modal").forEach(button => {
+
+        button.addEventListener("click", function () {
+
+            targetForm = this.closest("form");
+
+            modal.style.display = "flex";
+            document.body.classList.add("delete-modal-open");
+
+        });
+
+    });
+
+    // キャンセル
+    cancelButton.addEventListener("click", function () {
+
+        modal.style.display = "none";
+        document.body.classList.remove("delete-modal-open");
+        targetForm = null;
+
+    });
+
+    // 削除実行
+    confirmButton.addEventListener("click", function () {
+
+        if (targetForm) {
+            targetForm.submit();
+        }
+
+    });
+
+    // モーダルの外側を押したとき
+    modal.addEventListener("click", function (event) {
+
+        if (event.target === modal) {
+
+            modal.style.display = "none";
+            document.body.classList.remove("delete-modal-open");
+            targetForm = null;
+
+        }
+
+    });
+
+});
+</script>
 {% endblock %}
