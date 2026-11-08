@@ -150,27 +150,35 @@
 
 {% block content %}
 
+
 <div class="header">
 
     <div class="search-tag-display">
 
-        {% if tags %}
+        {% if tags or category %}
+
             {% for tag in tags %}
                 <span>#{{ tag }}</span>
             {% endfor %}
+
+            {% if category %}
+                <span>カテゴリ：{{ category }}</span>
+            {% endif %}
+        <a href="?" style="color:#333; text-decoration:underline; font-size:12px;">
+              解除
+   
+            </a>
+
         {% else %}
+
             <span>すべてのアイテム</span>
-        {% endif %}
 
-        {% if category %}
-            <span>カテゴリ：{{ category }}</span>
         {% endif %}
-
-        <a href="?">×</a>
 
     </div>
 
 </div>
+
 
 
 <div class="item-grid">
