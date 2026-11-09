@@ -1,97 +1,84 @@
+
 <!DOCTYPE html>
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>管理メニュー - Daily Closet</title>
-</head>
-<body>
-    <div class="app-container">
-        <h2>Daily closet</h2>
-        <p>管理メニュー画面</p>
 
-        <div class="button-group">
-            <a href="{% url 'closet:admin_item_list' %}" class="btn-admin">アイテム一覧</a>
-            <a href="{% url 'closet:inventory_manage' %}" class="btn-admin">在庫管理</a>
-            <a href="{% url 'closet:logout' %}" class="btn-admin-logout">
-    ログアウト
-</a>
-        </div>
+    <style>
+        html, body {
+            margin: 0;
+            min-height: 100%;
+            background-color: #f8f9fa;
+        }
 
-        <div class="footer-nav">
-            <a href="{% url 'closet:top' %}" class="nav-item">🏠</a>
-            <a href="{% url 'closet:inventory_manage' %}" class="nav-item">👗</a>
-            <a href="{% url 'closet:admin_item_list' %}" class="nav-item">📋</a>
-        </div>
-    </div> <style>
+        .app-container {
+            width: 100%;
+            max-width: 375px;
+            min-height: 100vh;
+            margin: 0 auto;
+            position: relative;
+            padding-bottom: 80px;
+            box-sizing: border-box;
+            text-align: center;
+            font-family: sans-serif;
+            background-color: #f8f9fa;
+        }
 
-html, body {
-    margin: 0;
-    min-height: 100%;
-    background-color: #f8f9fa;
-}
+        .btn-admin {
+            display: block;
+            width: 80%;
+            margin: 10px auto;
+            padding: 15px;
+            background-color: #eee;
+            border: 1px solid #ccc;
+            border-radius: 15px;
+            box-sizing: border-box;
+            text-decoration: none;
+            color: #333;
+            font-family: sans-serif;
+            font-size: 14px;
+            font-weight: bold;
+            text-align: center;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
 
-.app-container {
-    width: 100%;
-    max-width: 375px;
-    min-height: 100vh;
-    margin: 0 auto;
-    position: relative;
-    padding-bottom: 80px;
-    box-sizing: border-box;
-    text-align: center;
-    font-family: sans-serif;
-    background-color: #f8f9fa;
-}
+        .btn-admin:hover {
+            background-color: #d0d0d0;
+        }
 
-.btn-admin {
-    display: block;
-    width: 80%;
-    margin: 10px auto;
-    padding: 15px;
-    background-color: #eee;
-    border: 1px solid #ccc;
-    border-radius: 15px;
-    box-sizing: border-box;
-    text-decoration: none;
-    color: #333;
-    font-family: sans-serif;
-    font-size: 14px;
-    font-weight: bold;
-    text-align: center;
-    cursor: pointer;
-    transition: background-color 0.2s;
-}
+        /* ログアウトボタン */
+        .btn-admin-logout {
+            display: block;
+            width: 80%;
+            margin: 30px auto;
+            padding: 15px;
+            background-color: #a0c4ff;
+            border: 1px solid #a0c4ff;
+            border-radius: 10px;
+            box-sizing: border-box;
+            color: white;
+            text-decoration: none;
+            font-family: sans-serif;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+        }
 
-.btn-admin:hover {
-    background-color: #d0d0d0;
-}
+        .btn-admin-logout:hover {
+            background-color: #8db5f0;
+        }
 
-         .btn-admin-logout {
-    display: block;
-    width: 80%;
-    margin: 30px auto;
-    padding: 15px;
-    background-color: #a0c4ff;
-    border: 1px solid #a0c4ff;
-    border-radius: 10px;
-    box-sizing: border-box;
-    color: white;
-    text-decoration: none;
-    font-family: sans-serif;
-    font-size: 14px;
-    font-weight: bold;
-    cursor: pointer;
-}
-
-    
+        /* フッターナビゲーション */
         .footer-nav {
             position: fixed;
             bottom: 0;
             left: 50%;
             transform: translateX(-50%);
             width: 100%;
-            max-width: 375px; 
+            max-width: 375px;
             display: flex;
             justify-content: space-around;
             padding: 15px 0;
@@ -104,6 +91,187 @@ html, body {
             text-decoration: none;
             font-size: 24px;
         }
- </style>
+
+        /* ログアウト確認モーダル */
+        .logout-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 10000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .logout-modal-content {
+            background: white;
+            width: 100%;
+            max-width: 320px;
+            padding: 25px 20px;
+            border-radius: 12px;
+            box-sizing: border-box;
+            text-align: center;
+        }
+
+        .logout-modal-content p {
+            color: #444;
+            margin: 15px 0 25px;
+            font-size: 15px;
+        }
+
+        .logout-modal-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .logout-modal-buttons button {
+            flex: 1;
+            padding: 12px 8px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .cancel-logout-btn {
+            background: #eee;
+            color: #333;
+            border: 1px solid #ccc;
+        }
+
+        .confirm-logout-btn {
+            background: #dc5555;
+            color: white;
+            border: 1px solid #dc5555;
+        }
+
+        /* モーダル表示中の背景スクロール防止 */
+        body.logout-modal-open {
+            overflow: hidden;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="app-container">
+
+        <h2>Daily closet</h2>
+        <p>管理メニュー画面</p>
+
+        <div class="button-group">
+
+            <a href="{% url 'closet:admin_item_list' %}" class="btn-admin">
+                アイテム一覧
+            </a>
+
+            <a href="{% url 'closet:inventory_manage' %}" class="btn-admin">
+                在庫管理
+            </a>
+
+            <a href="#"
+               class="btn-admin-logout logout-trigger"
+               data-logout-url="{% url 'closet:logout' %}">
+                ログアウト
+            </a>
+
+        </div>
+
+        <div class="footer-nav">
+            <a href="{% url 'closet:top' %}" class="nav-item">🏠</a>
+            <a href="{% url 'closet:inventory_manage' %}" class="nav-item">👗</a>
+            <a href="{% url 'closet:admin_item_list' %}" class="nav-item">📋</a>
+        </div>
+
+    </div>
+
+    <!-- ログアウト確認モーダル -->
+    <div id="logout-modal" class="logout-modal">
+        <div class="logout-modal-content">
+
+            <h3>ログアウト確認</h3>
+
+            <p>ログアウトしますか？</p>
+
+            <div class="logout-modal-buttons">
+
+                <button type="button"
+                        id="cancel-logout"
+                        class="cancel-logout-btn">
+                    キャンセル
+                </button>
+
+                <button type="button"
+                        id="confirm-logout"
+                        class="confirm-logout-btn">
+                    ログアウトする
+                </button>
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+    document.addEventListener("DOMContentLoaded", function () {
+
+        const modal = document.getElementById("logout-modal");
+        const openButton = document.querySelector(".logout-trigger");
+        const cancelButton = document.getElementById("cancel-logout");
+        const confirmButton = document.getElementById("confirm-logout");
+
+        if (!modal || !openButton || !cancelButton || !confirmButton) {
+            return;
+        }
+
+        const logoutUrl = openButton.dataset.logoutUrl;
+
+        // ログアウトボタンを押したとき
+        openButton.addEventListener("click", function (event) {
+            event.preventDefault();
+
+            modal.style.display = "flex";
+            document.body.classList.add("logout-modal-open");
+        });
+
+        // モーダルを閉じる
+        function closeModal() {
+            modal.style.display = "none";
+            document.body.classList.remove("logout-modal-open");
+        }
+
+        // キャンセル
+        cancelButton.addEventListener("click", function () {
+            closeModal();
+        });
+
+        // ログアウト実行
+        confirmButton.addEventListener("click", function () {
+            if (logoutUrl) {
+                window.location.href = logoutUrl;
+            }
+        });
+
+        // モーダルの外側を押したとき
+        modal.addEventListener("click", function (event) {
+            if (event.target === modal) {
+                closeModal();
+            }
+        });
+
+        // Escapeキーで閉じる
+        document.addEventListener("keydown", function (event) {
+            if (event.key === "Escape" && modal.style.display === "flex") {
+                closeModal();
+            }
+        });
+
+    });
+    </script>
+
 </body>
 </html>

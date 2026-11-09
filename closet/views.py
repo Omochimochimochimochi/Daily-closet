@@ -577,6 +577,7 @@ def admin_item_list(request):
 
 
 
+
 @login_required
 @user_only
 def password_change(request):
@@ -589,21 +590,21 @@ def password_change(request):
             return render(
                 request,
                 'password_change.html',
-                {'error': '現在のパスワードが正しくありません。'}
-            )
-
-        if new_password != new_password_confirm:
-            return render(
-                request,
-                'password_change.html',
-                {'error': '新しいパスワードが一致しません。'}
+                {'error': ['現在のパスワードが正しくありません。']}
             )
 
         if not new_password:
             return render(
                 request,
                 'password_change.html',
-                {'error': '新しいパスワードを入力してください。'}
+                {'error': ['新しいパスワードを入力してください。']}
+            )
+
+        if new_password != new_password_confirm:
+            return render(
+                request,
+                'password_change.html',
+                {'error': ['新しいパスワードが一致しません。']}
             )
 
         try:
@@ -612,7 +613,7 @@ def password_change(request):
             return render(
                 request,
                 'password_change.html',
-                {'error': ' '.join(e.messages)}
+                {'error': e.messages}
             )
 
         request.user.set_password(new_password)
@@ -626,6 +627,7 @@ def password_change(request):
         request,
         'password_change.html'
     )
+
 
 @login_required
 @user_only

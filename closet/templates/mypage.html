@@ -88,40 +88,40 @@
             gap: 15px;
         }
 
-.btn {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-    min-height: 52px;
-    padding: 10px 12px;
-    background-color: #e0e0e0;
-    color: #333;
-    border: 2px solid #555;
-    border-radius: 8px;
-    text-align: center;
-    text-decoration: none;
-    font-size: 16px;
-    font-weight: bold;
-    line-height: 1.4;
-    box-sizing: border-box;
-}
+        .btn {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            min-height: 52px;
+            padding: 10px 12px;
+            background-color: #e0e0e0;
+            color: #333;
+            border: 2px solid #555;
+            border-radius: 8px;
+            text-align: center;
+            text-decoration: none;
+            font-size: 16px;
+            font-weight: bold;
+            line-height: 1.4;
+            box-sizing: border-box;
+        }
 
         .btn:hover {
             background-color: #d5d5d5;
         }
 
-/* ログアウトボタン */
-.button-group a:last-child {
-    background-color: #f8d7da;
-    color: #842029;
-    border-color: #dc3545;
-}
+        /* ログアウトボタン */
+        .button-group .logout-trigger {
+            background-color: #f8d7da;
+            color: #842029;
+            border-color: #dc3545;
+        }
 
-.button-group a:last-child:hover {
-    background-color: #f1bfc4;
-    border-color: #c82333;
-}
+        .button-group .logout-trigger:hover {
+            background-color: #f1bfc4;
+            border-color: #c82333;
+        }
 
         /* 下部ナビゲーション */
         .bottom-nav {
@@ -158,6 +158,70 @@
             .bottom-nav {
                 width: 100%;
             }
+        }
+
+        /* ログアウト確認モーダル */
+        .logout-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 10000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .logout-modal-content {
+            background: white;
+            width: 100%;
+            max-width: 320px;
+            padding: 25px 20px;
+            border-radius: 12px;
+            box-sizing: border-box;
+            text-align: center;
+        }
+
+        .logout-modal-content p {
+            color: #444;
+            margin: 15px 0 25px;
+            font-size: 15px;
+        }
+
+        .logout-modal-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .logout-modal-buttons button {
+            flex: 1;
+            padding: 12px 8px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .cancel-logout-btn {
+            background: #eee;
+            color: #333;
+            border: 1px solid #ccc;
+        }
+
+        .confirm-logout-btn {
+            background: #dc5555;
+            color: white;
+            border: 1px solid #dc5555;
+        }
+
+        /* モーダル表示中の背景スクロール防止 */
+        body.logout-modal-open {
+            overflow: hidden;
         }
     </style>
 </head>
@@ -201,7 +265,9 @@
                     パスワード変更 🔑
                 </a>
 
-                <a href="{% url 'closet:logout' %}" class="btn">
+                <a href="#"
+                   class="btn logout-trigger"
+                   data-logout-url="{% url 'closet:logout' %}">
                     ログアウト 🚪
                 </a>
 
@@ -227,5 +293,89 @@
         </div>
 
     </div>
+
+    <!-- ログアウト確認モーダル -->
+    <div id="logout-modal" class="logout-modal">
+        <div class="logout-modal-content">
+
+            <h3>ログアウト確認</h3>
+
+            <p>ログアウトしますか？</p>
+
+            <div class="logout-modal-buttons">
+
+                <button type="button"
+                        id="cancel-logout"
+                        class="cancel-logout-btn">
+                    キャンセル
+                </button>
+
+                <button type="button"
+                        id="confirm-logout"
+                        class="confirm-logout-btn">
+                    ログアウトする
+                </button>
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+    document.addEventListener("DOMContentLoaded", function () {
+
+        const modal = document.getElementById("logout-modal");
+        const openButton = document.querySelector(".logout-trigger");
+        const cancelButton = document.getElementById("cancel-logout");
+        const confirmButton = document.getElementById("confirm-logout");
+
+        if (!modal || !openButton || !cancelButton || !confirmButton) {
+            return;
+        }
+
+        const logoutUrl = openButton.dataset.logoutUrl;
+
+        // ログアウトボタンを押したとき
+        openButton.addEventListener("click", function (event) {
+            event.preventDefault();
+
+            modal.style.display = "flex";
+            document.body.classList.add("logout-modal-open");
+        });
+
+        // モーダルを閉じる
+        function closeModal() {
+            modal.style.display = "none";
+            document.body.classList.remove("logout-modal-open");
+        }
+
+        // キャンセル
+        cancelButton.addEventListener("click", function () {
+            closeModal();
+        });
+
+        // ログアウト実行
+        confirmButton.addEventListener("click", function () {
+            if (logoutUrl) {
+                window.location.href = logoutUrl;
+            }
+        });
+
+        // モーダルの外側を押したとき
+        modal.addEventListener("click", function (event) {
+            if (event.target === modal) {
+                closeModal();
+            }
+        });
+
+        // Escapeキーで閉じる
+        document.addEventListener("keydown", function (event) {
+            if (event.key === "Escape" && modal.style.display === "flex") {
+                closeModal();
+            }
+        });
+
+    });
+    </script>
+
 </body>
 </html>

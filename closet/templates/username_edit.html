@@ -45,9 +45,8 @@
     font-size: 16px;
 }
 
-/* ボタン共通設定 */
-.username-container button,
-.username-container .back-link {
+/* 変更ボタン */
+.username-container button {
     display: block;
     width: 70%;
     max-width: 250px;
@@ -57,31 +56,15 @@
     border-radius: 15px;
     box-sizing: border-box;
     text-align: center;
-    text-decoration: none;
     font-size: 16px;
     font-weight: bold;
     cursor: pointer;
-}
-
-/* 変更するボタン */
-.username-container button {
     background-color: #d1e3ff;
     color: #1e40af;
 }
 
 .username-container button:hover {
     background-color: #7ab3ff;
-}
-
-/* マイページに戻るボタン */
-.username-container .back-link {
-    background-color: #e0e0e0;
-    color: #333;
-    border-color: #ccc;
-}
-
-.username-container .back-link:hover {
-    background-color: #d0d0d0;
 }
 
 /* メッセージ */
@@ -125,11 +108,6 @@
             変更する
         </button>
     </form>
-
-    <a href="{% url 'closet:mypage' %}"
-       class="back-link">
-        マイページに戻る
-    </a>
 
 </div>
 {% endblock %}
