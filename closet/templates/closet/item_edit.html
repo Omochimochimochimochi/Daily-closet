@@ -295,6 +295,25 @@
             background: #3f6fd9;
         }
 
+        /* キャンセルボタン */
+        .cancel-btn {
+            display: block;
+            width: 100%;
+            background-color: #f1f1f1;
+            color: #333;
+            border: 1px solid #ddd;
+            padding: 15px;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+            text-align: center;
+            text-decoration: none;
+            box-sizing: border-box;
+        }
+
+
         /* 管理者メニュー */
         .footer-nav {
             position: fixed;
@@ -454,6 +473,7 @@
         </div>
 
         <button type="submit" class="save-btn">保存</button>
+        <a href="{% url 'closet:inventory_manage' %}" class="cancel-btn">キャンセル</a>
     </form>
 </div>
 

@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -129,19 +130,27 @@ body {
     background: none;
 }
 
+/* 保存ボタン：青色 */
 .btn-save {
-    background: #bbb;
+    background: #2563eb;
+    color: #fff;
     border: none;
     padding: 8px 20px;
     border-radius: 5px;
     margin-right: 5px;
+    font-weight: bold;
+    cursor: pointer;
 }
 
+/* キャンセルボタン：薄いグレー */
 .btn-cancel {
-    background: #ddd;
-    border: none;
+    background: #f1f1f1;
+    color: #333;
+    border: 1px solid #ddd;
     padding: 8px 20px;
     border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
 }
 
 .footer-nav {
@@ -162,8 +171,6 @@ body {
     text-decoration: none;
     padding: 5px;
 }
-
-
     </style>
 </head>
 <body>
@@ -171,38 +178,42 @@ body {
 <div class="app-container">
     {% csrf_token %}
     <div class="header">在庫管理画面</div>
-    
+
     <a href="{% url 'closet:item_register' %}" class="btn-add">＋新規アイテム登録</a>
 
-<p style="font-size: 12px;">登録アイテム：{{ items.count }}点</p>
+    <p style="font-size: 12px;">登録アイテム：{{ items.count }}点</p>
 
-{% for item in items %}
-<div class="item-card">
-    <div class="item-img">
-        {% if item.image %}<img src="{{ item.image.url }}" width="80">{% else %}画像なし{% endif %}
-    </div>
-    <div class="item-info">
-        <p>アイテム名：{{ item.item_name }}</p>
-        <p>タグ：
-            {{ item.kokkaku|hashtags }}
-            {{ item.personal_color|hashtags }}
-            {{ item.style|hashtags }}
-            {{ item.free_tags|hashtags }}
-        </p>
-        <p>状態：
-        {% if item.is_published %}
-            公開中
-        {% else %}
-        非公開
-        {% endif %}
-    </p>
-        <div class="btn-group">
-            <button class="btn-status" onclick="openModal({{ item.id }}, '{{ item.is_published|yesno:"公開中,非公開" }}')">公開設定を変更</button>
-            <a href="{% url 'closet:item_edit' item.id %}" class="btn-edit">編集</a>
+    {% for item in items %}
+    <div class="item-card">
+        <div class="item-img">
+            {% if item.image %}
+                <img src="{{ item.image.url }}" width="80">
+            {% else %}
+                画像なし
+            {% endif %}
+        </div>
+        <div class="item-info">
+            <p>アイテム名：{{ item.item_name }}</p>
+            <p>タグ：
+                {{ item.kokkaku|hashtags }}
+                {{ item.personal_color|hashtags }}
+                {{ item.style|hashtags }}
+                {{ item.free_tags|hashtags }}
+            </p>
+            <p>状態：
+                {% if item.is_published %}
+                    公開中
+                {% else %}
+                    非公開
+                {% endif %}
+            </p>
+            <div class="btn-group">
+                <button class="btn-status" onclick="openModal({{ item.id }}, '{{ item.is_published|yesno:"公開中,非公開" }}')">公開設定を変更</button>
+                <a href="{% url 'closet:item_edit' item.id %}" class="btn-edit">編集</a>
+            </div>
         </div>
     </div>
-</div>
-{% endfor %}
+    {% endfor %}
 
     <div id="modal-overlay">
         <div class="modal-content">
@@ -219,13 +230,12 @@ body {
         </div>
     </div>
 
-<div class="footer-nav">
-    <a href="{% url 'closet:admin_menu' %}" class="nav-item">🏠</a>
-    <a href="{% url 'closet:inventory_manage' %}" class="nav-item">👗</a>
-    <a href="{% url 'closet:admin_item_list' %}" class="nav-item">📋</a>
+    <div class="footer-nav">
+        <a href="{% url 'closet:admin_menu' %}" class="nav-item">🏠</a>
+        <a href="{% url 'closet:inventory_manage' %}" class="nav-item">👗</a>
+        <a href="{% url 'closet:admin_item_list' %}" class="nav-item">📋</a>
+    </div>
 </div>
-
-
 
 <script>
     let currentItemId = null;
@@ -233,7 +243,7 @@ body {
     function openModal(itemId, currentStatus) {
         currentItemId = itemId;
         const select = document.getElementById('publish-status-select');
-        select.value = currentStatus; // 現在の状態をセレクトボックスに反映
+        select.value = currentStatus;
         document.getElementById('modal-overlay').style.display = 'block';
     }
 
@@ -245,30 +255,32 @@ body {
         return document.querySelector('[name=csrfmiddlewaretoken]').value;
     }
 
- function savePublishStatus() {
-    const select = document.getElementById('publish-status-select');
-    const isPublished = select.value === '公開中';
+    function savePublishStatus() {
+        const select = document.getElementById('publish-status-select');
+        const isPublished = select.value === '公開中';
 
-    fetch(`/DailyCloset/admin-inventory/${currentItemId}/publish/`, {
-        method: 'POST',
-        headers: {
-            'X-CSRFToken': getCsrfToken(),
-            'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: `is_published=${isPublished}`,
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.status === 'success') {
-            alert(data.message);
-            location.reload();
-        } else {
-            alert('更新に失敗しました');
-        }
-    })
-    .catch(() => alert('通信エラーが発生しました'));
+        fetch(`/DailyCloset/admin-inventory/${currentItemId}/publish/`, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': getCsrfToken(),
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: `is_published=${isPublished}`,
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                alert(data.message);
+                location.reload();
+            } else {
+                alert('更新に失敗しました');
+            }
+        })
+        .catch(() => alert('通信エラーが発生しました'));
 
-    closeModal();
-}
-
+        closeModal();
+    }
 </script>
+
+</body>
+</html>
