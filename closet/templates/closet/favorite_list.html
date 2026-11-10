@@ -1,381 +1,262 @@
+{% extends 'closet/base.html' %}
+{% load humanize %}
 
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>マイページ - Daily Closet</title>
+{% block title %}お気に入り - Daily Closet{% endblock %}
 
-    <style>
-        /* 基本レイアウト */
-        body {
-            margin: 0;
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            background-color: #f8f9fa;
-            font-family: sans-serif;
-        }
+{% block extra_css %}
+<style>
+.favorite-purchase-btn {
+    display: block;
+    width: 70%;
+    max-width: 250px;
+    margin: 20px auto 0;
+    padding: 15px;
+    background-color: #e0e0e0;
+    color: #333;
+    border: 1px solid #ccc;
+    border-radius: 15px;
+    box-sizing: border-box;
+    text-align: center;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
 
-        .app-container {
-            background: white;
-            width: 375px;
-            max-width: 100%;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-            box-sizing: border-box;
-            padding-bottom: 65px;
-        }
+.favorite-purchase-btn:hover {
+    background-color: #d0d0d0;
+}
 
-        /* コンテンツエリア */
-        .content-wrapper {
-            flex: 1;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
+h2 {
+    text-align: center;
+}
 
-        .header {
-            width: 100%;
-            padding: 20px 0;
-            border-bottom: 1px solid #333;
-            text-align: center;
-            margin-bottom: 20px;
-        }
+/* 削除確認モーダル */
+.delete-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 10000;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    box-sizing: border-box;
+}
 
-        h1 {
-            font-size: 1.5rem;
-            margin: 0;
-        }
+.delete-modal-content {
+    background: white;
+    width: 100%;
+    max-width: 320px;
+    padding: 25px 20px;
+    border-radius: 12px;
+    box-sizing: border-box;
+    text-align: center;
+}
 
-        .user-display {
-            margin-bottom: 30px;
-            font-weight: bold;
-            font-size: 1.1rem;
-            text-align: center;
-            overflow-wrap: anywhere;
-        }
+.delete-modal-content p {
+    color: #444;
+    margin: 15px 0 25px;
+    font-size: 15px;
+}
 
-        /* 成功・エラーメッセージ */
-        .message {
-            width: 100%;
-            box-sizing: border-box;
-            padding: 12px;
-            margin: 0 0 20px;
-            border-radius: 8px;
-            text-align: center;
-            font-size: 14px;
-            overflow-wrap: anywhere;
-        }
+.delete-modal-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+}
 
-        .message.success {
-            color: #176b35;
-            background-color: #e8f5e9;
-        }
+.delete-modal-buttons button {
+    flex: 1;
+    padding: 12px 8px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+}
 
-        .message.error {
-            color: #b42318;
-            background-color: #fdecea;
-        }
+.cancel-delete-btn {
+    background: #eee;
+    color: #333;
+    border: 1px solid #ccc;
+}
 
-        .button-group {
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
+.confirm-delete-btn {
+    background: #dc5555;
+    color: white;
+    border: 1px solid #dc5555;
+}
 
-        .btn {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            width: 100%;
-            min-height: 52px;
-            padding: 10px 12px;
-            background-color: #e0e0e0;
-            color: #333;
-            border: 2px solid #555;
-            border-radius: 8px;
-            text-align: center;
-            text-decoration: none;
-            font-size: 16px;
-            font-weight: bold;
-            line-height: 1.4;
-            box-sizing: border-box;
-        }
+/* モーダル表示中の背景スクロール防止 */
+body.delete-modal-open {
+    overflow: hidden;
+}
+</style>
+{% endblock %}
 
-        .btn:hover {
-            background-color: #d5d5d5;
-        }
+{% block content %}
+<div style="padding: 20px; max-width: 400px; margin: 0 auto;">
 
-        /* ログアウトボタン */
-        .button-group .logout-trigger {
-            background-color: #f8d7da;
-            color: #842029;
-            border-color: #dc3545;
-        }
+    <h2>お気に入り</h2>
+    <p>お気に入り登録アイテム：{{ favorites|length }}点</p>
 
-        .button-group .logout-trigger:hover {
-            background-color: #f1bfc4;
-            border-color: #c82333;
-        }
+    <div style="display: flex; flex-direction: column; gap: 15px;">
 
-        /* 下部ナビゲーション */
-        .bottom-nav {
-            position: fixed;
-            bottom: 0;
-            width: 375px;
-            max-width: 100%;
-            height: 65px;
-            background-color: #d3d3d3;
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            border-top: 1px solid #bbb;
-            box-sizing: border-box;
-            z-index: 1000;
-        }
+        {% for fav in favorites %}
 
-        .nav-item {
-            text-decoration: none;
-            width: 50px;
-            height: 50px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
+            <div style="display: flex; gap: 10px; border-bottom: 1px solid #eee; padding-bottom: 10px;">
 
-        .nav-icon {
-            font-size: 24px;
-            display: block;
-        }
+                <div style="width: 80px; height: 80px; background: #eee; flex-shrink: 0;">
+                    {% if fav.item.image %}
+                        <img src="{{ fav.item.image.url }}"
+                             alt="{{ fav.item.item_name }}"
+                             style="width: 100%; height: 100%; object-fit: cover;">
+                    {% endif %}
+                </div>
 
-        @media (max-width: 375px) {
-            .app-container,
-            .bottom-nav {
-                width: 100%;
-            }
-        }
+                <div style="flex-grow: 1; min-width: 0; font-size: 14px;">
 
-        /* ログアウト確認モーダル */
-        .logout-modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: 10000;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-            box-sizing: border-box;
-        }
+                    <a href="{% url 'closet:item_detail' fav.item.pk %}"
+                       style="text-decoration: none; color: #333; font-weight: bold;">
+                        {{ fav.item.item_name }}
+                    </a>
 
-        .logout-modal-content {
-            background: white;
-            width: 100%;
-            max-width: 320px;
-            padding: 25px 20px;
-            border-radius: 12px;
-            box-sizing: border-box;
-            text-align: center;
-        }
+                    <div style="color: #666; font-size: 12px;">
+                        カラー：
+                        {% if fav.item.color %}
+                            {{ fav.item.color }}
+                        {% else %}
+                            未設定
+                        {% endif %}
+                        / サイズ：
+                        {% if fav.item.size %}
+                            {{ fav.item.size }}
+                        {% else %}
+                            未設定
+                        {% endif %}
+                    </div>
 
-        .logout-modal-content p {
-            color: #444;
-            margin: 15px 0 25px;
-            font-size: 15px;
-        }
+                    <div style="font-weight: bold;">
+                        ¥{{ fav.item.price|intcomma }} (税込)
+                    </div>
 
-        .logout-modal-buttons {
-            display: flex;
-            justify-content: center;
-            gap: 12px;
-        }
+                </div>
 
-        .logout-modal-buttons button {
-            flex: 1;
-            padding: 12px 8px;
-            border-radius: 8px;
-            font-size: 14px;
-            font-weight: bold;
-            cursor: pointer;
-        }
+                <form method="post"
+                      action="{% url 'closet:remove_favorite' fav.item.pk %}"
+                      class="delete-favorite-form">
+                    {% csrf_token %}
 
-        .cancel-logout-btn {
-            background: #eee;
-            color: #333;
-            border: 1px solid #ccc;
-        }
-
-        .confirm-logout-btn {
-            background: #dc5555;
-            color: white;
-            border: 1px solid #dc5555;
-        }
-
-        /* モーダル表示中の背景スクロール防止 */
-        body.logout-modal-open {
-            overflow: hidden;
-        }
-    </style>
-</head>
-
-<body>
-    <div class="app-container">
-
-        <div class="content-wrapper">
-
-            <div class="header">
-                <h1>マイページ</h1>
-            </div>
-
-            <div class="user-display">
-                ユーザー：{{ request.user.username }} 様
-            </div>
-
-            {% if messages %}
-                {% for message in messages %}
-                    <p class="message {% if 'success' in message.tags %}success{% elif 'error' in message.tags %}error{% endif %}">
-                        {{ message }}
-                    </p>
-                {% endfor %}
-            {% endif %}
-
-            <div class="button-group">
-
-                <a href="{% url 'closet:favorite_list' %}" class="btn">
-                    お気に入りアイテム一覧 💗
-                </a>
-
-                <a href="{% url 'closet:username_edit' %}" class="btn">
-                    ユーザー名変更 👤
-                </a>
-
-                <a href="{% url 'closet:email_change' %}" class="btn">
-                    メールアドレス変更 💌
-                </a>
-
-                <a href="{% url 'closet:password_change' %}" class="btn">
-                    パスワード変更 🔑
-                </a>
-
-                <a href="#"
-                   class="btn logout-trigger"
-                   data-logout-url="{% url 'closet:logout' %}">
-                    ログアウト 🚪
-                </a>
+                    <button type="button"
+                            class="open-delete-modal"
+                            style="background: none; border: none; cursor: pointer; font-size: 20px;">
+                        🗑️
+                    </button>
+                </form>
 
             </div>
-        </div>
 
-        <div class="bottom-nav">
-            <a href="{% url 'closet:top' %}" class="nav-item">
-                <span class="nav-icon">🏠</span>
+            <a href="{% url 'closet:favorite_to_purchase' fav.item.pk %}"
+               class="favorite-purchase-btn">
+                擬似購入へ進む
             </a>
 
-            <a href="{% url 'closet:search_results' %}" class="nav-item">
-                <span class="nav-icon">🔍</span>
-            </a>
+        {% empty %}
 
-            <a href="{% url 'closet:consideration_list' %}" class="nav-item">
-                <span class="nav-icon">🛒</span>
-            </a>
+            <p>お気に入り登録された商品はありません。</p>
 
-            <a href="{% url 'closet:mypage' %}" class="nav-item">
-                <span class="nav-icon">👤</span>
-            </a>
-        </div>
+        {% endfor %}
 
     </div>
+</div>
 
-    <!-- ログアウト確認モーダル -->
-    <div id="logout-modal" class="logout-modal">
-        <div class="logout-modal-content">
+<!-- 削除確認モーダル -->
+<div id="delete-modal" class="delete-modal">
+    <div class="delete-modal-content">
 
-            <h3>ログアウト確認</h3>
+        <h3>お気に入り削除</h3>
 
-            <p>ログアウトしますか？</p>
+        <p>この商品をお気に入りから削除しますか？</p>
 
-            <div class="logout-modal-buttons">
+        <div class="delete-modal-buttons">
 
-                <button type="button"
-                        id="cancel-logout"
-                        class="cancel-logout-btn">
-                    キャンセル
-                </button>
+            <button type="button"
+                    id="cancel-delete"
+                    class="cancel-delete-btn">
+                キャンセル
+            </button>
 
-                <button type="button"
-                        id="confirm-logout"
-                        class="confirm-logout-btn">
-                    ログアウトする
-                </button>
+            <button type="button"
+                    id="confirm-delete"
+                    class="confirm-delete-btn">
+                削除する
+            </button>
 
-            </div>
         </div>
     </div>
+</div>
 
-    <script>
-    document.addEventListener("DOMContentLoaded", function () {
+{% endblock %}
 
-        const modal = document.getElementById("logout-modal");
-        const openButton = document.querySelector(".logout-trigger");
-        const cancelButton = document.getElementById("cancel-logout");
-        const confirmButton = document.getElementById("confirm-logout");
+{% block extra_js %}
+<script>
+document.addEventListener("DOMContentLoaded", function () {
 
-        if (!modal || !openButton || !cancelButton || !confirmButton) {
-            return;
-        }
+    const modal = document.getElementById("delete-modal");
+    const cancelButton = document.getElementById("cancel-delete");
+    const confirmButton = document.getElementById("confirm-delete");
 
-        const logoutUrl = openButton.dataset.logoutUrl;
+    let targetForm = null;
 
-        // ログアウトボタンを押したとき
-        openButton.addEventListener("click", function (event) {
-            event.preventDefault();
+    // ゴミ箱を押したとき
+    document.querySelectorAll(".open-delete-modal").forEach(button => {
+
+        button.addEventListener("click", function () {
+
+            targetForm = this.closest("form");
 
             modal.style.display = "flex";
-            document.body.classList.add("logout-modal-open");
-        });
+            document.body.classList.add("delete-modal-open");
 
-        // モーダルを閉じる
-        function closeModal() {
-            modal.style.display = "none";
-            document.body.classList.remove("logout-modal-open");
-        }
-
-        // キャンセル
-        cancelButton.addEventListener("click", function () {
-            closeModal();
-        });
-
-        // ログアウト実行
-        confirmButton.addEventListener("click", function () {
-            if (logoutUrl) {
-                window.location.href = logoutUrl;
-            }
-        });
-
-        // モーダルの外側を押したとき
-        modal.addEventListener("click", function (event) {
-            if (event.target === modal) {
-                closeModal();
-            }
-        });
-
-        // Escapeキーで閉じる
-        document.addEventListener("keydown", function (event) {
-            if (event.key === "Escape" && modal.style.display === "flex") {
-                closeModal();
-            }
         });
 
     });
-    </script>
 
-</body>
-</html>
+    // キャンセル
+    cancelButton.addEventListener("click", function () {
+
+        modal.style.display = "none";
+        document.body.classList.remove("delete-modal-open");
+        targetForm = null;
+
+    });
+
+    // 削除実行
+    confirmButton.addEventListener("click", function () {
+
+        if (targetForm) {
+            targetForm.submit();
+        }
+
+    });
+
+    // モーダルの外側を押したとき
+    modal.addEventListener("click", function (event) {
+
+        if (event.target === modal) {
+
+            modal.style.display = "none";
+            document.body.classList.remove("delete-modal-open");
+            targetForm = null;
+
+        }
+
+    });
+
+});
+</script>
+{% endblock %}
