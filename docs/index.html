@@ -1,10 +1,14 @@
+
+{% load static %}
 <!DOCTYPE html>
 <html lang="ja">
 
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Daily Closet | Portfolio</title>
-    <link rel="stylesheet" href="style.css">
+
+    <link rel="stylesheet" href="{% static 'portfolio/style.css' %}">
 </head>
 
 <body>
@@ -13,70 +17,94 @@
     <h1>Daily Closet</h1>
 </header>
 
-
 <main>
 
-<section>
-    <img src="images/daily_closet.png" alt="Daily Closet">
-</section>
+    <!-- メイン画像 -->
+    <section class="main-visual">
+        <img
+            src="{% static 'portfolio/images/daily_closet.png' %}"
+            alt="Daily Closet"
+        >
+    </section>
 
+    <!-- アプリ概要 -->
+    <section>
 
-<section>
+        <h2>アプリ概要</h2>
 
-    <h2>アプリ概要</h2>
+        <p>
+            Daily Closetは、アパレル販売の経験をもとに開発した
+            ファッションECアプリです。
+        </p>
 
-    <p>
-        Daily Closetは、アパレル販売の経験から感じた「自分に似合う服を探しにくい」「オンラインショッピングでは購入後のイメージ違いが起こりやすい」という課題を解決するために開発したECアプリです。
-    </p>
+        <p>
+            骨格タイプ・パーソナルカラー・機能性などの
+            ハッシュタグを組み合わせて、自分に合った服を検索できます。
+        </p>
 
-    <p>
-        ハッシュタグ検索を採用し、骨格タイプやパーソナルカラー、機能性など複数の条件を組み合わせて、自分に合ったアイテムを直感的に探すことができます。また、生地感や裏地、ポケットなどのディテール画像を掲載することで、オンラインでも安心して商品を選べる購買体験を目指しました。
-    </p>
+        <p>
+            商品の生地感や裏地、ポケットなどの画像も掲載し、
+            オンラインショッピングでの購入時のミスマッチ軽減を目指しました。
+        </p>
 
-</section>
+    </section>
 
-<section>
+    <!-- 特徴 -->
+    <section>
 
-    <h2>特徴</h2>
+        <h2>特徴</h2>
 
-    <ul>
-        <li>ハッシュタグを組み合わせたAND検索</li>
-        <li>骨格タイプ・パーソナルカラー・機能性による絞り込み検索</li>
-        <li>ディテール画像による購入時のミスマッチ軽減</li>
-        <li>商品管理・公開設定・ハッシュタグ管理ができる管理画面を実装</li>
-    </ul>
+        <ul>
+            <li>複数のハッシュタグによるAND検索</li>
+            <li>骨格タイプ・パーソナルカラーで商品検索</li>
+            <li>商品ディテール画像の掲載</li>
+            <li>商品登録・編集・公開設定ができる管理画面</li>
+        </ul>
 
-</section>
+    </section>
 
-<section>
+    <!-- 資料 -->
+    <section>
 
-    <h2>資料</h2>
+        <h2>資料</h2>
 
-    <div class="document-list">
+        <div class="document-list">
 
-        <a href="documents/planning.pdf">
-            📄 企画書
-        </a>
+            <a href="{% static 'portfolio/documents/planning.pdf' %}"
+               target="_blank">
+                📄 企画書
+            </a>
 
-        <a href="documents/ER図.png">
-            🗄 ER図
-        </a>
+            <a href="{% static 'portfolio/documents/ER図.png' %}"
+               target="_blank">
+                🗄 ER図
+            </a>
 
-        <a href="documents/画面遷移図.png">
-            🔀 画面遷移図
-        </a>
+            <a href="{% static 'portfolio/documents/画面遷移図.png' %}"
+               target="_blank">
+                🔀 画面遷移図
+            </a>
 
-        <a href="https://dailycloset.pythonanywhere.com/">
-            ▶ アプリを見る
-        </a>
+            <a href="{% static 'portfolio/documents/画面設計図.pdf' %}"
+               target="_blank">
+                ▤ 画面設計図
+            </a>
 
-    </div>
+        </div>
 
-</section>
+        <div class="app-button">
 
+            <a href="https://dailycloset.pythonanywhere.com/"
+               target="_blank"
+               rel="noopener noreferrer">
+                ▶ アプリを見る
+            </a>
+
+        </div>
+
+    </section>
 
 </main>
 
 </body>
-
 </html>

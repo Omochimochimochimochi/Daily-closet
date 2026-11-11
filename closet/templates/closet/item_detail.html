@@ -402,9 +402,20 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 {% endblock %}
 
-
 {% block bottom_nav %}
-    {% if not user.is_staff %}
+    {% if user.is_staff %}
+    <div class="bottom-nav">
+        <a href="{% url 'closet:admin_menu' %}" class="nav-item">
+            <span class="nav-icon">🏠</span>
+        </a>
+        <a href="{% url 'closet:inventory_manage' %}" class="nav-item">
+            <span class="nav-icon">👗</span>
+        </a>
+        <a href="{% url 'closet:admin_item_list' %}" class="nav-item">
+            <span class="nav-icon">📋</span>
+        </a>
+    </div>
+    {% else %}
         {{ block.super }}
     {% endif %}
 {% endblock %}

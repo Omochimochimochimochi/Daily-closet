@@ -1,4 +1,5 @@
 
+{% load static %}
 <!DOCTYPE html>
 <html lang="ja">
 
@@ -6,65 +7,93 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Daily Closet | Portfolio</title>
-    <link rel="stylesheet" href="style.css">
+
+    <link rel="stylesheet" href="{% static 'portfolio/style.css' %}">
 </head>
 
 <body>
 
+<header>
+    <h1>Daily Closet</h1>
+</header>
+
 <main>
 
+ 
+<!-- アプリ画面紹介 -->
+<section class="app-screens">
+
+    <h2>アプリ画面紹介</h2>
+
+    <div class="screen-gallery">
+
+        <div class="screen-item">
+            <img src="{% static 'portfolio/images/search_screen.png' %}"
+                 alt="商品検索画面">
+            <h3>商品検索</h3>
+            <p>ハッシュタグを組み合わせて、自分に合った商品を検索できます。</p>
+        </div>
+
+        <div class="screen-item">
+            <img src="{% static 'portfolio/images/item_list.png' %}"
+                 alt="商品一覧画面">
+            <h3>商品一覧</h3>
+            <p>検索条件に合った商品を一覧で確認できます。</p>
+        </div>
+
+        <div class="screen-item">
+            <img src="{% static 'portfolio/images/item_detail.png' %}"
+                 alt="商品詳細画面">
+            <h3>商品詳細</h3>
+            <p>商品情報やディテール画像を確認できます。</p>
+        </div>
+
+        <div class="screen-item">
+            <img src="{% static 'portfolio/images/favorite_list.png' %}"
+                 alt="お気に入り画面">
+            <h3>お気に入り</h3>
+            <p>気になる商品をお気に入りに登録できます。</p>
+        </div>
+
+    </div>
+
+</section>
+
+
+
+    <!-- 資料 -->
     <section>
-        <img src="images/daily_closet.png" alt="Daily Closet">
-    </section>
 
-    <section>
-        <h2>アプリ概要</h2>
-
-        <p>
-            Daily Closetは、アパレル販売の経験から感じた「自分に似合う服を探しにくい」「オンラインショッピングでは購入後のイメージ違いが起こりやすい」という課題を解決するために開発したECアプリです。
-        </p>
-
-        <p>
-            ハッシュタグ検索を採用し、骨格タイプやパーソナルカラー、機能性など複数の条件を組み合わせて、自分に合ったアイテムを直感的に探すことができます。また、生地感や裏地、ポケットなどのディテール画像を掲載することで、オンラインでも安心して商品を選べる購買体験を目指しました。
-        </p>
-    </section>
-
-    <section>
-        <h2>特徴</h2>
-
-        <ul>
-            <li>ハッシュタグを組み合わせたAND検索</li>
-            <li>骨格タイプ・パーソナルカラー・機能性による絞り込み検索</li>
-            <li>ディテール画像による購入時のミスマッチ軽減</li>
-            <li>商品管理・公開設定・ハッシュタグ管理ができる管理画面を実装</li>
-        </ul>
-    </section>
-
-    <section>
         <h2>資料</h2>
 
         <div class="document-list">
 
-            <a href="documents/planning.pdf">
+            <a href="{% static 'portfolio/documents/planning.pdf' %}"
+               target="_blank">
                 📄 企画書
             </a>
 
-            <a href="documents/ER図.png">
+            <a href="{% static 'portfolio/documents/ER図.png' %}"
+               target="_blank">
                 🗄 ER図
             </a>
 
-            <a href="documents/画面遷移図.png">
+            <a href="{% static 'portfolio/documents/画面遷移図.png' %}"
+               target="_blank">
                 🔀 画面遷移図
             </a>
 
-            <a href="documents/画面設計図.pdf">
-                🖥️ 画面設計図
+            <a href="{% static 'portfolio/documents/画面設計図.pdf' %}"
+               target="_blank">
+                ▤ 画面設計図
             </a>
 
         </div>
 
         <div class="app-button">
-            <a href="/DailyCloset/">
+            <a href="https://dailycloset.pythonanywhere.com/"
+               target="_blank"
+               rel="noopener noreferrer">
                 ▶ アプリを見る
             </a>
         </div>
