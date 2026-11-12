@@ -1,5 +1,12 @@
 
-/* ページ全体 */
+/* ==============================
+   ページ全体
+============================== */
+
+* {
+    box-sizing: border-box;
+}
+
 body {
     margin: 0;
     padding: 0;
@@ -10,7 +17,10 @@ body {
     line-height: 1.8;
 }
 
-/* ヘッダー */
+/* ==============================
+   ヘッダー
+============================== */
+
 header {
     text-align: center;
     padding: 10px 20px;
@@ -21,126 +31,120 @@ h1 {
     margin: 20px 0;
 }
 
-/* メインコンテンツ */
+/* ==============================
+   メインコンテンツ
+============================== */
+
 main {
     width: 900px;
-    max-width: calc(100% - 82px);
+    max-width: calc(100% - 40px);
     margin: 30px auto;
-    background: #ffffff;
-    padding: 40px;
+    padding: 32px;
+    background: #fff;
     border: 1px solid #ddd;
-    box-sizing: border-box;
 }
 
-/* 各セクション */
 section {
-    margin-bottom: 24px;
+    margin-bottom: 36px;
 }
 
-/* 見出し */
-/* ページ全体 */
-body {
-    margin: 0;
-    padding: 0;
-    font-family: "Yu Gothic", "Meiryo", sans-serif;
-    background: #f5f5f5;
-    color: #222;
-    font-size: 16px;
-    line-height: 1.8;
-}
+/* ==============================
+   見出し
+============================== */
 
-/* ヘッダー */
-header {
-    text-align: center;
-    padding: 10px 20px;
-}
-
-h1 {
-    font-size: 42px;
-    margin: 20px 0;
-}
-
-/* メインコンテンツ */
-main {
-    width: 900px;
-    max-width: calc(100% - 82px);
-    margin: 30px auto;
-    background: #ffffff;
-    padding: 40px;
-    border: 1px solid #ddd;
-    box-sizing: border-box;
-}
-
-/* 各セクション */
-section {
-    margin-bottom: 24px;
-}
-
-/* 見出し */
 h2 {
     border-left: 6px solid #4F81BD;
     padding-left: 10px;
-    margin-top: 20px;
-    margin-bottom: 16px;
+    margin-top: 24px;
+    margin-bottom: 20px;
     font-size: 24px;
     line-height: 1.5;
 }
 
-/* メイン画像 */
-img {
-    width: 390px;
-    max-width: 100%;
-    height: auto;
-    display: block;
-    margin: 0 auto 24px;
-    border: 1px solid #ccc;
-    box-sizing: border-box;
+h3 {
+    font-size: 18px;
+    margin: 12px 0 6px;
 }
 
-/* 本文 */
+/* ==============================
+   本文
+============================== */
+
 p {
     font-size: 16px;
     line-height: 1.9;
     margin: 12px 0 20px;
 }
 
-/* 特徴リスト */
-ul {
-    padding-left: 28px;
-    margin-top: 12px;
+/* ==============================
+   アプリ画面紹介
+============================== */
+
+.screen-gallery {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 24px;
+    margin-top: 20px;
 }
 
-li {
-    font-size: 16px;
-    line-height: 1.9;
+.screen-item {
+    padding: 16px;
+    background: #fafafa;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    text-align: center;
 }
 
-/* 資料ボタン */
+.screen-item img {
+    display: block;
+    width: 100%;
+    max-width: 260px;
+    max-height: 360px;
+    height: auto;
+    object-fit: contain;
+    margin: 0 auto 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+}
+
+.screen-item h3 {
+    margin: 10px 0;
+}
+
+.screen-item p {
+    margin: 8px 0 0;
+    font-size: 15px;
+    line-height: 1.8;
+}
+
+/* ==============================
+   資料ボタン
+============================== */
+
 .document-list {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 14px;
-    max-width: 500px;
+    gap: 12px;
+    max-width: 600px;
     margin: 20px auto;
 }
 
 .document-list a {
-    width: 100%;
-    min-height: 60px;
-    padding: 14px 10px;
     display: flex;
     align-items: center;
     justify-content: center;
-    text-align: center;
-    background: #ffffff;
+    width: 100%;
+    min-height: 64px;
+    padding: 14px 10px;
+    background: #fff;
     color: #333;
     border: 1px solid #ccc;
     border-radius: 8px;
     text-decoration: none;
-    font-weight: bold;
+    text-align: center;
     font-size: 16px;
+    font-weight: bold;
     line-height: 1.6;
-    box-sizing: border-box;
     transition: background 0.2s, transform 0.2s;
 }
 
@@ -149,28 +153,30 @@ li {
     transform: translateY(-2px);
 }
 
-/* アプリを見るボタン */
+/* ==============================
+   アプリを見るボタン
+============================== */
+
 .app-button {
     text-align: center;
-    margin-top: 20px;
+    margin-top: 24px;
 }
 
 .app-button a {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    min-width: 220px;
-    min-height: 58px;
+    min-width: 240px;
+    min-height: 64px;
     padding: 14px 24px;
     background: #28a745;
-    color: #ffffff;
+    color: #fff;
     border: 1px solid #28a745;
     border-radius: 8px;
     text-decoration: none;
-    font-weight: bold;
     font-size: 17px;
+    font-weight: bold;
     line-height: 1.6;
-    box-sizing: border-box;
     transition: background 0.2s, transform 0.2s;
 }
 
@@ -179,193 +185,10 @@ li {
     transform: translateY(-2px);
 }
 
-//* スマートフォン対応 */
-@media (max-width: 600px) {
+/* ==============================
+   スマートフォン対応
+============================== */
 
-    header {
-        padding: 8px 12px;
-    }
-
-    h1 {
-        font-size: 32px;
-        margin: 16px 0;
-    }
-
-    main {
-        width: auto;
-        max-width: none;
-        margin: 16px 12px;
-        padding: 24px 20px;
-    }
-
-    section {
-        margin-bottom: 30px;
-    }
-
-    img {
-        width: 100%;
-        max-width: 390px;
-        margin-bottom: 24px;
-    }
-
-    h2 {
-        font-size: 22px;
-        margin-top: 24px;
-        margin-bottom: 20px;
-    }
-
-    p {
-        font-size: 16px;
-        line-height: 2;
-        margin: 16px 0 26px;
-    }
-
-    li {
-        font-size: 16px;
-        line-height: 2;
-        margin-bottom: 8px;
-    }
-
-    ul {
-        padding-left: 24px;
-        margin-top: 16px;
-    }
-
-    .document-list {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 12px;
-        margin-top: 20px;
-    }
-
-    .document-list a {
-        min-height: 60px;
-        padding: 12px 6px;
-        font-size: 15px;
-    }
-
-    .app-button {
-        margin-top: 24px;
-    }
-
-    .app-button a {
-        min-width: 200px;
-        min-height: 56px;
-        padding: 12px 18px;
-        font-size: 16px;
-    
-}
-
-    /* 資料ボタン */
-    .document-list {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 10px;
-        margin-top: 16px;
-    }
-
-    .document-list a {
-        min-height: 58px;
-        padding: 12px 6px;
-        font-size: 15px;
-    }
-
-    /* アプリを見るボタン */
-    .app-button {
-        margin-top: 20px;
-    }
-
-    .app-button a {
-        min-width: 200px;
-        min-height: 56px;
-        padding: 12px 18px;
-        font-size: 16px;
-    }
-}
-
-h2 {
-    border-left: 6px solid #4F81BD;
-    padding-left: 10px;
-    margin-top: 20px;
-    margin-bottom: 16px;
-    font-size: 24px;
-    line-height: 1.5;
-}
-
-/* メイン画像 */
-img {
-    width: 390px;
-    max-width: 100%;
-    height: auto;
-    display: block;
-    margin: 0 auto 24px;
-    border: 1px solid #ccc;
-    box-sizing: border-box;
-}
-
-/* 本文 */
-p {
-    font-size: 16px;
-    line-height: 1.9;
-    margin: 12px 0 20px;
-}
-
-/* 特徴リスト */
-ul {
-    padding-left: 28px;
-    margin-top: 12px;
-}
-
-li {
-    font-size: 16px;
-    line-height: 1.9;
-}
-
-/* 資料ボタン */
-.document-list {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 14px;
-    max-width: 500px;
-    margin: 20px auto;
-}
-
-.document-list a {
-    width: 100%;
-    min-height: 60px;
-    padding: 14px 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    background: #ffffff;
-    color: #333;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    text-decoration: none;
-    font-weight: bold;
-    font-size: 16px;
-    line-height: 1.6;
-    box-sizing: border-box;
-    transition: background 0.2s, transform 0.2s;
-}
-
-.document-list a:hover {
-    background: #f0f4f8;
-    transform: translateY(-2px);
-}
-
-/* アプリを見るボタン */
-.document-list .app-link {
-    background: #28a745;
-    color: #ffffff;
-    border-color: #28a745;
-    font-size: 17px;
-}
-
-.document-list .app-link:hover {
-    background: #218838;
-}
-
-/* スマートフォン対応 */
 @media (max-width: 600px) {
 
     header {
@@ -385,30 +208,47 @@ li {
     }
 
     section {
-        margin-bottom: 20px;
-    }
-
-    img {
-        width: 100%;
-        max-width: 390px;
-        margin-bottom: 24px;
+        margin-bottom: 28px;
     }
 
     h2 {
         font-size: 22px;
-        margin-top: 18px;
-        margin-bottom: 14px;
+        margin-top: 20px;
+        margin-bottom: 16px;
     }
 
-    p,
-    li {
+    h3 {
+        font-size: 17px;
+    }
+
+    p {
         font-size: 16px;
         line-height: 1.8;
     }
 
-    ul {
-        padding-left: 24px;
+    /* アプリ画面紹介 */
+
+    .screen-gallery {
+        grid-template-columns: 1fr;
+        gap: 20px;
     }
+
+    .screen-item {
+        padding: 14px;
+    }
+
+    .screen-item img {
+        width: 100%;
+        max-width: 280px;
+        max-height: 380px;
+        margin: 0 auto 12px;
+    }
+
+    .screen-item p {
+        font-size: 15px;
+    }
+
+    /* 資料ボタン */
 
     .document-list {
         grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -417,13 +257,21 @@ li {
     }
 
     .document-list a {
-        width: 100%;
-        min-height: 58px;
+        min-height: 64px;
         padding: 12px 6px;
         font-size: 15px;
     }
 
-    .document-list .app-link {
+    /* アプリを見る */
+
+    .app-button {
+        margin-top: 20px;
+    }
+
+    .app-button a {
+        width: 100%;
+        min-width: 0;
+        min-height: 60px;
         font-size: 16px;
     }
 }
