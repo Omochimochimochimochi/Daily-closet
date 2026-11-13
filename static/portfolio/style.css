@@ -275,3 +275,20 @@ p {
         font-size: 16px;
     }
 }
+/* ==============================
+   メイン画像
+============================== */
+
+.main-visual {
+    text-align: center;
+    margin: 0 auto 36px;
+}
+
+.main-visual img {
+    display: block;
+    width: 100%;
+    max-width: 450px;
+    height: auto;
+    margin: 0 auto;
+    object-fit: contain;
+}
