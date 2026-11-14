@@ -73,7 +73,7 @@ def signup(request):
             return render(
                 request,
                 'signup.html',
-                {'error': 'すべての項目を入力してください。'}
+                {'error': ['すべての項目を入力してください。']}
             )
 
         # メールアドレスの重複確認
@@ -81,7 +81,7 @@ def signup(request):
             return render(
                 request,
                 'signup.html',
-                {'error': 'このメールアドレスはすでに登録されています。'}
+               {'error': ['このメールアドレスはすでに登録されています。']}
             )
 
         # ユーザー名の重複確認
@@ -89,7 +89,7 @@ def signup(request):
             return render(
                 request,
                 'signup.html',
-                {'error': 'このユーザー名はすでに使用されています。'}
+                {'error': ['このユーザー名はすでに使用されています。']}
             )
 
         # パスワードの一致確認
@@ -97,7 +97,7 @@ def signup(request):
             return render(
                 request,
                 'signup.html',
-                {'error': 'パスワードが一致しません。'}
+                {'error': ['パスワードが一致しません。']}
             )
 
         # Djangoのパスワード要件を確認
@@ -110,7 +110,7 @@ def signup(request):
             return render(
                 request,
                 'signup.html',
-                {'error': ' '.join(e.messages)}
+                {'error': e.messages}
             )
 
         # ユーザーを作成

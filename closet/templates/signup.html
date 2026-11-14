@@ -11,7 +11,11 @@
     <h2>新規会員登録</h2>
 
     {% if error %}
-        <p style="color: red;">{{ error }}</p>
+        <div class="signup-errors">
+            {% for message in error %}
+                <p>{{ message }}</p>
+            {% endfor %}
+        </div>
     {% endif %}
 
     <form method="post">
@@ -99,6 +103,12 @@
 
     </form>
 
+    <!-- ログイン画面へのリンク -->
+    <p class="login-link">
+        すでにアカウントをお持ちの方は
+        <a href="{% url 'closet:login' %}">ログイン</a>
+    </p>
+
 </div>
 
 <style>
@@ -111,6 +121,15 @@
 
     .signup-container h2 {
         margin-bottom: 30px;
+    }
+
+    .signup-errors {
+        color: red;
+        margin-bottom: 15px;
+    }
+
+    .signup-errors p {
+        margin: 5px 0;
     }
 
     .form-group {
@@ -141,59 +160,58 @@
         padding-right: 40px;
     }
 
-    
-/* 目のアイコンボタン */
-.toggle-icon {
-    position: absolute;
-    right: 8px;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 28px;
-    height: 28px;
-    padding: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: transparent;
-    border: none;
-    cursor: pointer;
-}
+    /* 目のアイコンボタン */
+    .toggle-icon {
+        position: absolute;
+        right: 8px;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 28px;
+        height: 28px;
+        padding: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: transparent;
+        border: none;
+        cursor: pointer;
+    }
 
-/* 自然な目の形 */
-.eye-icon {
-    position: relative;
-    width: 17px;
-    height: 12px;
-    border: 1.5px solid #666;
-    border-radius: 50% 50% 50% 50% / 60% 60% 60% 60%;
-    box-sizing: border-box;
-}
+    /* 自然な目の形 */
+    .eye-icon {
+        position: relative;
+        width: 17px;
+        height: 12px;
+        border: 1.5px solid #666;
+        border-radius: 50% 50% 50% 50% / 60% 60% 60% 60%;
+        box-sizing: border-box;
+    }
 
-/* 黒目 */
-.eye-icon::after {
-    content: "";
-    position: absolute;
-    width: 5px;
-    height: 5px;
-    border: 1.5px solid #666;
-    border-radius: 50%;
-    top: 2px;
-    left: 4.5px;
-    box-sizing: border-box;
-}
+    /* 黒目 */
+    .eye-icon::after {
+        content: "";
+        position: absolute;
+        width: 5px;
+        height: 5px;
+        border: 1.5px solid #666;
+        border-radius: 50%;
+        top: 2px;
+        left: 4.5px;
+        box-sizing: border-box;
+    }
 
-/* 非表示のときだけ斜線 */
-.toggle-icon.is-hidden .eye-icon::before {
-    content: "";
-    position: absolute;
-    width: 22px;
-    height: 1.5px;
-    background: #666;
-    top: 4px;
-    left: -4px;
-    transform: rotate(-35deg);
-    z-index: 1;
-}
+    /* 非表示のときだけ斜線 */
+    .toggle-icon.is-hidden .eye-icon::before {
+        content: "";
+        position: absolute;
+        width: 22px;
+        height: 1.5px;
+        background: #666;
+        top: 4px;
+        left: -4px;
+        transform: rotate(-35deg);
+        z-index: 1;
+    }
 
     .password-note {
         margin: 5px 0 0;
@@ -211,6 +229,11 @@
         border-radius: 5px;
         cursor: pointer;
         font-weight: bold;
+    }
+
+    .login-link {
+        margin-top: 20px;
+        font-size: 14px;
     }
 </style>
 

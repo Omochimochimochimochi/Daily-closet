@@ -1,3 +1,4 @@
+
 {% extends 'closet/base.html' %}
 {% load humanize %}
 
@@ -30,6 +31,56 @@
 
 h2 {
     text-align: center;
+}
+
+/* ゴミ箱ボタン */
+.favorite-delete-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    width: 32px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    flex-shrink: 0;
+}
+
+/* CSSで作る赤いゴミ箱 */
+.trash-icon {
+    position: relative;
+    display: block;
+    width: 13px;
+    height: 15px;
+    border: 2px solid #dc5555;
+    border-top: none;
+    border-radius: 0 0 2px 2px;
+    box-sizing: border-box;
+}
+
+/* ゴミ箱のふた */
+.trash-icon::before {
+    content: "";
+    position: absolute;
+    width: 19px;
+    height: 2px;
+    background: #dc5555;
+    top: -4px;
+    left: -5px;
+    border-radius: 2px;
+}
+
+/* ゴミ箱の持ち手 */
+.trash-icon::after {
+    content: "";
+    position: absolute;
+    width: 7px;
+    height: 2px;
+    background: #dc5555;
+    top: -7px;
+    left: 1px;
+    border-radius: 2px;
 }
 
 /* 削除確認モーダル */
@@ -152,9 +203,9 @@ body.delete-modal-open {
                     {% csrf_token %}
 
                     <button type="button"
-                            class="open-delete-modal"
-                            style="background: none; border: none; cursor: pointer; font-size: 20px;">
-                        🗑️
+                            class="favorite-delete-btn open-delete-modal"
+                            aria-label="お気に入りから削除">
+                        <span class="trash-icon"></span>
                     </button>
                 </form>
 
