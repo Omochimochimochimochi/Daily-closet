@@ -172,13 +172,13 @@
     <form method="post">
         {% csrf_token %}
 
-        {% if messages %}
-            <div style="color: red; margin-bottom: 20px; font-size: 14px;">
-                {% for m in messages %}
-                    {{ m }}
-                {% endfor %}
-            </div>
-        {% endif %}
+{% if messages %}
+    <div style="color: red; margin-bottom: 20px; font-size: 14px;">
+        {% for m in messages %}
+            <div>{{ m }}</div>
+        {% endfor %}
+    </div>
+{% endif %}
 
         <div class="field">
             <label for="login-email">メールアドレス</label>

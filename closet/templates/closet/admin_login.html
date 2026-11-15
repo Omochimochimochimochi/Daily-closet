@@ -122,16 +122,16 @@
     }
 
     .back-link {
-    display: block;
-    margin-top: 5px;
-    color: #4a90e2;
-    font-size: 14px;
-    text-decoration: none;
-}
+        display: block;
+        margin-top: 5px;
+        color: #4a90e2;
+        font-size: 14px;
+        text-decoration: none;
+    }
 
-.back-link:hover {
-    text-decoration: underline;
-}
+    .back-link:hover {
+        text-decoration: underline;
+    }
 
     @media (max-width: 400px) {
         .login-box {
@@ -143,20 +143,25 @@
 </style>
 {% endblock %}
 
+<!-- 共通メッセージを非表示にする -->
+{% block global_messages %}{% endblock %}
+
 {% block content %}
 <div class="login-box">
 
     <form method="post">
         {% csrf_token %}
 
+        <!-- エラーメッセージ -->
         {% if messages %}
             <div style="color: red; margin-bottom: 20px; font-size: 14px;">
                 {% for m in messages %}
-                    {{ m }}
+                    <div>{{ m }}</div>
                 {% endfor %}
             </div>
         {% endif %}
 
+        <!-- ユーザー名 -->
         <div class="field">
             <label for="admin-username">ユーザー名</label>
             <input
@@ -168,6 +173,7 @@
                 required>
         </div>
 
+        <!-- パスワード -->
         <div class="field">
             <label for="admin-password">パスワード</label>
 
@@ -190,6 +196,7 @@
             </div>
         </div>
 
+        <!-- 自動ログイン -->
         <div class="checkbox-group">
             <input type="checkbox" id="auto-login">
 
@@ -200,17 +207,16 @@
             </label>
         </div>
 
-                <button type="submit" class="btn-login">
+        <button type="submit" class="btn-login">
             管理者ログイン
         </button>
 
     </form>
 
+    <!-- 一般ユーザーログイン画面へ戻る -->
     <a href="{% url 'closet:login' %}" class="back-link">
         ログイン画面へ戻る
     </a>
-
-    </form>
 
 </div>
 

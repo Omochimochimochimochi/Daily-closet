@@ -76,33 +76,36 @@
     margin: 0 0 12px;
 }
 
+/* タグ一覧：画面幅に合わせて自動で折り返す */
 .tag-group {
     display: flex;
-    flex-wrap: nowrap;
-    overflow-x: auto;
-    gap: 10px;
+    flex-wrap: wrap;
+    gap: 8px;
     padding: 8px 0 12px;
     width: 100%;
     max-width: 100%;
     box-sizing: border-box;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: thin;
-    scrollbar-color: #bbb #f5f5f5;
+    overflow: visible;
 }
 
+/* タグボタン */
 .tag-btn {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    flex-shrink: 0;
-    padding: 10px 16px;
+    flex: 0 1 auto;
+    max-width: 100%;
+    min-height: 40px;
+    padding: 9px 12px;
     border-radius: 8px;
     color: #333;
     font-size: 14px;
-    white-space: nowrap;
+    white-space: normal;
+    overflow-wrap: anywhere;
     cursor: pointer;
     background: #fff;
     border: 1px solid #999;
+    box-sizing: border-box;
 }
 
 .tag-btn.active {
@@ -154,24 +157,28 @@
     <h1 class="search-title">商品検索</h1>
 
     <form action="{% url 'closet:search_results' %}"
-          method="get" id="search-form">
+          method="get"
+          id="search-form">
 
         <div class="search-box-container">
-    <input
-        type="text"
-        name="tag"
-        class="search-input"
-        id="search-input"
-        placeholder="キーワード、ハッシュタグ"
-        aria-label="検索キーワード"
-        autocomplete="off">
+            <input
+                type="text"
+                name="tag"
+                class="search-input"
+                id="search-input"
+                placeholder="キーワード、ハッシュタグ"
+                aria-label="検索キーワード"
+                autocomplete="off">
 
-    <div id="selected-tag-inputs"></div>
-</div>
+            <div id="selected-tag-inputs"></div>
+        </div>
+
         <div class="category-box">
-            <select name="category"
-                    class="category-select"
-                    aria-label="カテゴリー">
+            <select
+                name="category"
+                class="category-select"
+                aria-label="カテゴリー">
+
                 <option value="">カテゴリ（すべて）</option>
                 <option value="tops">トップス</option>
                 <option value="bottoms">ボトムス</option>
@@ -222,7 +229,6 @@
 {% block extra_js %}
 <script>
 document.addEventListener("DOMContentLoaded", function() {
-    const form = document.getElementById("search-form");
     const tagButtons = document.querySelectorAll(".tag-btn");
     const selectedTagInputs = document.getElementById("selected-tag-inputs");
 
