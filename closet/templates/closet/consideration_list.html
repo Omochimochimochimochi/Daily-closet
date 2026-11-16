@@ -37,6 +37,56 @@
         font-weight: bold;
     }
 
+    /* ゴミ箱ボタン：お気に入り画面と統一 */
+    .open-delete-modal {
+        background: none;
+        border: none;
+        cursor: pointer;
+        width: 32px;
+        height: 36px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0;
+        flex-shrink: 0;
+    }
+
+    /* CSSで作る赤いゴミ箱 */
+    .trash-icon {
+        position: relative;
+        display: block;
+        width: 13px;
+        height: 15px;
+        border: 2px solid #dc5555;
+        border-top: none;
+        border-radius: 0 0 2px 2px;
+        box-sizing: border-box;
+    }
+
+    /* ゴミ箱のふた */
+    .trash-icon::before {
+        content: "";
+        position: absolute;
+        width: 19px;
+        height: 2px;
+        background: #dc5555;
+        top: -4px;
+        left: -5px;
+        border-radius: 2px;
+    }
+
+    /* ゴミ箱の持ち手 */
+    .trash-icon::after {
+        content: "";
+        position: absolute;
+        width: 7px;
+        height: 2px;
+        background: #dc5555;
+        top: -7px;
+        left: 1px;
+        border-radius: 2px;
+    }
+
     /* 削除確認モーダル */
     .delete-modal {
         display: none;
@@ -130,10 +180,15 @@
         <div style="border: 1px solid #eee; border-radius: 10px; padding: 15px; margin-bottom: 20px; background: #fff;">
 
             <div class="item-card">
+
                 {% if c_item.item.image %}
-                    <img src="{{ c_item.item.image.url }}" class="item-img" alt="{{ c_item.item.item_name }}">
+                    <img src="{{ c_item.item.image.url }}"
+                         class="item-img"
+                         alt="{{ c_item.item.item_name }}">
                 {% else %}
-                    <div class="item-img" style="background:#eee; display:flex; align-items:center; justify-content:center;">No Image</div>
+                    <div class="item-img" style="background:#eee; display:flex; align-items:center; justify-content:center;">
+                        No Image
+                    </div>
                 {% endif %}
 
                 <div class="item-details">
@@ -159,10 +214,11 @@
                       class="delete-form"
                       style="margin-left: 10px;">
                     {% csrf_token %}
+
                     <button type="button"
                             class="open-delete-modal"
-                            style="background:none; border:none; cursor:pointer; font-size: 1.2rem; color: #ccc;">
-                        🗑️
+                            aria-label="検討リストから削除">
+                        <span class="trash-icon"></span>
                     </button>
                 </form>
             </div>
@@ -188,6 +244,7 @@
 <div id="delete-modal" class="delete-modal">
     <div class="delete-modal-content">
         <h3>検討リストから削除</h3>
+
         <p>このアイテムを削除してもよろしいですか？</p>
 
         <div class="delete-modal-buttons">
@@ -249,5 +306,4 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 </script>
-
 {% endblock %}
