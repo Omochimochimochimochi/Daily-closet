@@ -228,14 +228,7 @@
         const isHidden = passwordInput.type === 'password';
 
         passwordInput.type = isHidden ? 'text' : 'password';
-
-        togglePassword.classList.toggle('is-hidden', !isHidden);
-        togglePassword.setAttribute('aria-pressed', String(isHidden));
-        togglePassword.setAttribute(
-            'aria-label',
-            isHidden ? 'パスワードを隠す' : 'パスワードを表示'
-        );
-    });
+        
 </script>
 {% endblock %}
 
