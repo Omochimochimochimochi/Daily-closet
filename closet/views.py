@@ -492,7 +492,10 @@ def inventory_manage(request):
     return render(
         request,
         'inventory_manage.html',
-        {'items': items}
+        {
+            'items': items,
+            'messages': messages.get_messages(request),
+        }
     )
 
 
@@ -761,6 +764,7 @@ def item_edit(request, pk):
                 'detail_image'
             )
 
+        # アイテム情報を保存
         item.save()
 
         # 詳細画像追加
@@ -773,17 +777,22 @@ def item_edit(request, pk):
                 image_type=1,
             )
 
+        # 保存完了メッセージ
+        messages.success(
+            request,
+            'アイテム情報を更新しました。'
+        )
+
         return redirect(
             'closet:inventory_manage'
         )
 
+    # GETの場合は編集画面を表示
     return render(
         request,
         'closet/item_edit.html',
         {'item': item}
     )
-
-
 @login_required
 @user_only
 def username_edit(request):

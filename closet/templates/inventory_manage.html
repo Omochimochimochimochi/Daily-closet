@@ -372,6 +372,16 @@
     aria-live="polite">
 </div>
 
+<!-- Djangoメッセージ -->
+<div id="django-messages" style="display:none;">
+    {% for message in messages %}
+        <span
+            data-message="{{ message|escape }}"
+            data-tags="{{ message.tags }}">
+        </span>
+    {% endfor %}
+</div>
+
 <script>
     let currentItemId = null;
     let toastTimer = null;
@@ -517,6 +527,26 @@
 
         }
     }
+
+        // Djangoから受け取ったメッセージを表示
+    document.addEventListener('DOMContentLoaded', function() {
+
+        const messages = document.querySelectorAll(
+            '#django-messages span'
+        );
+
+        if (messages.length > 0) {
+
+            const message = messages[0].dataset.message;
+            const tags = messages[0].dataset.tags;
+
+            showToast(
+                message,
+                tags.includes('error')
+            );
+
+        }
+    });
 </script>
 
 </body>
