@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <title>アイテム編集 - Daily Closet</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <style>
         /* 基本レイアウト */
         body {
@@ -91,7 +92,7 @@
             overflow: hidden;
         }
 
-        /* 詳細画像登録（横並びリスト） */
+        /* 詳細画像登録 */
         .detail-add-section {
             text-align: center;
             margin-top: 20px;
@@ -108,6 +109,7 @@
             font-size: 13px;
             border-radius: 5px;
             background: white;
+            box-sizing: border-box;
         }
 
         .thumbnail-list {
@@ -278,6 +280,22 @@
             border-radius: 8px;
         }
 
+        /* 写真追加ボタン：幅のはみ出しを防止 */
+        .modal-upload-label {
+            display: block;
+            width: 100%;
+            box-sizing: border-box;
+            padding: 12px;
+            background: #a0c4ff;
+            color: white;
+            text-align: center;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
         .save-btn {
             width: 100%;
             background-color: #4f83e6;
@@ -289,6 +307,7 @@
             font-weight: bold;
             cursor: pointer;
             margin-top: 40px;
+            box-sizing: border-box;
         }
 
         .save-btn:hover {
@@ -312,7 +331,6 @@
             text-decoration: none;
             box-sizing: border-box;
         }
-
 
         /* 管理者メニュー */
         .footer-nav {
@@ -338,6 +356,7 @@
         }
     </style>
 </head>
+
 <body>
 
 <div class="app-container">
@@ -354,48 +373,81 @@
     <form id="item-form" method="post" enctype="multipart/form-data" action="">
         {% csrf_token %}
 
+        <!-- メイン画像 -->
         <div class="form-group-full">
-            <div id="main-preview" class="image-preview-box" style="width: 150px; height: 180px;" onclick="openModal('main')">
+            <div id="main-preview"
+                 class="image-preview-box"
+                 style="width: 150px; height: 180px;"
+                 onclick="openModal('main')">
+
                 {% if item.image %}
-                    <img src="{{ item.image.url }}" style="width:100%; height:100%; object-fit:cover;">
+                    <img src="{{ item.image.url }}"
+                         style="width:100%; height:100%; object-fit:cover;">
                 {% else %}
                     <p style="font-size: 12px; margin: 0;">アイテム画像</p>
                     <p style="font-size:24px; margin:5px 0;">📷</p>
                 {% endif %}
             </div>
-            <input type="file" name="image" id="main-image-input" accept="image/*" style="display:none">
+
+            <input type="file"
+                   name="image"
+                   id="main-image-input"
+                   accept="image/*"
+                   style="display:none">
         </div>
 
+        <!-- ブランド名 -->
         <div class="form-group-full">
             <label>ブランド名</label>
-            <input type="text" name="brand" value="{{ item.brand_name }}" placeholder="例：ユニクロ">
+            <input type="text"
+                   name="brand"
+                   value="{{ item.brand_name }}"
+                   placeholder="例：ユニクロ">
         </div>
 
+        <!-- 金額・カラー -->
         <div class="form-row">
             <div class="form-group">
                 <label>金額</label>
-                <input type="text" name="price" value="{{ item.price }}" placeholder="¥">
+                <input type="text"
+                       name="price"
+                       value="{{ item.price }}"
+                       placeholder="¥">
             </div>
+
             <div class="form-group">
                 <label>カラー</label>
-                <input type="text" name="color" value="{{ item.color }}" placeholder="例：White">
+                <input type="text"
+                       name="color"
+                       value="{{ item.color }}"
+                       placeholder="例：White">
             </div>
         </div>
 
+        <!-- アイテム名 -->
         <div class="form-group-full">
             <label style="text-align:center">アイテム名</label>
-            <input type="text" name="name" value="{{ item.item_name }}" style="text-align:center" placeholder="例：デニムシャツ">
+            <input type="text"
+                   name="name"
+                   value="{{ item.item_name }}"
+                   style="text-align:center"
+                   placeholder="例：デニムシャツ">
         </div>
 
+        <!-- アイテム説明 -->
         <div class="form-group-full">
             <label style="text-align:center">アイテム説明</label>
-            <textarea name="description" placeholder="説明を入力してください">{{ item.description }}</textarea>
+            <textarea name="description"
+                      placeholder="説明を入力してください">{{ item.description }}</textarea>
         </div>
 
+        <!-- カテゴリ -->
         <div style="margin:20px 0; text-align:center;">
             <label>カテゴリ</label>
+
             <select name="category"
-                style="width:80%; max-width:320px; padding:10px 14px; border:1px solid #ccc; border-radius:8px;">
+                    style="width:80%; max-width:320px; padding:10px 14px; border:1px solid #ccc; border-radius:8px;">
+
                 <option value="">選択してください</option>
                 <option value="tops" {% if item.category == "tops" %}selected{% endif %}>トップス</option>
                 <option value="bottoms" {% if item.category == "bottoms" %}selected{% endif %}>ボトムス</option>
@@ -404,95 +456,223 @@
             </select>
         </div>
 
+        <!-- アイテム詳細・詳細画像 -->
         <div class="form-group-full">
-            <label style="text-align: center;">アイテム詳細（素材、洗濯表示など）</label>
-            <textarea name="details_text" placeholder="詳細を入力してください">{{ item.details_text }}</textarea>
+            <label style="text-align: center;">
+                アイテム詳細（素材、洗濯表示など）
+            </label>
 
-            <div id="detail-sub-preview" class="image-preview-box" style="width: 100px; height: 120px; margin-top: 10px;" onclick="openModal('detail-sub')">
+            <textarea name="details_text"
+                      placeholder="詳細を入力してください">{{ item.details_text }}</textarea>
+
+            <div id="detail-sub-preview"
+                 class="image-preview-box"
+                 style="width: 100px; height: 120px; margin-top: 10px;"
+                 onclick="openModal('detail-sub')">
+
                 {% if item.detail_image %}
-                    <img src="{{ item.detail_image.url }}" style="width:100%; height:100%; object-fit:cover;">
+                    <img src="{{ item.detail_image.url }}"
+                         style="width:100%; height:100%; object-fit:cover;">
                 {% else %}
                     <p style="font-size: 10px; margin: 0;">詳細画像</p>
                     <p style="font-size:20px; margin:5px 0;">📷</p>
                 {% endif %}
             </div>
-            <input type="file" name="detail_image" id="detail-sub-image-input" accept="image/*" style="display:none">
+
+            <input type="file"
+                   name="detail_image"
+                   id="detail-sub-image-input"
+                   accept="image/*"
+                   style="display:none">
         </div>
 
+        <!-- 追加詳細画像 -->
         <div class="detail-add-section">
-            <p style="font-size: 11px; font-weight: bold; margin-bottom:10px;">詳細部分（ポケット、裏地など）の画像登録</p>
+            <p style="font-size: 11px; font-weight: bold; margin-bottom:10px;">
+                詳細部分（ポケット、裏地など）の画像登録
+            </p>
 
             <div id="thumbnail-container" class="thumbnail-list">
                 {% for img in item.additional_images.all %}
                     <div class="thumbnail-item" id="existing-img-{{ img.id }}">
-                        <img src="{{ img.image.url }}" style="width:100%; height:100%; object-fit:cover; border-radius:5px;">
-                        <button type="button" class="remove-btn" onclick="deleteExistingImage('{{ img.id }}')">×</button>
+                        <img src="{{ img.image.url }}"
+                             style="width:100%; height:100%; object-fit:cover; border-radius:5px;">
+
+                        <button type="button"
+                                class="remove-btn"
+                                onclick="deleteExistingImage('{{ img.id }}')">
+                            ×
+                        </button>
                     </div>
                 {% endfor %}
             </div>
 
-            <button type="button" class="detail-add-btn" onclick="openModal('detail')">＋ 詳細画像を追加</button>
-            <input type="file" name="additional_images" id="additional-images-input" accept="image/*" multiple style="display:none">
+            <button type="button"
+                    class="detail-add-btn"
+                    onclick="openModal('detail')">
+                ＋ 詳細画像を追加
+            </button>
+
+            <input type="file"
+                   name="additional_images"
+                   id="additional-images-input"
+                   accept="image/*"
+                   multiple
+                   style="display:none">
         </div>
 
+        <!-- 自由記入タグ -->
         <label>自由記入タグ</label>
+
         <div class="free-tag-input-area">
-            <input type="text" id="free-tag-input" placeholder="#2Way">
-            <button type="button" class="add-tag-btn" onclick="addFreeTag()" style="white-space: nowrap;">追加</button>
+            <input type="text"
+                   id="free-tag-input"
+                   placeholder="#2Way">
+
+            <button type="button"
+                    class="add-tag-btn"
+                    onclick="addFreeTag()"
+                    style="white-space: nowrap;">
+                追加
+            </button>
         </div>
 
-        <div id="free-tag-list" class="tag-list" style="margin-bottom:20px;">
+        <div id="free-tag-list"
+             class="tag-list"
+             style="margin-bottom:20px;">
+
             {% for t in item.free_tags_list %}
-                <span class="tag-label" style="background:#eee;" onclick="this.remove(); syncFreeTagsToHiddenInput();">#{{ t }}</span>
+                <span class="tag-label"
+                      style="background:#eee;"
+                      onclick="this.remove(); syncFreeTagsToHiddenInput();">
+                    #{{ t }}
+                </span>
             {% endfor %}
         </div>
 
-        <input type="hidden" name="free_tags" id="free-tags-hidden" value="{{ item.free_tags }}">
+        <input type="hidden"
+               name="free_tags"
+               id="free-tags-hidden"
+               value="{{ item.free_tags }}">
 
+        <!-- タグ選択 -->
         <p class="tag-section-title">タグ（複数選択）</p>
 
         <div class="tag-group-label">■ スタイル</div>
+
         <div class="tag-list">
-            <label><input type="checkbox" name="style" value="シンプル" class="tag-checkbox" {% if "シンプル" in item.style %}checked{% endif %}><span class="tag-label">#シンプル</span></label>
-            <label><input type="checkbox" name="style" value="きれいめ" class="tag-checkbox" {% if "きれいめ" in item.style %}checked{% endif %}><span class="tag-label">#きれいめ</span></label>
-            <label><input type="checkbox" name="style" value="Aライン" class="tag-checkbox" {% if "Aライン" in item.style %}checked{% endif %}><span class="tag-label">#Aライン</span></label>
+            <label>
+                <input type="checkbox" name="style" value="シンプル"
+                       class="tag-checkbox"
+                       {% if "シンプル" in item.style %}checked{% endif %}>
+                <span class="tag-label">#シンプル</span>
+            </label>
+
+            <label>
+                <input type="checkbox" name="style" value="きれいめ"
+                       class="tag-checkbox"
+                       {% if "きれいめ" in item.style %}checked{% endif %}>
+                <span class="tag-label">#きれいめ</span>
+            </label>
+
+            <label>
+                <input type="checkbox" name="style" value="Aライン"
+                       class="tag-checkbox"
+                       {% if "Aライン" in item.style %}checked{% endif %}>
+                <span class="tag-label">#Aライン</span>
+            </label>
         </div>
 
         <div class="tag-group-label">■ 骨格タイプ</div>
+
         <div class="tag-list">
-            <label><input type="checkbox" name="kokkaku" value="ストレート" class="tag-checkbox" {% if "ストレート" in item.kokkaku %}checked{% endif %}><span class="tag-label">#ストレート</span></label>
-            <label><input type="checkbox" name="kokkaku" value="ウェーブ" class="tag-checkbox" {% if "ウェーブ" in item.kokkaku %}checked{% endif %}><span class="tag-label">#ウェーブ</span></label>
-            <label><input type="checkbox" name="kokkaku" value="ナチュラル" class="tag-checkbox" {% if "ナチュラル" in item.kokkaku %}checked{% endif %}><span class="tag-label">#ナチュラル</span></label>
+            <label>
+                <input type="checkbox" name="kokkaku" value="ストレート"
+                       class="tag-checkbox"
+                       {% if "ストレート" in item.kokkaku %}checked{% endif %}>
+                <span class="tag-label">#ストレート</span>
+            </label>
+
+            <label>
+                <input type="checkbox" name="kokkaku" value="ウェーブ"
+                       class="tag-checkbox"
+                       {% if "ウェーブ" in item.kokkaku %}checked{% endif %}>
+                <span class="tag-label">#ウェーブ</span>
+            </label>
+
+            <label>
+                <input type="checkbox" name="kokkaku" value="ナチュラル"
+                       class="tag-checkbox"
+                       {% if "ナチュラル" in item.kokkaku %}checked{% endif %}>
+                <span class="tag-label">#ナチュラル</span>
+            </label>
         </div>
 
         <div class="tag-group-label">■ パーソナルカラー</div>
+
         <div class="tag-list">
-            <label><input type="checkbox" name="personal_color" value="イエベ" class="tag-checkbox" {% if "イエベ" in item.personal_color %}checked{% endif %}><span class="tag-label">#イエベ</span></label>
-            <label><input type="checkbox" name="personal_color" value="ブルベ" class="tag-checkbox" {% if "ブルベ" in item.personal_color %}checked{% endif %}><span class="tag-label">#ブルベ</span></label>
-            <label><input type="checkbox" name="personal_color" value="ニュートラル" class="tag-checkbox" {% if "ニュートラル" in item.personal_color %}checked{% endif %}><span class="tag-label">#ニュートラル</span></label>
+            <label>
+                <input type="checkbox" name="personal_color" value="イエベ"
+                       class="tag-checkbox"
+                       {% if "イエベ" in item.personal_color %}checked{% endif %}>
+                <span class="tag-label">#イエベ</span>
+            </label>
+
+            <label>
+                <input type="checkbox" name="personal_color" value="ブルベ"
+                       class="tag-checkbox"
+                       {% if "ブルベ" in item.personal_color %}checked{% endif %}>
+                <span class="tag-label">#ブルベ</span>
+            </label>
+
+            <label>
+                <input type="checkbox" name="personal_color" value="ニュートラル"
+                       class="tag-checkbox"
+                       {% if "ニュートラル" in item.personal_color %}checked{% endif %}>
+                <span class="tag-label">#ニュートラル</span>
+            </label>
         </div>
 
         <button type="submit" class="save-btn">保存</button>
-        <a href="{% url 'closet:inventory_manage' %}" class="cancel-btn">キャンセル</a>
+
+        <a href="{% url 'closet:inventory_manage' %}" class="cancel-btn">
+            キャンセル
+        </a>
+
     </form>
 </div>
 
-<div id="image-modal" class="modal-overlay" onclick="closeModal()">
-    <div class="modal-content" onclick="event.stopPropagation()">
-        <span class="modal-close" onclick="closeModal()">&times;</span>
-        <h3 style="font-size: 16px; margin-bottom: 15px; text-align: center;">カメラロール</h3>
+<!-- 画像選択モーダル -->
+<div id="image-modal"
+     class="modal-overlay"
+     onclick="closeModal()">
 
-        <div id="modal-main-preview" style="width: 100%; height: 200px; border: 1px solid #ccc; display: flex; align-items: center; justify-content: center; background: #f9f9f9; border-radius: 8px; margin-bottom: 15px;">
+    <div class="modal-content" onclick="event.stopPropagation()">
+
+        <span class="modal-close" onclick="closeModal()">&times;</span>
+
+        <h3 style="font-size: 16px; margin-bottom: 15px; text-align: center;">
+            カメラロール
+        </h3>
+
+        <div id="modal-main-preview"
+             style="width: 100%; height: 200px; border: 1px solid #ccc; display: flex; align-items: center; justify-content: center; background: #f9f9f9; border-radius: 8px; margin-bottom: 15px; box-sizing:border-box;">
             画像を選択してください
         </div>
 
-        <div id="modal-thumbnail-list" style="display: flex; gap: 10px; overflow-x: auto; padding-bottom: 10px;">
+        <div id="modal-thumbnail-list"
+             style="display: flex; gap: 10px; overflow-x: auto; padding-bottom: 10px;">
         </div>
 
-        <label style="display: block; width: 100%; padding: 12px; background: #a0c4ff; color: white; text-align: center; border-radius: 5px; cursor: pointer; margin-top: 10px;">
+        <!-- 写真追加ボタン -->
+        <label class="modal-upload-label">
             ＋ 写真を追加
-            <input type="file" accept="image/*" style="display:none" onchange="handleImageUpload(event)">
+            <input type="file"
+                   accept="image/*"
+                   style="display:none"
+                   onchange="handleImageUpload(event)">
         </label>
+
     </div>
 </div>
 
@@ -518,46 +698,72 @@
 
     function syncAdditionalFilesToInput() {
         const dataTransfer = new DataTransfer();
-        additionalFiles.forEach(file => dataTransfer.items.add(file));
-        document.getElementById('additional-images-input').files = dataTransfer.files;
+
+        additionalFiles.forEach(file => {
+            dataTransfer.items.add(file);
+        });
+
+        document.getElementById('additional-images-input').files =
+            dataTransfer.files;
     }
 
     function handleImageUpload(event) {
         const file = event.target.files[0];
+
         if (!file) return;
 
         const reader = new FileReader();
+
         reader.onload = function(e) {
             const imageUrl = e.target.result;
 
             if (currentTarget === 'main') {
+
                 document.getElementById('main-preview').innerHTML =
                     `<img src="${imageUrl}" style="width:100%; height:100%; object-fit:cover;">`;
 
                 const dt = new DataTransfer();
                 dt.items.add(file);
-                document.getElementById('main-image-input').files = dt.files;
+
+                document.getElementById('main-image-input').files =
+                    dt.files;
 
             } else if (currentTarget === 'detail-sub') {
+
                 document.getElementById('detail-sub-preview').innerHTML =
                     `<img src="${imageUrl}" style="width:100%; height:100%; object-fit:cover;">`;
 
                 const dt = new DataTransfer();
                 dt.items.add(file);
-                document.getElementById('detail-sub-image-input').files = dt.files;
+
+                document.getElementById('detail-sub-image-input').files =
+                    dt.files;
 
             } else if (currentTarget === 'detail') {
+
                 additionalFiles.push(file);
                 syncAdditionalFilesToInput();
 
-                const container = document.getElementById('thumbnail-container');
+                const container =
+                    document.getElementById('thumbnail-container');
+
                 const div = document.createElement('div');
                 div.className = 'thumbnail-item';
-                div.innerHTML = `<img src="${imageUrl}" style="width:100%; height:100%; object-fit:cover; border-radius:5px;"><button type="button" class="remove-btn">×</button>`;
+
+                div.innerHTML = `
+                    <img src="${imageUrl}"
+                         style="width:100%; height:100%; object-fit:cover; border-radius:5px;">
+
+                    <button type="button" class="remove-btn">×</button>
+                `;
 
                 div.querySelector('.remove-btn').onclick = function() {
                     const idx = additionalFiles.indexOf(file);
-                    if (idx > -1) additionalFiles.splice(idx, 1);
+
+                    if (idx > -1) {
+                        additionalFiles.splice(idx, 1);
+                    }
+
                     syncAdditionalFilesToInput();
                     div.remove();
                 };
@@ -566,27 +772,37 @@
             }
 
             closeModal();
+
+            // 同じ画像を再選択できるようにする
+            event.target.value = '';
         };
 
         reader.readAsDataURL(file);
     }
 
     function syncFreeTagsToHiddenInput() {
-        const tags = Array.from(document.querySelectorAll('#free-tag-list .tag-label'))
-            .map(el => el.innerText.replace(/^#/, ''));
+        const tags = Array.from(
+            document.querySelectorAll('#free-tag-list .tag-label')
+        ).map(el => el.innerText.replace(/^#/, ''));
 
-        document.getElementById('free-tags-hidden').value = tags.join(',');
+        document.getElementById('free-tags-hidden').value =
+            tags.join(',');
     }
 
     function addFreeTag() {
         const input = document.getElementById('free-tag-input');
+
         if (!input.value.trim()) return;
 
         const list = document.getElementById('free-tag-list');
         const tag = document.createElement('span');
+
         tag.className = 'tag-label';
         tag.style.background = '#eee';
-        tag.innerText = input.value.startsWith('#') ? input.value : '#' + input.value;
+
+        tag.innerText = input.value.startsWith('#')
+            ? input.value
+            : '#' + input.value;
 
         tag.onclick = function() {
             this.remove();
@@ -594,16 +810,19 @@
         };
 
         list.appendChild(tag);
+
         input.value = '';
         syncFreeTagsToHiddenInput();
     }
 
-    document.querySelectorAll('#free-tag-list .tag-label').forEach(function(tag) {
-        tag.onclick = function() {
-            this.remove();
-            syncFreeTagsToHiddenInput();
-        };
-    });
+    document.querySelectorAll('#free-tag-list .tag-label').forEach(
+        function(tag) {
+            tag.onclick = function() {
+                this.remove();
+                syncFreeTagsToHiddenInput();
+            };
+        }
+    );
 
     function deleteExistingImage(imageId) {
         if (!confirm('この画像を削除しますか？')) return;
@@ -611,13 +830,17 @@
         fetch(`/item/delete-image/${imageId}/`, {
             method: 'POST',
             headers: {
-                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+                'X-CSRFToken': document.querySelector(
+                    '[name=csrfmiddlewaretoken]'
+                ).value,
             },
         })
         .then(response => response.json())
         .then(data => {
             if (data.status === 'success') {
-                document.getElementById(`existing-img-${imageId}`).remove();
+                document.getElementById(
+                    `existing-img-${imageId}`
+                ).remove();
             } else {
                 alert('削除に失敗しました');
             }

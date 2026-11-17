@@ -6,279 +6,516 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>在庫管理 - Daily Closet</title>
     {% load tag_filters %}
+
     <style>
-body {
-    font-family: sans-serif;
-    background-color: #f8f9fa;
-    margin: 0;
-    display: flex;
-    justify-content: center;
-}
+        body {
+            font-family: sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+        }
 
-.app-container {
-    width: 100%;
-    max-width: 375px;
-    min-height: 100vh;
-    background: #fff;
-    position: relative;
-    padding-bottom: 80px;
-    border: 1px solid #ddd;
-    box-sizing: border-box;
-    text-align: center;
-}
+        .app-container {
+            width: 100%;
+            max-width: 375px;
+            min-height: 100vh;
+            background: #fff;
+            position: relative;
+            padding-bottom: 80px;
+            border: 1px solid #ddd;
+            box-sizing: border-box;
+            text-align: center;
+        }
 
-.header {
-    padding: 10px;
-    border-bottom: 1px solid #eee;
-}
+        .header {
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+        }
 
-.btn-add {
-    display: inline-block;
-    width: 90%;
-    padding: 10px;
-    background-color: #ccc;
-    color: #333;
-    text-decoration: none;
-    border-radius: 5px;
-    margin: 10px 0;
-    font-weight: bold;
-}
+        .btn-add {
+            display: inline-block;
+            width: 90%;
+            padding: 10px;
+            background-color: #ccc;
+            color: #333;
+            text-decoration: none;
+            border-radius: 5px;
+            margin: 10px 0;
+            font-weight: bold;
+            box-sizing: border-box;
+        }
 
-.item-card {
-    display: flex;
-    padding: 10px;
-    border-bottom: 1px solid #eee;
-    text-align: left;
-    align-items: flex-start;
-}
+        .item-card {
+            display: flex;
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+            text-align: left;
+            align-items: flex-start;
+        }
 
-.item-img {
-    width: 80px;
-    height: 100px;
-    background-color: #f0f0f0;
-    border: 1px solid #ddd;
-    margin-right: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 10px;
-    color: #999;
-    flex-shrink: 0;
-}
+        .item-img {
+            width: 80px;
+            height: 100px;
+            background-color: #f0f0f0;
+            border: 1px solid #ddd;
+            margin-right: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            color: #999;
+            flex-shrink: 0;
+            overflow: hidden;
+        }
 
-.item-info {
-    flex: 1;
-    font-size: 12px;
-    word-break: break-word;
-}
+        .item-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
 
-.item-info p {
-    margin: 2px 0;
-}
+        .item-info {
+            flex: 1;
+            min-width: 0;
+            font-size: 12px;
+            word-break: break-word;
+        }
 
-.btn-group {
-    margin-top: 10px;
-    display: flex;
-    gap: 5px;
-    flex-wrap: wrap;
-}
+        .item-info p {
+            margin: 2px 0;
+        }
 
-.btn-status,
-.btn-edit {
-    background-color: #ddd;
-    border: none;
-    padding: 5px 10px;
-    border-radius: 5px;
-    font-size: 11px;
-    cursor: pointer;
-    text-decoration: none;
-    color: black;
-}
+        .btn-group {
+            margin-top: 10px;
+            display: flex;
+            gap: 5px;
+            flex-wrap: wrap;
+        }
 
-.btn-edit {
-    background-color: #bbb;
-}
+        .btn-status,
+        .btn-edit {
+            background-color: #ddd;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 11px;
+            cursor: pointer;
+            text-decoration: none;
+            color: black;
+        }
 
-#modal-overlay {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,.5);
-    z-index: 1000;
-}
+        .btn-edit {
+            background-color: #bbb;
+        }
 
-.modal-content {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 250px;
-    background: #fff;
-    padding: 20px;
-    border-radius: 10px;
-    text-align: center;
-    box-sizing: border-box;
-}
+        /* 公開設定モーダル */
+        #modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
 
-.modal-close {
-    position: absolute;
-    top: 5px;
-    right: 10px;
-    font-size: 20px;
-    cursor: pointer;
-    border: none;
-    background: none;
-}
+        .modal-content {
+            position: relative;
+            width: 250px;
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            box-sizing: border-box;
+        }
 
-/* 保存ボタン：青色 */
-.btn-save {
-    background: #2563eb;
-    color: #fff;
-    border: none;
-    padding: 8px 20px;
-    border-radius: 5px;
-    margin-right: 5px;
-    font-weight: bold;
-    cursor: pointer;
-}
+        .modal-content h3 {
+            font-size: 16px;
+            margin: 5px 0 20px;
+        }
 
-/* キャンセルボタン：薄いグレー */
-.btn-cancel {
-    background: #f1f1f1;
-    color: #333;
-    border: 1px solid #ddd;
-    padding: 8px 20px;
-    border-radius: 5px;
-    font-weight: bold;
-    cursor: pointer;
-}
+        .modal-close {
+            position: absolute;
+            top: 5px;
+            right: 10px;
+            font-size: 24px;
+            cursor: pointer;
+            border: none;
+            background: none;
+            color: #999;
+        }
 
-.footer-nav {
-    position: fixed;
-    bottom: 0;
-    width: 100%;
-    max-width: 375px;
-    display: flex;
-    justify-content: space-around;
-    padding: 10px 0;
-    background: #eee;
-    border-top: 1px solid #ddd;
-    box-sizing: border-box;
-}
+        .modal-close:hover {
+            color: #333;
+        }
 
-.footer-nav a {
-    font-size: 28px;
-    text-decoration: none;
-    padding: 5px;
-}
+        #publish-status-select {
+            width: 80%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background: #fff;
+            font-size: 13px;
+        }
+
+        .btn-save {
+            background: #2563eb;
+            color: #fff;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 5px;
+            margin-right: 5px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .btn-save:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .btn-cancel {
+            background: #f1f1f1;
+            color: #333;
+            border: 1px solid #ddd;
+            padding: 8px 20px;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        /* アプリ内通知 */
+        .toast-message {
+            display: none;
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: calc(100% - 40px);
+            max-width: 335px;
+            padding: 14px;
+            background: #333;
+            color: #fff;
+            font-size: 13px;
+            text-align: center;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            z-index: 2000;
+            box-sizing: border-box;
+        }
+
+        .toast-message.error {
+            background: #b33a3a;
+        }
+
+        /* 管理者メニュー */
+        .footer-nav {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 375px;
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            background: #eee;
+            border-top: 1px solid #ddd;
+            box-sizing: border-box;
+            z-index: 100;
+        }
+
+        .footer-nav a {
+            font-size: 28px;
+            text-decoration: none;
+            padding: 5px;
+        }
     </style>
 </head>
+
 <body>
 
 <div class="app-container">
+
     {% csrf_token %}
+
     <div class="header">在庫管理画面</div>
 
-    <a href="{% url 'closet:item_register' %}" class="btn-add">＋新規アイテム登録</a>
+    <a href="{% url 'closet:item_register' %}" class="btn-add">
+        ＋新規アイテム登録
+    </a>
 
-    <p style="font-size: 12px;">登録アイテム：{{ items.count }}点</p>
+    <p style="font-size: 12px;">
+        登録アイテム：{{ items.count }}点
+    </p>
 
     {% for item in items %}
+
     <div class="item-card">
+
         <div class="item-img">
             {% if item.image %}
-                <img src="{{ item.image.url }}" width="80">
+                <img src="{{ item.image.url }}" alt="{{ item.item_name }}">
             {% else %}
                 画像なし
             {% endif %}
         </div>
+
         <div class="item-info">
+
             <p>アイテム名：{{ item.item_name }}</p>
-            <p>タグ：
+
+            <p>
+                タグ：
                 {{ item.kokkaku|hashtags }}
                 {{ item.personal_color|hashtags }}
                 {{ item.style|hashtags }}
                 {{ item.free_tags|hashtags }}
             </p>
-            <p>状態：
-                {% if item.is_published %}
-                    公開中
-                {% else %}
-                    非公開
-                {% endif %}
+
+            <p>
+                状態：
+                <span id="status-{{ item.id }}">
+                    {% if item.is_published %}
+                        公開中
+                    {% else %}
+                        非公開
+                    {% endif %}
+                </span>
             </p>
+
             <div class="btn-group">
-                <button class="btn-status" onclick="openModal({{ item.id }}, '{{ item.is_published|yesno:"公開中,非公開" }}')">公開設定を変更</button>
-                <a href="{% url 'closet:item_edit' item.id %}" class="btn-edit">編集</a>
+
+                <button
+                    type="button"
+                    class="btn-status"
+                    onclick="openModal(
+                        {{ item.id }},
+                        '{{ item.is_published|yesno:"公開中,非公開" }}'
+                    )">
+                    公開設定を変更
+                </button>
+
+                <a
+                    href="{% url 'closet:item_edit' item.id %}"
+                    class="btn-edit">
+                    編集
+                </a>
+
             </div>
+
         </div>
     </div>
+
     {% endfor %}
 
-    <div id="modal-overlay">
-        <div class="modal-content">
-            <button class="modal-close" onclick="closeModal()"></button>
+    <!-- 公開設定モーダル -->
+    <div
+        id="modal-overlay"
+        onclick="closeModal()">
+
+        <div
+            class="modal-content"
+            onclick="event.stopPropagation()">
+
+            <button
+                type="button"
+                class="modal-close"
+                onclick="closeModal()"
+                aria-label="閉じる">
+                &times;
+            </button>
+
             <h3>公開設定</h3>
-            <select id="publish-status-select" style="width: 80%; padding: 10px; margin-bottom: 20px;">
-                <option>公開中</option>
-                <option>非公開</option>
+
+            <select id="publish-status-select">
+                <option value="公開中">公開中</option>
+                <option value="非公開">非公開</option>
             </select>
+
             <div>
-                <button class="btn-save" onclick="savePublishStatus()">保存</button>
-                <button class="btn-cancel" onclick="closeModal()">キャンセル</button>
+                <button
+                    type="button"
+                    class="btn-save"
+                    id="save-button"
+                    onclick="savePublishStatus()">
+                    保存
+                </button>
+
+                <button
+                    type="button"
+                    class="btn-cancel"
+                    onclick="closeModal()">
+                    キャンセル
+                </button>
             </div>
+
         </div>
     </div>
 
+    <!-- 管理者メニュー -->
     <div class="footer-nav">
         <a href="{% url 'closet:admin_menu' %}" class="nav-item">🏠</a>
         <a href="{% url 'closet:inventory_manage' %}" class="nav-item">👗</a>
         <a href="{% url 'closet:admin_item_list' %}" class="nav-item">📋</a>
     </div>
+
+</div>
+
+<!-- アプリ内通知 -->
+<div
+    id="toast-message"
+    class="toast-message"
+    role="status"
+    aria-live="polite">
 </div>
 
 <script>
     let currentItemId = null;
+    let toastTimer = null;
 
+    // モーダルを開く
     function openModal(itemId, currentStatus) {
+
         currentItemId = itemId;
-        const select = document.getElementById('publish-status-select');
+
+        const select = document.getElementById(
+            'publish-status-select'
+        );
+
         select.value = currentStatus;
-        document.getElementById('modal-overlay').style.display = 'block';
+
+        document.getElementById(
+            'modal-overlay'
+        ).style.display = 'flex';
     }
 
+    // モーダルを閉じる
     function closeModal() {
-        document.getElementById('modal-overlay').style.display = 'none';
+
+        document.getElementById(
+            'modal-overlay'
+        ).style.display = 'none';
+
+        currentItemId = null;
     }
 
+    // CSRFトークン取得
     function getCsrfToken() {
-        return document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+        return document.querySelector(
+            '[name=csrfmiddlewaretoken]'
+        ).value;
     }
 
-    function savePublishStatus() {
-        const select = document.getElementById('publish-status-select');
+    // アプリ内通知
+    function showToast(message, isError = false) {
+
+        const toast = document.getElementById(
+            'toast-message'
+        );
+
+        clearTimeout(toastTimer);
+
+        toast.textContent = message;
+
+        toast.classList.toggle('error', isError);
+
+        toast.style.display = 'block';
+
+        toastTimer = setTimeout(function() {
+
+            toast.style.display = 'none';
+
+        }, 2500);
+    }
+
+    // 公開設定を保存
+    async function savePublishStatus() {
+
+        if (currentItemId === null) {
+            return;
+        }
+
+        const itemId = currentItemId;
+
+        const select = document.getElementById(
+            'publish-status-select'
+        );
+
+        const saveButton = document.getElementById(
+            'save-button'
+        );
+
         const isPublished = select.value === '公開中';
 
-        fetch(`/DailyCloset/admin-inventory/${currentItemId}/publish/`, {
-            method: 'POST',
-            headers: {
-                'X-CSRFToken': getCsrfToken(),
-                'Content-Type': 'application/x-www-form-urlencoded',
-            },
-            body: `is_published=${isPublished}`,
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.status === 'success') {
-                alert(data.message);
-                location.reload();
-            } else {
-                alert('更新に失敗しました');
-            }
-        })
-        .catch(() => alert('通信エラーが発生しました'));
+        saveButton.disabled = true;
 
-        closeModal();
+        try {
+
+            const response = await fetch(
+                `/DailyCloset/admin-inventory/${itemId}/publish/`,
+                {
+                    method: 'POST',
+
+                    headers: {
+                        'X-CSRFToken': getCsrfToken(),
+                        'Content-Type':
+                            'application/x-www-form-urlencoded',
+                    },
+
+                    body: `is_published=${isPublished}`,
+                }
+            );
+
+            if (!response.ok) {
+                throw new Error('更新に失敗しました');
+            }
+
+            const data = await response.json();
+
+            if (data.status !== 'success') {
+                throw new Error(
+                    data.message || '更新に失敗しました'
+                );
+            }
+
+            // 公開状態を画面に反映
+            const statusElement = document.getElementById(
+                `status-${itemId}`
+            );
+
+            if (statusElement) {
+
+                statusElement.textContent =
+                    isPublished ? '公開中' : '非公開';
+
+            }
+
+            // モーダルを閉じる
+            closeModal();
+
+            // 成功メッセージ
+            showToast(
+                data.message || '公開設定を変更しました。'
+            );
+
+        } catch (error) {
+
+            closeModal();
+
+            showToast(
+                error.message || '通信エラーが発生しました。',
+                true
+            );
+
+        } finally {
+
+            saveButton.disabled = false;
+
+        }
     }
 </script>
 

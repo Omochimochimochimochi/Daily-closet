@@ -474,9 +474,15 @@ def item_register(request):
 
         print("保存カテゴリ:", item.category)
 
-        return redirect('closet:inventory_manage')
+        # 追加詳細画像を複数保存
+        for image_file in request.FILES.getlist('additional_images'):
+            ItemAdditionalImage.objects.create(
+                item=item,
+                image=image_file,
+                image_type=1,
+            )
 
-    return render(request, 'closet/item_register.html')
+        return redirect('closet:inventory_manage')
 
 
 @staff_member_required
