@@ -484,6 +484,9 @@ def item_register(request):
 
         return redirect('closet:inventory_manage')
 
+    # GETの場合は新規登録画面を表示
+    return render(request, 'closet/item_register.html')
+
 
 @staff_member_required
 def inventory_manage(request):

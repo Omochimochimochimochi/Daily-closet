@@ -228,7 +228,16 @@
         const isHidden = passwordInput.type === 'password';
 
         passwordInput.type = isHidden ? 'text' : 'password';
-        
+
+        this.classList.toggle('is-hidden', !isHidden);
+
+        this.setAttribute(
+            'aria-label',
+            isHidden ? 'パスワードを非表示' : 'パスワードを表示'
+        );
+
+        this.setAttribute('aria-pressed', isHidden);
+    });
 </script>
 {% endblock %}
 
