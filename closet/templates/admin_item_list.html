@@ -1,143 +1,213 @@
+
 <!DOCTYPE html>
 <html lang="ja">
-<head>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>アイテム一覧(管理) - Daily Closet</title>
+
     <style>
-    body{
-       margin:0; background:#f8f9fa; font-family:sans-serif; display:flex; justify-content:center; }
+        body {
+            margin: 0;
+            background: #f8f9fa;
+            font-family: sans-serif;
+            display: flex;
+            justify-content: center;
+        }
 
-    .app-container{width:100%; max-width:375px; min-height:100vh; background:#fff; position:relative; padding-bottom:80px; box-sizing:border-box; border:1px solid #ddd; }
-        
-        .header { padding: 15px; border-bottom: 1px solid #eee; text-align: center; font-weight: bold; background: #fff; }
-        .item-count { font-size: 12px; color: #666; text-align: center; margin: 10px 0; }
-        
-        
- .item-card {
-    display: flex;
-    padding: 12px;
-    border-bottom: 1px solid #eee;
-    align-items: center;
-    text-decoration: none;
-    color: inherit;
-}
+        .app-container {
+            width: 100%;
+            max-width: 375px;
+            min-height: 100vh;
+            background: #fff;
+            position: relative;
+            padding-bottom: 80px;
+            box-sizing: border-box;
+            border: 1px solid #ddd;
+        }
 
-.item-img {
-    width: 70px;
-    height: 85px;
-    background-color: #f0f0f0;
-    border: 1px solid #ddd;
-    margin-right: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-    flex-shrink: 0;
-}
+        .header {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            text-align: center;
+            font-weight: bold;
+            background: #fff;
+        }
 
-.item-img img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-}
+        .item-count {
+            font-size: 12px;
+            color: #666;
+            text-align: center;
+            margin: 10px 0;
+        }
 
-.item-info {
-    flex: 1;
-}
+        .item-card {
+            display: flex;
+            padding: 12px;
+            border-bottom: 1px solid #eee;
+            align-items: center;
+            text-decoration: none;
+            color: inherit;
+        }
 
-.item-name {
-    font-size: 16px;
-    font-weight: bold;
-    color: #333;
-    margin: 0 0 6px 0;
-}
+        .item-img {
+            width: 70px;
+            height: 85px;
+            background-color: #f0f0f0;
+            border: 1px solid #ddd;
+            margin-right: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
 
-.item-spec {
-    font-size: 14px;
-    color: #666;
-    margin: 3px 0;
-}
+        .item-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
 
-.item-price {
-    font-size: 15px;
-    font-weight: bold;
-    color: #d9534f;
-    margin: 5px 0 0 0;
-}
+        .item-info {
+            flex: 1;
+        }
 
-        
-        .footer-nav{
-    position:fixed;
-    bottom:0;
-    width:100%;
-    max-width:375px;
-    display:flex;
-    justify-content:space-around;
-    padding:15px 0;
-    background:#f0f0f0;
-    border-top:1px solid #ddd;
-    box-sizing:border-box;
-}
+        .item-name {
+            font-size: 16px;
+            font-weight: bold;
+            color: #333;
+            margin: 0 0 6px 0;
+        }
 
-        .nav-item { text-decoration: none; font-size: 24px; }
+        .item-spec {
+            font-size: 14px;
+            color: #666;
+            margin: 3px 0;
+        }
+
+        .item-price {
+            font-size: 15px;
+            font-weight: bold;
+            color: #d9534f;
+            margin: 5px 0 0 0;
+        }
+
+        /* ページ送り */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            margin: 20px 0;
+            font-size: 14px;
+        }
+
+        .pagination a {
+            display: inline-block;
+            padding: 8px 14px;
+            background: #eee;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            color: #333;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .pagination a:hover {
+            background: #d0d0d0;
+        }
+
+        .pagination span {
+            color: #333;
+        }
+
+        /* フッターナビゲーション */
+        .footer-nav {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 375px;
+            display: flex;
+            justify-content: space-around;
+            padding: 15px 0;
+            background: #f0f0f0;
+            border-top: 1px solid #ddd;
+            box-sizing: border-box;
+        }
+
+        .nav-item {
+            text-decoration: none;
+            font-size: 24px;
+        }
     </style>
 </head>
+
 <body>
 
 <div class="app-container">
+
     <div class="header">アイテム一覧画面</div>
-    <p class="item-count">登録アイテム：{{ item_count }}点</p>
 
-{% for item in items %}
+    <p class="item-count">
+        登録アイテム：{{ item_count }}点
+    </p>
 
+    {% for item in items %}
 
-<a href="{% url 'closet:item_detail' item.pk %}" class="item-card"> 
-    <div class="item-img"> 
-        {% if item.image %} 
-            <img src="{{ item.image.url }}" alt="{{ item.item_name }}"> 
-        {% else %} 
-            画像なし 
-        {% endif %} 
-    </div> 
- 
-    <div class="item-info"> 
-        <p class="item-name">{{ item.item_name }}</p> 
-        <p class="item-spec">{{ item.color }}</p> 
-        <p class="item-price">¥ {{ item.price }} (税込)</p> 
+    <a href="{% url 'closet:item_detail' item.pk %}" class="item-card">
+
+        <div class="item-img">
+            {% if item.image %}
+                <img src="{{ item.image.url }}" alt="{{ item.item_name }}">
+            {% else %}
+                画像なし
+            {% endif %}
+        </div>
+
+        <div class="item-info">
+            <p class="item-name">{{ item.item_name }}</p>
+            <p class="item-spec">{{ item.color }}</p>
+            <p class="item-price">¥ {{ item.price }} (税込)</p>
+        </div>
+
+    </a>
+
+    {% empty %}
+
+    <p style="text-align:center; color:#999; padding:30px;">
+        登録されているアイテムはありません。
+    </p>
+
+    {% endfor %}
+
+    {% if page_obj.has_other_pages %}
+    <div class="pagination">
+
+        {% if page_obj.has_previous %}
+            <a href="?page={{ page_obj.previous_page_number }}">‹ 前へ</a>
+        {% endif %}
+
+        <span>
+            {{ page_obj.number }} / {{ page_obj.paginator.num_pages }}
+        </span>
+
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}">次へ ›</a>
+        {% endif %}
+
     </div>
-</a>
-
-
-{% empty %}
-
-<p style="text-align:center; color:#999; padding:30px;">
-    登録されているアイテムはありません。
-</p>
-
-{% endfor %}
-
-{% if page_obj.has_other_pages %}
-<div class="pagination">
-    {% if page_obj.has_previous %}
-        <a href="?page={{ page_obj.previous_page_number }}">‹ 前へ</a>
     {% endif %}
 
-    <span>{{ page_obj.number }} / {{ page_obj.paginator.num_pages }}</span>
+    <div class="footer-nav">
+        <a href="{% url 'closet:admin_menu' %}" class="nav-item">🏠</a>
+        <a href="{% url 'closet:inventory_manage' %}" class="nav-item">👗</a>
+        <a href="{% url 'closet:admin_item_list' %}" class="nav-item">📋</a>
+    </div>
 
-    {% if page_obj.has_next %}
-        <a href="?page={{ page_obj.next_page_number }}">次へ ›</a>
-    {% endif %}
-</div>
-{% endif %}
-
-<div class="footer-nav">
-    <a href="{% url 'closet:admin_menu' %}" class="nav-item">🏠</a>
-    <a href="{% url 'closet:inventory_manage' %}" class="nav-item">👗</a>
-    <a href="{% url 'closet:admin_item_list' %}" class="nav-item">📋</a>
-</div>
 </div>
 
 </body>

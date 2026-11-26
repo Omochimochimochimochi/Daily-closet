@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>在庫管理 - Daily Closet</title>
+
     {% load tag_filters %}
 
     <style>
@@ -33,17 +34,23 @@
             border-bottom: 1px solid #eee;
         }
 
+        /* 新規アイテム登録ボタン */
         .btn-add {
             display: inline-block;
             width: 90%;
-            padding: 10px;
-            background-color: #ccc;
+            padding: 12px;
+            background-color: #eee;
             color: #333;
             text-decoration: none;
-            border-radius: 5px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
             margin: 10px 0;
             font-weight: bold;
             box-sizing: border-box;
+        }
+
+        .btn-add:hover {
+            background-color: #d0d0d0;
         }
 
         .item-card {
@@ -93,20 +100,22 @@
             flex-wrap: wrap;
         }
 
+        /* 公開設定ボタン */
         .btn-status,
         .btn-edit {
-            background-color: #ddd;
-            border: none;
+            background-color: #eee;
+            border: 1px solid #ccc;
             padding: 5px 10px;
             border-radius: 5px;
             font-size: 11px;
             cursor: pointer;
             text-decoration: none;
-            color: black;
+            color: #333;
         }
 
-        .btn-edit {
-            background-color: #bbb;
+        .btn-status:hover,
+        .btn-edit:hover {
+            background-color: #d0d0d0;
         }
 
         /* 公開設定モーダル */
@@ -160,6 +169,7 @@
             font-size: 13px;
         }
 
+        /* 保存ボタン */
         .btn-save {
             background: #a0c4ff;
             color: #fff;
@@ -176,6 +186,7 @@
             cursor: not-allowed;
         }
 
+        /* キャンセルボタン */
         .btn-cancel {
             background: #f1f1f1;
             color: #333;
@@ -528,7 +539,7 @@
         }
     }
 
-        // Djangoから受け取ったメッセージを表示
+    // Djangoから受け取ったメッセージを表示
     document.addEventListener('DOMContentLoaded', function() {
 
         const messages = document.querySelectorAll(

@@ -216,36 +216,39 @@
         </div>
     </div>
 
-    <form id="add-to-list-form" action="{% url 'closet:add_to_consideration' item.id %}" method="POST">
-        {% csrf_token %}
+    {% if not user.is_staff %}
+<form id="add-to-list-form" action="{% url 'closet:add_to_consideration' item.id %}" method="POST">
+    {% csrf_token %}
 
-        <div class="selection-grid">
-            <div>
-                <small>サイズ</small><br>
-                <select name="size">
-                    <option>S</option>
-                    <option>M</option>
-                </select>
-            </div>
-
-            <div>
-                <small>カラー</small><br>
-                <select name="color">
-                    <option>ブラック</option>
-                </select>
-            </div>
-
-            <div>
-                <small>個数</small><br>
-                <select name="quantity">
-                    <option>1</option>
-                    <option>2</option>
-                </select>
-            </div>
+    <div class="selection-grid">
+        <div>
+            <small>サイズ</small><br>
+            <select name="size">
+                <option>S</option>
+                <option>M</option>
+            </select>
         </div>
 
-        <button type="submit" class="add-to-cart-btn">検討リストに追加</button>
-    </form>
+        <div>
+            <small>カラー</small><br>
+            <select name="color">
+                <option>ブラック</option>
+            </select>
+        </div>
+
+        <div>
+            <small>個数</small><br>
+            <select name="quantity">
+                <option>1</option>
+                <option>2</option>
+            </select>
+        </div>
+    </div>
+
+    <button type="submit" class="add-to-cart-btn">検討リストに追加</button>
+</form>
+{% endif %}
+        
 
     <a id="open-modal" class="menu-link">素材、サイズ詳細 &gt;</a>
     <a id="open-desc" class="menu-link">アイテム説明 &gt;</a>
