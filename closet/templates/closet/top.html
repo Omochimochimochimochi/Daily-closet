@@ -1,3 +1,4 @@
+
 {% extends 'closet/base.html' %}
 {% load static %}
 
@@ -18,38 +19,64 @@
     display: block;
     margin: 0;
 }
-    
-    /* 検索バーの微調整 */
-    .search-container {
-        display: flex; 
-        gap: 5px; 
-        margin-bottom: 20px; 
-        padding: 0 10px;
-        box-sizing: border-box;
-    }
+
+/* 検索バー */
+.search-container {
+    display: flex;
+    gap: 5px;
+    margin-bottom: 20px;
+    padding: 0 10px;
+    box-sizing: border-box;
+}
+
+/* 検索ボタン */
+/* TOP画面の検索ボタン */
+.top-search-btn {
+    flex-shrink: 0;
+    width: 58px;
+    height: 48px;
+    min-height: 0;
+    padding: 0;
+    cursor: pointer;
+    background-color: #e0e0e0;
+    color: #333;
+    border: 1px solid #999;
+    border-radius: 8px;
+    font-size: 16px;
+    box-sizing: border-box;
+}
+
+.top-search-btn:hover {
+    background-color: #d5d5d5;
+}
+
+.top-search-btn:hover {
+    background-color: #596980;
+}
 </style>
 {% endblock %}
+
 {% block content %}
-<div class="app-container"> <h1 style="text-align: center; margin-top: 20px; font-weight: bold;">Daily closet</h1>
-    
+<div class="app-container">
 
+    <h1 style="text-align: center; margin-top: 20px; font-weight: bold;">
+        Daily closet
+    </h1>
 
-<form action="{% url 'closet:search_results' %}" method="get"
-      style="display:flex; align-items:center; gap:5px; width:100%; max-width:375px; margin:0 auto 15px; padding:0 10px; box-sizing:border-box;">
+    <form action="{% url 'closet:search_results' %}"
+          method="get"
+          style="display:flex; align-items:center; gap:5px; width:100%; max-width:375px; margin:0 auto 15px; padding:0 10px; box-sizing:border-box;">
 
-    <input
-        type="text"
-        name="tag"
-        placeholder="キーワードを入力"
-        style="display:block; width:0; min-width:0; flex:1 1 0%; padding:10px; border:1px solid #ccc; border-radius:5px; box-sizing:border-box;">
+        <input
+            type="text"
+            name="tag"
+            placeholder="キーワードを入力"
+            style="display:block; width:0; min-width:0; flex:1 1 0%; padding:10px; border:1px solid #ccc; border-radius:5px; box-sizing:border-box;">
 
-    <button
-        type="submit"
-        style="flex-shrink:0; padding:10px 15px; cursor:pointer; background:#eee; border:1px solid #ccc; border-radius:5px;">
-        🔍
-    </button>
-</form>
-
+        <button type="submit" class="top-search-btn">
+            🔍
+        </button>
+    </form>
 
     <div class="main-visual">
         <img src="{% static 'images/main_visual.jpg' %}" alt="メイン画像">
@@ -68,12 +95,14 @@
         <a href="{% url 'closet:login' %}" style="font-weight: bold; display: block; margin-bottom: 10px; color: #1a73e8; text-decoration: underline;">
             ＞ログイン
         </a>
+
         <a href="{% url 'closet:signup' %}" style="font-weight: bold; display: block; margin-bottom: 10px; color: #1a73e8; text-decoration: underline;">
             ＞新規会員登録はこちら
         </a>
     </div>
 
-</div> {% endblock %}
+</div>
+{% endblock %}
 
 {# ログイン前のTOPページでは下のメニューを出さない設定 #}
 {% block bottom_nav %}{% endblock %}

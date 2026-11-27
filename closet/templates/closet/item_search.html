@@ -121,25 +121,31 @@
     outline-offset: 3px;
 }
 
+
 .search-submit {
-    display: block;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     width: 100%;
     max-width: 100%;
+    min-height: 52px;
     box-sizing: border-box;
     margin-top: 30px;
-    padding: 14px;
-    border: none;
+    padding: 10px 12px;
+    border: 2px solid #555;
     border-radius: 8px;
-    background: #333;
+    background: #6c7b94;
     color: #fff;
     font-size: 16px;
-    font-weight: 600;
+    font-weight: bold;
+    line-height: 1.4;
     cursor: pointer;
 }
 
 .search-submit:hover {
-    background: #555;
+    background: #596980;
 }
+
 
 @media (max-width: 375px) {
     .app-container {

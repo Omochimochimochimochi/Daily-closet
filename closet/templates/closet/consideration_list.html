@@ -25,17 +25,28 @@
         min-width: 0;
     }
 
-    .buy-button {
-        display: block;
-        padding: 10px;
-        background: #888;
-        color: white;
-        text-align: center;
-        border-radius: 5px;
-        text-decoration: none;
-        font-size: 0.9rem;
-        font-weight: bold;
-    }
+
+.buy-button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 52px;
+    padding: 10px 12px;
+    background-color: #6c7b94;
+    color: white;
+    border: 2px solid #555;
+    border-radius: 8px;
+    text-align: center;
+    text-decoration: none;
+    font-size: 16px;
+    font-weight: bold;
+    line-height: 1.4;
+    box-sizing: border-box;
+}
+
+.buy-button:hover {
+    background-color: #596980;
+}
 
     /* ゴミ箱ボタン：お気に入り画面と統一 */
     .open-delete-modal {
@@ -130,26 +141,30 @@
         gap: 12px;
     }
 
-    .delete-cancel-btn,
-    .delete-confirm-btn {
-        flex: 1;
-        padding: 12px 5px;
-        border: none;
-        border-radius: 8px;
-        font-size: 14px;
-        font-weight: bold;
-        cursor: pointer;
-    }
 
-    .delete-cancel-btn {
-        background: #e0e0e0;
-        color: #333;
-    }
+.delete-cancel-btn,
+.delete-confirm-btn {
+    flex: 1;
+    min-height: 48px;
+    padding: 10px 5px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+}
 
-    .delete-confirm-btn {
-        background: #dc5555;
-        color: white;
-    }
+.delete-cancel-btn {
+    background: #e0e0e0;
+    color: #333;
+    border: 2px solid #555;
+}
+
+.delete-confirm-btn {
+    background: #dc5555;
+    color: white;
+    border: 2px solid #dc5555;
+}
+
 
     body.delete-modal-open {
         overflow: hidden;
